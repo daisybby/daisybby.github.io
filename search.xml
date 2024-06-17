@@ -11,7 +11,9 @@
   <entry>
     <title>Redis注册为windows服务</title>
     <url>/2024/06/17/Redis%E6%B3%A8%E5%86%8C%E4%B8%BAwindows%E6%9C%8D%E5%8A%A1/</url>
-    <content><![CDATA[<p>安装完Redis需要用命令行启动，而且要保持这个窗口不关闭。<br>注册为windows服务后不再受控制台的影响。<br><strong>控制台输入：</strong><br><code>redis-server.exe --service-install redis.windows.conf </code><br><strong>开启Redis服务:</strong><br>控制台输入：<code>redis-server --service-start</code></p>
+    <content><![CDATA[<p>安装完Redis需要用命令行启动，而且要保持这个窗口不关闭。</p>
+<span id="more"></span>
+<p>注册为windows服务后不再受控制台的影响。<br><strong>控制台输入：</strong><br><code>redis-server.exe --service-install redis.windows.conf </code><br><strong>开启Redis服务:</strong><br>控制台输入：<code>redis-server --service-start</code></p>
 <blockquote>
 <p>注意：在redis安装目录下进入cmd就能打开控制台。</p>
 </blockquote>
