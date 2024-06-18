@@ -26,10 +26,11 @@
     <title>session、cookie和token</title>
     <url>/2024/06/18/session%E3%80%81cookie%E5%92%8Ctoken/</url>
     <content><![CDATA[<h1 id="session、cookie和token"><a href="#session、cookie和token" class="headerlink" title="session、cookie和token"></a>session、cookie和token</h1><ul>
-<li>cookie：保存在客户端，用来解决客户端保存信息的问题。<span id="more"></span></li>
+<li>cookie：保存在客户端，用来解决客户端保存信息的问题。</li>
 <li>session：保存在服务器端，每个客户端对应一个session。</li>
 <li>token：无状态且跨域，能够有效防御CSRF，解决session依赖单个服务器的问题。</li>
 </ul>
+<span id="more"></span>
 <h2 id="1-cookie"><a href="#1-cookie" class="headerlink" title="1.cookie"></a>1.cookie</h2><p>浏览器可以将服务器端发送的信息保存到cookie中，在浏览器之后每次发送请求时，可以将存活的cookie放到请求头一起发送给服务器端。</p>
 <img src="/daisybby.github.io/2024/06/18/session%E3%80%81cookie%E5%92%8Ctoken/06/18/session%E3%80%81cookie%E5%92%8Ctoken/cookie%E5%92%8Csession%E7%A4%BA%E6%84%8F%E5%9B%BE.png" class title="img1">
 <h2 id="2-session"><a href="#2-session" class="headerlink" title="2.session"></a>2.session</h2><p>&ensp;&ensp;客户端向服务端发送请求，服务端为这个请求开辟一块内存空间，即session对象，保存方式为ConcurrentHashMap。<br>&ensp;&ensp;服务器端会为session设置过期时间，避免堆积大量session。（但在高并发场景下还是会有大量session，占据存储空间）<br>session和cookie协作的详细流程：</p>
