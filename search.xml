@@ -89,7 +89,7 @@
 <li>检查session中是否有用户信息，有则将用户信息保存到threadLocal（关键点）</li>
 <li>session中没有用户信息，说明用户没有登录。</li>
 </ol>
-<img src="/daisybby.github.io/2024/06/19/Redis%E5%AE%9E%E6%88%98%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%E4%B8%80%EF%BC%9A%E7%9F%AD%E4%BF%A1%E7%99%BB%E5%BD%95/06/19/Redis%E5%AE%9E%E6%88%98%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%E4%B8%80%EF%BC%9A%E7%9F%AD%E4%BF%A1%E7%99%BB%E5%BD%95/img3.png" class title="img3">
+<img src="/daisybby.github.io/2024/06/19/Redis%E5%AE%9E%E6%88%98%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%E4%B8%80%EF%BC%9A%E7%9F%AD%E4%BF%A1%E7%99%BB%E5%BD%95/06/19/Redis%E5%AE%9E%E6%88%98%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%E4%B8%80%EF%BC%9A%E7%9F%AD%E4%BF%A1%E7%99%BB%E5%BD%95/img1.png" class title="img3">
 
 <p><strong>2.什么时候验证用户登录状态？</strong><br>在请求到达服务器后，在调用对应的controller处理方法之前。那怎么实现？可以用过滤器和拦截器（详见<a href="https://zhuanlan.zhihu.com/p/697414738">过滤器和拦截器的区别与联系</a>）。<br><strong>3.验证后要做什么？为什么要用ThreadLocal，而不是将用户信息保持在session中？</strong><br>如果session中有用户信息，那这个信息就是登录时保存到session中的，说明已经登录过了。我们在从session中获取信息时，需要将HttpSession对象传递到方法中，如果在之后的service等多处还需要用户信息，会出现频繁传递session对象的问题，而且在高并发场景下，可能会出现session混乱。<br>在服务器端，每个请求对应一个线程，那么我们可以将用户信息保存成线程内部全局可见的，即ThreadLocal的形式。线程可以全局获取用户信息，提高开发效率。<br><strong>4.注意事项</strong><br>ThreadLocal也有缺点：</p>
 <ul>
