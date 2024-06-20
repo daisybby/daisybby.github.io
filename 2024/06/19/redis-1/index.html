@@ -26,14 +26,18 @@
 <meta property="og:site_name" content="daisybby">
 <meta property="og:description" content="笔记一：短信验证登录三个关键功能：1.用户提供手机号，获取6位数字验证码；">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://daisybby/2024/06/19/redis-1/img1.png">
-<meta property="og:image" content="https://daisybby/2024/06/19/redis-1/img2.png">
-<meta property="og:image" content="https://daisybby/2024/06/19/redis-1/img3.png">
+<meta property="og:image" content="https://daisybby/daisybby.github.io/2024/06/19/redis-1/06/19/redis-1/img1.png">
+<meta property="og:image" content="https://daisybby/daisybby.github.io/2024/06/19/redis-1/06/19/redis-1/img2.png">
+<meta property="og:image" content="https://daisybby/daisybby.github.io/2024/06/19/redis-1/06/19/redis-1/img3.png">
+<meta property="og:image" content="https://daisybby/daisybby.github.io/2024/06/19/redis-1/06/19/redis-1/img4.png">
+<meta property="og:image" content="https://daisybby/daisybby.github.io/2024/06/19/redis-1/06/19/redis-1/img5.png">
+<meta property="og:image" content="https://daisybby/daisybby.github.io/2024/06/19/redis-1/06/19/redis-1/img6.png">
+<meta property="og:image" content="https://daisybby/daisybby.github.io/2024/06/19/redis-1/06/19/redis-1/img7.png">
 <meta property="article:published_time" content="2024-06-19T05:47:20.000Z">
-<meta property="article:modified_time" content="2024-06-19T08:07:25.263Z">
+<meta property="article:modified_time" content="2024-06-20T08:58:03.767Z">
 <meta property="article:author" content="Daisybby">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://daisybby/2024/06/19/redis-1/img1.png">
+<meta name="twitter:image" content="https://daisybby/daisybby.github.io/2024/06/19/redis-1/06/19/redis-1/img1.png">
 
 
 <link rel="canonical" href="https://daisybby/daisybby.github.io/2024/06/19/redis-1/">
@@ -143,7 +147,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%94%E8%AE%B0%E4%B8%80%EF%BC%9A%E7%9F%AD%E4%BF%A1%E9%AA%8C%E8%AF%81%E7%99%BB%E5%BD%95"><span class="nav-text">笔记一：短信验证登录</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91"><span class="nav-text">一、业务逻辑</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%8E%B7%E5%8F%96%E9%AA%8C%E8%AF%81%E7%A0%81"><span class="nav-text">1.获取验证码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E9%AA%8C%E8%AF%81%E7%A0%81%E7%99%BB%E5%BD%95"><span class="nav-text">2.验证码登录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%99%BB%E5%BD%95%E7%8A%B6%E6%80%81%E6%A3%80%E6%9F%A5"><span class="nav-text">3.登录状态检查</span></a></li></ol></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%94%E8%AE%B0%E4%B8%80%EF%BC%9A%E7%9F%AD%E4%BF%A1%E9%AA%8C%E8%AF%81%E7%99%BB%E5%BD%95"><span class="nav-text">笔记一：短信验证登录</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91"><span class="nav-text">一、业务逻辑</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%8E%B7%E5%8F%96%E9%AA%8C%E8%AF%81%E7%A0%81"><span class="nav-text">1.获取验证码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E9%AA%8C%E8%AF%81%E7%A0%81%E7%99%BB%E5%BD%95"><span class="nav-text">2.验证码登录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%99%BB%E5%BD%95%E7%8A%B6%E6%80%81%E6%A3%80%E6%9F%A5"><span class="nav-text">3.登录状态检查</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81session%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-text">二、session存在的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E4%BD%BF%E7%94%A8Redis%E4%BC%98%E5%8C%96%E7%99%BB%E5%BD%95%E9%AA%8C%E8%AF%81"><span class="nav-text">三、使用Redis优化登录验证</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%94%9F%E6%88%90%E9%AA%8C%E8%AF%81%E7%A0%81"><span class="nav-text">1.生成验证码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95"><span class="nav-text">2.用户登录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E9%AA%8C%E8%AF%81%E7%99%BB%E5%BD%95%E7%8A%B6%E6%80%81"><span class="nav-text">3.验证登录状态</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98%E4%BB%A5%E5%8F%8A%E4%BC%98%E5%8C%96"><span class="nav-text">四、存在的问题以及优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%99%BB%E5%BD%95%E7%8A%B6%E6%80%81%E5%88%B7%E6%96%B0%E4%BC%98%E5%8C%96"><span class="nav-text">1.登录状态刷新优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%B0%86%E7%94%A8%E6%88%B7%E4%BF%A1%E6%81%AF%E4%BF%9D%E5%AD%98%E5%88%B0Redis%E6%8A%A5%E9%94%99"><span class="nav-text">2.将用户信息保存到Redis报错</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E4%B8%AA%E4%BA%BA%E9%81%87%E5%88%B0%E7%9A%84bug%EF%BC%9A"><span class="nav-text">3.个人遇到的bug：</span></a></li></ol></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -227,9 +231,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2024-06-19 13:47:20 / 修改时间：16:07:25" itemprop="dateCreated datePublished" datetime="2024-06-19T13:47:20+08:00">2024-06-19</time>
+      <time title="创建时间：2024-06-19 13:47:20" itemprop="dateCreated datePublished" datetime="2024-06-19T13:47:20+08:00">2024-06-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-06-20 16:58:03" itemprop="dateModified" datetime="2024-06-20T16:58:03+08:00">2024-06-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -254,7 +264,7 @@
 <span id="more"></span>
 <p>2.用户提供手机号和验证码，进行登录；<br>3.对于用户请求，验证用户登录状态。</p>
 <h2 id="一、业务逻辑"><a href="#一、业务逻辑" class="headerlink" title="一、业务逻辑"></a>一、业务逻辑</h2><h3 id="1-获取验证码"><a href="#1-获取验证码" class="headerlink" title="1.获取验证码"></a>1.获取验证码</h3><p>参数：用户手机号<br>返回：6位数字验证码<br>关键点就是要<strong>校验手机号格式</strong>、<strong>验证码保存到session</strong>中以备后续验证。</p>
-<img src="/2024/06/19/redis-1/img1.png" class="" title="img1">
+<img src="/daisybby.github.io/2024/06/19/redis-1/06/19/redis-1/img1.png" class title="img1">
 
 <h3 id="2-验证码登录"><a href="#2-验证码登录" class="headerlink" title="2.验证码登录"></a>2.验证码登录</h3><ol>
 <li>用户提供手机号和验证码</li>
@@ -263,7 +273,7 @@
 <li>根据手机号查找用户信息，有则信息保存到session（便于后续登录验证）</li>
 <li>用户不存在则创建新用户。</li>
 </ol>
-<img src="/2024/06/19/redis-1/img2.png" class="" title="img2">
+<img src="/daisybby.github.io/2024/06/19/redis-1/06/19/redis-1/img2.png" class title="img2">
 
 <h3 id="3-登录状态检查"><a href="#3-登录状态检查" class="headerlink" title="3.登录状态检查"></a>3.登录状态检查</h3><p><strong>1.对于用户发来的请求，检查用户是否已经登录。</strong></p>
 <ol>
@@ -272,7 +282,7 @@
 <li>检查session中是否有用户信息，有则将用户信息保存到threadLocal（关键点）</li>
 <li>session中没有用户信息，说明用户没有登录。</li>
 </ol>
-<img src="/2024/06/19/redis-1/img3.png" class="" title="img3">
+<img src="/daisybby.github.io/2024/06/19/redis-1/06/19/redis-1/img3.png" class title="img3">
 
 <p><strong>2.什么时候验证用户登录状态？</strong><br>在请求到达服务器后，在调用对应的controller处理方法之前。那怎么实现？可以用过滤器和拦截器（详见<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/697414738">过滤器和拦截器的区别与联系</a>）。<br><strong>3.验证后要做什么？为什么要用ThreadLocal，而不是将用户信息保持在session中？</strong><br>如果session中有用户信息，那这个信息就是登录时保存到session中的，说明已经登录过了。我们在从session中获取信息时，需要将HttpSession对象传递到方法中，如果在之后的service等多处还需要用户信息，会出现频繁传递session对象的问题，而且在高并发场景下，可能会出现session混乱。<br>在服务器端，每个请求对应一个线程，那么我们可以将用户信息保存成线程内部全局可见的，即ThreadLocal的形式。线程可以全局获取用户信息，提高开发效率。<br><strong>4.注意事项</strong><br>ThreadLocal也有缺点：</p>
 <ul>
@@ -282,6 +292,64 @@
 </li>
 <li><strong>上下文切换问题：</strong> 每个线程可能都有自己的本地变量，当需要在线程间共享数据时，可能涉及到线程上下文切换，增加程序的复杂性和开销。</li>
 </ul>
+<blockquote>
+<p><strong>一定要在请求处理完毕之后，将用户信息从threadLocal释放。</strong></p>
+</blockquote>
+<p><strong>5.拦截器和过滤器的区别是什么？</strong></p>
+<img src="/daisybby.github.io/2024/06/19/redis-1/06/19/redis-1/img4.png" class title="img4">
+<ul>
+<li>Filter可以拦截一切请求，通常是筛选掉一些不和要求的请求；</li>
+<li>Interceptor可以设置在请求被处理之前、被处理之后，或者是对请求到达controller之后，对返回的结果进行处理。可以调用业务逻辑！</li>
+</ul>
+<h2 id="二、session存在的问题"><a href="#二、session存在的问题" class="headerlink" title="二、session存在的问题"></a>二、session存在的问题</h2><ul>
+<li>登录后用户信息暂存在session中，在高并发场景下需要较大的内存开销；</li>
+<li>session是不能被多个tomcat服务器共享的，在分布式场景下session共享比较麻烦。<br><strong>session的作用是什么？</strong></li>
+<li>基于内存的，访问速度快。</li>
+<li>记录登录后的用户信息，保持登录状态。</li>
+<li>需要多服务器都能够访问。<br>因此，可以用<strong>Redis</strong>来满足以上需求。</li>
+</ul>
+<h2 id="三、使用Redis优化登录验证"><a href="#三、使用Redis优化登录验证" class="headerlink" title="三、使用Redis优化登录验证"></a>三、使用Redis优化登录验证</h2><h3 id="1-生成验证码"><a href="#1-生成验证码" class="headerlink" title="1.生成验证码"></a>1.生成验证码</h3><ul>
+<li>session下：验证码保存在session中，用sessionID标识唯一；</li>
+<li>Redis下：验证码保存在Redis数据库，用Key标识，一个手机号对应一个验证码，故key用手机号。但是为了开发的便利性和直观性，需要在phone之前添加前缀（这是一种数据保存思想）。</li>
+<li>更新后的流程图：<img src="/daisybby.github.io/2024/06/19/redis-1/06/19/redis-1/img5.png" class title="img5">
+&ensp;&ensp;&ensp;&ensp;校验码需要设置<strong>过期时间</strong>，否则可能出现大量废弃校验码堆积，造成存储空间的浪费。</li>
+</ul>
+<h3 id="2-用户登录"><a href="#2-用户登录" class="headerlink" title="2.用户登录"></a>2.用户登录</h3><ul>
+<li>session下：从session获取验证码-&gt;匹配验证码-&gt;用户信息保存到session；</li>
+<li>Redis下：从Redis获取验证码-&gt;匹配验证码-&gt;用户信息保存到Redis<ul>
+<li>校验码的Key是前缀+手机号</li>
+<li>用户信息保存方式：String或者Hash类型，Hash类型可以修改用户某些信息，更灵活，用hash保存</li>
+<li>用户信息的key是前缀+随机的token</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>为什么需要随机的token？<br>答：因为用户发来请求，服务器需要识别这个请求是哪个用户的，sessionID类似的功能，但是我们又不能直接用手机号识别，对用户信息不安全。于是，可以用一个随机的token，登录成功后返回给客户端，之后每次请求都携带这个token即可。</p>
+</blockquote>
+<ul>
+<li>流程图：<img src="/daisybby.github.io/2024/06/19/redis-1/06/19/redis-1/img6.png" class title="img6">
+<strong>注意事项：</strong><br>&ensp;&ensp;&ensp;&ensp;登录成功后，用户信息保存在Redis中，但是需要设置过期时间，不然每次登录都会产生一个记录，造成存储空间的浪费。</li>
+</ul>
+<h3 id="3-验证登录状态"><a href="#3-验证登录状态" class="headerlink" title="3.验证登录状态"></a>3.验证登录状态</h3><ul>
+<li>session下：用户传递来sessionID-&gt;session中获取用户信息-&gt;保存到ThreadLocal，便于这个请求处理期间使用；</li>
+<li>Redis下：用户请求头携带token-&gt;根据token查找用户信息-&gt;保存到ThreadLocal。</li>
+<li>流程图变化：<img src="/daisybby.github.io/2024/06/19/redis-1/06/19/redis-1/img7.png" class title="img7">
+<strong>注意事项：</strong></li>
+<li>验证登录状态是通过拦截器Interceptor实现的，这个实现并不属于Spring框架，是我们自己写的工具。</li>
+<li>Interceptor中涉及到了StringRedisTemplate，这个不能用Autowire注解自动注入，需要在LoginInterceptor构造函数中手动注入。</li>
+<li>但是LoginInterceptor是在MvcConfig中调用的，所以在MvcConfig中可以自动注入一个Redis工具类，然后传递到Interceptor就行。<blockquote>
+<p>为什么需要刷新登录信息有效时间呢？<br>答：因为session的情况下，只要有访问，session的有效时间就是刷新的。但是Redis情况下，用expire设置用户信息过期时间，即使一直在访问，到了时间还是会自动过期，我们希望的是如果有访问，那么就不断刷新过期时间，30min完全没有操作再登录失效。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="四、存在的问题以及优化"><a href="#四、存在的问题以及优化" class="headerlink" title="四、存在的问题以及优化"></a>四、存在的问题以及优化</h2><h3 id="1-登录状态刷新优化"><a href="#1-登录状态刷新优化" class="headerlink" title="1.登录状态刷新优化"></a>1.登录状态刷新优化</h3><p><strong>问题：</strong> 用户登录后访问不被拦截的网页，超过了有效时间，然后再看个人信息，发现登录过期了。造成了不便。<br><strong>改进思路：</strong> 设置两个拦截器，第一个拦截器负责拦截所有请求，对于有登录状态的用户请求则刷新有效时间；第二个拦截器负责给第一个拦截器兜底，第一个拦截器放行了所有的请求，其中有些请求没有登录状态，那么有一些涉及到个人信息的请求还是需要拦截下来并拒绝的。<br><strong>实现效果：</strong> 对于任何请求，只要所属用户处于登录状态，就刷新登录信息的有效时间。</p>
+<h3 id="2-将用户信息保存到Redis报错"><a href="#2-将用户信息保存到Redis报错" class="headerlink" title="2.将用户信息保存到Redis报错"></a>2.将用户信息保存到Redis报错</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">UserDTO userDTO= BeanUtil.copyProperties(user,UserDTO.class);</span><br><span class="line">String token= UUID.randomUUID().toString();</span><br><span class="line"><span class="comment">//将user对象转换成hash</span></span><br><span class="line">Map&lt;String, Object&gt; hashMap=BeanUtil.beanToMap(userDTO);</span><br><span class="line"><span class="comment">//保存信息到Redis</span></span><br><span class="line">stringRedisTemplate.opsForHash().putAll(LOGIN_USER_KEY+token,hashMap);</span><br><span class="line">stringRedisTemplate.expire(LOGIN_USER_KEY+token,LOGIN_USER_TTL,TimeUnit.MINUTES);</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;在上面的代码中,直接将userDTO对象转换成HahMap，但是userDTO中部分字段并不是string类型，比如UID是Long类型，那么就会遇到转换成string类型的fieldValue报错。<br>解决方案是通过hutools提供的选择性拷贝工具copyOptions，具体如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">UserDTO userDTO= BeanUtil.copyProperties(user,UserDTO.class);</span><br><span class="line"><span class="comment">//用户信息保存到Redis中</span></span><br><span class="line"><span class="comment">//生成一个随机的token</span></span><br><span class="line">String token= UUID.randomUUID().toString();</span><br><span class="line"><span class="comment">//将user对象转换成hash</span></span><br><span class="line">Map&lt;String, Object&gt; hashMap=BeanUtil.beanToMap(userDTO,<span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;(), CopyOptions.create()</span><br><span class="line">        .setIgnoreNullValue(<span class="literal">true</span>)</span><br><span class="line">        .setFieldValueEditor((fieldName,fieldValue)-&gt;fieldValue.toString()));</span><br><span class="line"><span class="comment">//保存信息到Redis</span></span><br><span class="line">stringRedisTemplate.opsForHash().putAll(LOGIN_USER_KEY+token,hashMap);</span><br><span class="line">stringRedisTemplate.expire(LOGIN_USER_KEY+token,LOGIN_USER_TTL,TimeUnit.MINUTES);</span><br></pre></td></tr></table></figure>
+<h3 id="3-个人遇到的bug："><a href="#3-个人遇到的bug：" class="headerlink" title="3.个人遇到的bug："></a>3.个人遇到的bug：</h3><p>&ensp;&ensp;&ensp;&ensp;在编写userService实现类时，类有一个private成员变量stringRedisTemplate，但是我没有用@Resource注解修饰这个类，于是在之后使用这个类时出现了空指针异常。<br>&ensp;&ensp;&ensp;&ensp;原因：在类中注入bean有三种方式，一种是构造函数手动注入，一种是使用注解自动注入。<br><strong>1.</strong> 手动注入，我们在RefreshInterceptor中有用到，构造函数注入StringRedisTemplate对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RefreshInterceptor</span> <span class="keyword">implements</span> <span class="title class_">HandlerInterceptor</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> StringRedisTemplate stringRedisTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">RefreshInterceptor</span><span class="params">(StringRedisTemplate stringRedisTemplate)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.stringRedisTemplate=stringRedisTemplate;</span><br><span class="line">    &#125;</span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>2.</strong> 通过注解@Resource或者@Autowired注入。这里牵扯到一个八股文，Resource和Autowired的关系：</p>
+<p>在这部分，似乎对Spring IOC容器对Bean管理的思想理解更加深刻了，相关的笔记可见：</p>
 
     </div>
 
