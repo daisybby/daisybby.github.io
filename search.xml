@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>first-blog</title>
-    <url>/2024/06/16/first-blog/</url>
-    <content><![CDATA[<h1 id="通过hexo、Node-js和igthub搭建个人博客"><a href="#通过hexo、Node-js和igthub搭建个人博客" class="headerlink" title="通过hexo、Node js和igthub搭建个人博客"></a>通过hexo、Node js和igthub搭建个人博客</h1><h2 id="01环境配置"><a href="#01环境配置" class="headerlink" title="01环境配置"></a>01环境配置</h2><h3 id="1-1安装git"><a href="#1-1安装git" class="headerlink" title="1.1安装git"></a>1.1安装git</h3><img src="/daisybby.github.io/2024/06/16/first-blog/06/16/first-blog/header.jpg" class title="header">]]></content>
-      <categories>
-        <category>-其他</category>
-      </categories>
-  </entry>
-  <entry>
     <title>Redis注册为windows服务</title>
     <url>/2024/06/17/Redis%E6%B3%A8%E5%86%8C%E4%B8%BAwindows%E6%9C%8D%E5%8A%A1/</url>
     <content><![CDATA[<p>安装完Redis需要用命令行启动，而且要保持这个窗口不关闭。</p>
@@ -19,7 +11,7 @@
 </blockquote>
 ]]></content>
       <categories>
-        <category>-环境配置</category>
+        <category>环境配置</category>
       </categories>
   </entry>
   <entry>
@@ -50,19 +42,11 @@
 <p>token模式下，服务器是不需要保存session的，因为token中包含有用户信息，解析出来利用即可。<br>更多内容等做到项目的权限管理模块，详细记录。</p>
 ]]></content>
       <categories>
-        <category>-基础概念和原理</category>
+        <category>基础概念和原理</category>
       </categories>
       <tags>
-        <tag>-Java基础</tag>
+        <tag>Java基础</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>LC39组合总和</title>
-    <url>/2024/06/18/LC39%E7%BB%84%E5%90%88%E6%80%BB%E5%92%8C/</url>
-    <content><![CDATA[]]></content>
-      <categories>
-        <category>-刷题笔记</category>
-      </categories>
   </entry>
   <entry>
     <title>Redis实战项目笔记一：短信登录</title>
@@ -157,11 +141,11 @@
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">UserDTO userDTO= BeanUtil.copyProperties(user,UserDTO.class);</span><br><span class="line"><span class="comment">//用户信息保存到Redis中</span></span><br><span class="line"><span class="comment">//生成一个随机的token</span></span><br><span class="line">String token= UUID.randomUUID().toString();</span><br><span class="line"><span class="comment">//将user对象转换成hash</span></span><br><span class="line">Map&lt;String, Object&gt; hashMap=BeanUtil.beanToMap(userDTO,<span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;(), CopyOptions.create()</span><br><span class="line">        .setIgnoreNullValue(<span class="literal">true</span>)</span><br><span class="line">        .setFieldValueEditor((fieldName,fieldValue)-&gt;fieldValue.toString()));</span><br><span class="line"><span class="comment">//保存信息到Redis</span></span><br><span class="line">stringRedisTemplate.opsForHash().putAll(LOGIN_USER_KEY+token,hashMap);</span><br><span class="line">stringRedisTemplate.expire(LOGIN_USER_KEY+token,LOGIN_USER_TTL,TimeUnit.MINUTES);</span><br></pre></td></tr></table></figure>
 <h3 id="3-个人遇到的bug："><a href="#3-个人遇到的bug：" class="headerlink" title="3.个人遇到的bug："></a>3.个人遇到的bug：</h3><p>&ensp;&ensp;&ensp;&ensp;在编写userService实现类时，类有一个private成员变量stringRedisTemplate，但是我没有用@Resource注解修饰这个类，于是在之后使用这个类时出现了空指针异常。<br>&ensp;&ensp;&ensp;&ensp;原因：在类中注入bean有三种方式，一种是构造函数手动注入，一种是使用注解自动注入。<br><strong>1.</strong> 手动注入，我们在RefreshInterceptor中有用到，构造函数注入StringRedisTemplate对象。</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RefreshInterceptor</span> <span class="keyword">implements</span> <span class="title class_">HandlerInterceptor</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> StringRedisTemplate stringRedisTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">RefreshInterceptor</span><span class="params">(StringRedisTemplate stringRedisTemplate)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.stringRedisTemplate=stringRedisTemplate;</span><br><span class="line">    &#125;</span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>2.</strong> 通过注解@Resource或者@Autowired注入。这里牵扯到一个八股文，Resource和Autowired的关系：</p>
-<p>在这部分，似乎对Spring IOC容器对Bean管理的思想理解更加深刻了，相关的笔记可见：</p>
+<p><strong>2.</strong> 通过注解@Resource或者@Autowired注入。这里牵扯到一个八股文，Resource和Autowired的关系：<a href="https://daisybby.github.io/2024/06/20/Resource-and-Autowired/">Resource于Autowired的区别与联系</a></p>
+<p>在这部分，似乎对Spring IOC容器对Bean管理的思想理解更加深刻了，相关的笔记待补充。</p>
 ]]></content>
       <categories>
-        <category>-Redis项目笔记</category>
+        <category>Redis项目笔记</category>
       </categories>
   </entry>
   <entry>
@@ -203,7 +187,7 @@
     <url>/2024/06/21/setFieldValueEditor-bug/</url>
     <content><![CDATA[<h1 id="Hutool提供的BeanUtil-beanToMap出现空指针异常"><a href="#Hutool提供的BeanUtil-beanToMap出现空指针异常" class="headerlink" title="Hutool提供的BeanUtil.beanToMap出现空指针异常"></a>Hutool提供的BeanUtil.beanToMap出现空指针异常</h1><p>先看bug出现的位置：</p>
 <span id="more"></span>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Map&lt;String, Object&gt; map = BeanUtil.beanToMap(shop, <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;(), CopyOptions.create()</span><br><span class="line">                .setIgnoreNullValue(<span class="literal">true</span>) <span class="comment">//忽略空值</span></span><br><span class="line">                .setFieldValueEditor((fieldName,fieldValue)-&gt;fieldValue.toString()));</span><br><span class="line">        stringRedisTemplate.opsForHash().putAll(CACHE_SHOP_KEY + id, map);</span><br><span class="line">        stringRedisTemplate.expire(CACHE_SHOP_KEY + id, CACHE_SHOP_TTL, TimeUnit.MINUTES);</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Map&lt;String, Object&gt; map = BeanUtil.beanToMap(shop, <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;(), CopyOptions.create()</span><br><span class="line">                .setIgnoreNullValue(<span class="literal">true</span>) <span class="comment">//忽略空值</span></span><br><span class="line">                .setFieldValueEditor((fieldName,fieldValue)-&gt;fieldValue.toString()));</span><br><span class="line">stringRedisTemplate.opsForHash().putAll(CACHE_SHOP_KEY + id, map);</span><br><span class="line">stringRedisTemplate.expire(CACHE_SHOP_KEY + id, CACHE_SHOP_TTL, TimeUnit.MINUTES);</span><br></pre></td></tr></table></figure>
 <p>以上代码将shop对象以hash形式保存到Redis，但是实际运行时出现了空指针异常。<br>如果shop对象里面有属性值为null，就会出现如下空指针异常：</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">java.lang.NullPointerException: <span class="literal">null</span></span><br><span class="line">	at com.hmdp.service.impl.ShopServiceImpl.lambda$queryById$<span class="number">0</span>(ShopServiceImpl.java:<span class="number">56</span>) ~[classes/:na]</span><br><span class="line">	at cn.hutool.core.bean.copier.CopyOptions.editFieldValue(CopyOptions.java:<span class="number">258</span>) ~[hutool-all-<span class="number">5.7</span><span class="number">.17</span>.jar:na]</span><br><span class="line">	at cn.hutool.core.bean.copier.BeanCopier.lambda$beanToMap$<span class="number">1</span>(BeanCopier.java:<span class="number">233</span>) ~[hutool-all-<span class="number">5.7</span><span class="number">.17</span>.jar:na]</span><br><span class="line">	at java.util.LinkedHashMap$LinkedValues.forEach(LinkedHashMap.java:<span class="number">608</span>) ~[na:<span class="number">1.8</span><span class="number">.0_401</span>]</span><br><span class="line">	at cn.hutool.core.bean.BeanUtil.descForEach(BeanUtil.java:<span class="number">182</span>) ~[hutool-all-<span class="number">5.7</span><span class="number">.17</span>.jar:na]</span><br><span class="line">	at cn.hutool.core.bean.copier.BeanCopier.beanToMap(BeanCopier.java:<span class="number">195</span>) ~[hutool-all-<span class="number">5.7</span><span class="number">.17</span>.jar:na]</span><br><span class="line">	at cn.hutool.core.bean.copier.BeanCopier.copy(BeanCopier.java:<span class="number">106</span>) ~[hutool-all-<span class="number">5.7</span><span class="number">.17</span>.jar:na]</span><br><span class="line">	at cn.hutool.core.bean.BeanUtil.beanToMap(BeanUtil.java:<span class="number">690</span>) ~[hutool-all-<span class="number">5.7</span><span class="number">.17</span>.jar:na]</span><br></pre></td></tr></table></figure>
 <p><strong>已经设置了setIgnoreNullValue为true，忽略空值，为什么还会出现这个问题？</strong><br>准确来说，报错的地方时fieldValue.toString()，尽管设置了忽略空值，但是fieldValue.toString()还是会执行的，null当然有空指针异常。<br><strong>具体原因：</strong></p>
@@ -214,13 +198,12 @@
 <p><strong>解决方案：</strong><br>我们在setFieldValueEditor中判空处理就行。</p>
 <img src="/2024/06/21/setFieldValueEditor-bug/image.png" class="" title="img">
 <p>可以看到distance的值是null，我们用默认属性0来替代就行。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Map&lt;String, Object&gt; map = BeanUtil.beanToMap(shop, <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;(), CopyOptions.create()</span><br><span class="line">                .setIgnoreNullValue(<span class="literal">true</span>) <span class="comment">//忽略空值</span></span><br><span class="line">                .setFieldValueEditor((fieldName,fieldValue)-&gt;&#123;</span><br><span class="line">                    <span class="keyword">if</span>(fieldValue==<span class="literal">null</span>)&#123;</span><br><span class="line">                        fieldValue=<span class="string">&quot;0&quot;</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">else</span>&#123;</span><br><span class="line">                        fieldValue=fieldValue.toString();</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">return</span> fieldValue;</span><br><span class="line">                &#125;));</span><br><span class="line">        stringRedisTemplate.opsForHash().putAll(CACHE_SHOP_KEY + id, map);</span><br><span class="line">        stringRedisTemplate.expire(CACHE_SHOP_KEY + id, CACHE_SHOP_TTL, TimeUnit.MINUTES);</span><br></pre></td></tr></table></figure>]]></content>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Map&lt;String, Object&gt; map = BeanUtil.beanToMap(shop, <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;(), CopyOptions.create()</span><br><span class="line">                .setIgnoreNullValue(<span class="literal">true</span>) <span class="comment">//忽略空值</span></span><br><span class="line">                .setFieldValueEditor((fieldName,fieldValue)-&gt;&#123;</span><br><span class="line">                    <span class="keyword">if</span>(fieldValue==<span class="literal">null</span>)&#123;</span><br><span class="line">                        fieldValue=<span class="string">&quot;0&quot;</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">else</span>&#123;</span><br><span class="line">                        fieldValue=fieldValue.toString();</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">return</span> fieldValue;</span><br><span class="line">                &#125;));</span><br><span class="line">stringRedisTemplate.opsForHash().putAll(CACHE_SHOP_KEY + id, map);</span><br><span class="line">stringRedisTemplate.expire(CACHE_SHOP_KEY + id, CACHE_SHOP_TTL, TimeUnit.MINUTES);</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>Bug实录</category>
       </categories>
       <tags>
         <tag>Hutool</tag>
-        <tag>Bug实录</tag>
       </tags>
   </entry>
 </search>
