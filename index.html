@@ -207,7 +207,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2024/06/22/Bloom-Filter/" class="post-title-link" itemprop="url">Bloom Filter</a>
+          <a href="/2024/06/22/Bloom-Filter/" class="post-title-link" itemprop="url">布隆过滤器</a>
         </h2>
 
         <div class="post-meta-container">
@@ -219,7 +219,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2024-06-22 13:07:37 / 修改时间：16:10:16" itemprop="dateCreated datePublished" datetime="2024-06-22T13:07:37+08:00">2024-06-22</time>
+      <time title="创建时间：2024-06-22 13:07:37 / 修改时间：16:14:56" itemprop="dateCreated datePublished" datetime="2024-06-22T13:07:37+08:00">2024-06-22</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -245,30 +245,15 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="布隆过滤器的概念和原理"><a href="#布隆过滤器的概念和原理" class="headerlink" title="布隆过滤器的概念和原理"></a>布隆过滤器的概念和原理</h1><h2 id="1-基本概念"><a href="#1-基本概念" class="headerlink" title="1.基本概念"></a>1.基本概念</h2><p>布隆过滤器是一种数据结构，用于快速检索元素是否可能存在于一个集合中。<br>布隆过滤器的两个重要组成：K个hash函数和一个bit数组。</p>
-<h2 id="3-布隆过滤器的工作过程"><a href="#3-布隆过滤器的工作过程" class="headerlink" title="3.布隆过滤器的工作过程"></a>3.布隆过滤器的工作过程</h2><p><strong>存储元素</strong><br>对于一个元素item，通过K个hash函数计算出多个hash索引，然后将这些索引对应的位都设置为1，如果这些位置已经为1，不需要再次设置。<br><strong>查询元素</strong><br>判断元素item是否存在，也是检查K个hash函数计算出来的位置是否都为1：</p>
-<ul>
-<li>如果有0，那这个元素一定不存在。</li>
-<li>如果全为1，元素可能存在，也可能不存在。</li>
-</ul>
-<p>查询时间效率是O(K)，K表示hash函数个数。（可以，这很ok~)<br><strong>删除元素</strong><br>将item对应的hash位置都设置为0。但是这存在问题，如果发生了hash冲突，会误删其他元素。</p>
-<img src="/2024/06/22/Bloom-Filter/img1.png" class="" title="img1">
-
-<h2 id="3-布隆过滤器的误判"><a href="#3-布隆过滤器的误判" class="headerlink" title="3.布隆过滤器的误判"></a>3.布隆过滤器的误判</h2><p>为什么全1是“可能”存在，而不是“肯定”存在？<br>有可能根本就不存在”hello”这个单词，但是bit数组中这个单词对应的hash值位置都是1，已经表达了其他的单词，那按照“hash位置全为1则存在”的规则，得到的是”hello”存在的假象。<br>归根结底，布隆过滤器的误判是由hash冲突造成的。想要降低误判概率，主要的办法就是降低hash冲突发生的概率，增加hash算法个数或者扩大bit数组。</p>
-<img src="/2024/06/22/Bloom-Filter/img2.png" class="" title="img2">
-<p><strong>可以利用布隆过滤器判断不存在，解决缓存穿透恰好就是利用布隆过滤器判断不存在。</strong></p>
-<h2 id="4-常见应用"><a href="#4-常见应用" class="headerlink" title="4.常见应用"></a>4.常见应用</h2><ul>
-<li><strong>网页爬虫：</strong> 过滤掉已经爬取的网页，避免重复爬取，浪费资源。</li>
-<li><strong>缓存系统：</strong> 判断一个查询是否存在于缓存中，减少缓存查询次数。更重要的是，布隆过滤器经常用来解决缓存穿透的问题（判断不存在）。</li>
-<li><strong>分布式系统：</strong> 判断元素是否存在于分布式缓存中，避免在所有节点上进行查询，减少网络负载。</li>
-<li><strong>垃圾邮件过滤：</strong> 判断邮件地址是否在垃圾邮件列表中。</li>
-<li><strong>黑名单过滤：</strong> 判断IP地址或者手机号是否在黑名单中。</li>
-</ul>
-<h2 id="4-如何使用布隆过滤器"><a href="#4-如何使用布隆过滤器" class="headerlink" title="4.如何使用布隆过滤器"></a>4.如何使用布隆过滤器</h2><h3 id="1-通过Google-Guava库"><a href="#1-通过Google-Guava库" class="headerlink" title="1.通过Google Guava库"></a>1.通过Google Guava库</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.google.common.hash.BloomFilter;</span><br><span class="line"><span class="keyword">import</span> com.google.common.hash.Funnels;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BloomFilterExample</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">        <span class="comment">//创建布隆过滤器，预计插入100个元素，误判率为1%</span></span><br><span class="line">        BloomFilter&lt;String&gt; bloomFilter=BloomFilter.create(Funnels.stringFunnel(),<span class="number">100</span>,<span class="number">0.01</span>);</span><br><span class="line">        </span><br><span class="line">        bloomFilter.put(<span class="string">&quot;Daisybby&quot;</span>);</span><br><span class="line">        bloomFilter.put(<span class="string">&quot;hello&quot;</span>);</span><br><span class="line">        bloomFilter.put(<span class="string">&quot;666&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//判断元素是否存在</span></span><br><span class="line">        System.out.println(bloomFilter.mightContain(<span class="string">&quot;Daisybby&quot;</span>));</span><br><span class="line">        System.out.println(bloomFilter.mightContain(<span class="string">&quot;what&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="2-通过Apache-Commons"><a href="#2-通过Apache-Commons" class="headerlink" title="2.通过Apache Commons"></a>2.通过Apache Commons</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.commons.lang3.StringUtils;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections4.BloomFilter;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections4.functors.HashFunctionIdentity;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BloomFilterExample</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">        BloomFilter&lt;String&gt; bloomFilter=<span class="keyword">new</span> <span class="title class_">BloomFilter</span>&lt;&gt;(HashFunctionIdentity.hashFunction(StringUtils::hashCode),<span class="number">100</span>,<span class="number">0.01</span>);</span><br><span class="line">        </span><br><span class="line">        bloomFilter.put(<span class="string">&quot;Daisybby&quot;</span>);</span><br><span class="line">        bloomFilter.put(<span class="string">&quot;hello&quot;</span>);</span><br><span class="line">        bloomFilter.put(<span class="string">&quot;666&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//判断元素是否存在</span></span><br><span class="line">        System.out.println(bloomFilter.mightContain(<span class="string">&quot;Daisybby&quot;</span>));</span><br><span class="line">        System.out.println(bloomFilter.mightContain(<span class="string">&quot;what&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="3-在Redis中可以通过Bloom模块来使用，使用Redisssion可以："><a href="#3-在Redis中可以通过Bloom模块来使用，使用Redisssion可以：" class="headerlink" title="3.在Redis中可以通过Bloom模块来使用，使用Redisssion可以："></a>3.在Redis中可以通过Bloom模块来使用，使用Redisssion可以：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Config config=<span class="keyword">new</span> <span class="title class_">Config</span>();</span><br><span class="line">config.useSingleServer().setAddress(<span class="string">&quot;redis://127.0.0.1:6379&quot;</span>);</span><br><span class="line"></span><br><span class="line">RedissonClient redisson=Redisson.create(config);</span><br><span class="line">RBloomFilter&lt;String&gt; bloomFilter=redisson.getBloomFilter(<span class="string">&quot;myFilter&quot;</span>);</span><br><span class="line">bloomFilter.tryInit(<span class="number">100</span>,<span class="number">0.01</span>);</span><br><span class="line">bloomFilter.add(<span class="string">&quot;Daisybby&quot;</span>);</span><br><span class="line">bloomFilter.add(<span class="string">&quot;Hello&quot;</span>);</span><br><span class="line">bloomFilter.add(<span class="string">&quot;666&quot;</span>);</span><br><span class="line"></span><br><span class="line">System.out.println(bloomFilter.contains(<span class="string">&quot;Daisybby&quot;</span>));</span><br><span class="line">System.out.println(bloomFilter.contains(<span class="string">&quot;what&quot;</span>));</span><br><span class="line">redisson.shutdown();</span><br></pre></td></tr></table></figure>
-<p>Jedis也可以，不再赘述。</p>
-
+          <h1 id="布隆过滤器的概念和原理"><a href="#布隆过滤器的概念和原理" class="headerlink" title="布隆过滤器的概念和原理"></a>布隆过滤器的概念和原理</h1><h2 id="1-基本概念"><a href="#1-基本概念" class="headerlink" title="1.基本概念"></a>1.基本概念</h2>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/06/22/Bloom-Filter/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 

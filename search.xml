@@ -207,9 +207,10 @@
       </tags>
   </entry>
   <entry>
-    <title>Bloom Filter</title>
+    <title>布隆过滤器</title>
     <url>/2024/06/22/Bloom-Filter/</url>
-    <content><![CDATA[<h1 id="布隆过滤器的概念和原理"><a href="#布隆过滤器的概念和原理" class="headerlink" title="布隆过滤器的概念和原理"></a>布隆过滤器的概念和原理</h1><h2 id="1-基本概念"><a href="#1-基本概念" class="headerlink" title="1.基本概念"></a>1.基本概念</h2><p>布隆过滤器是一种数据结构，用于快速检索元素是否可能存在于一个集合中。<br>布隆过滤器的两个重要组成：K个hash函数和一个bit数组。</p>
+    <content><![CDATA[<h1 id="布隆过滤器的概念和原理"><a href="#布隆过滤器的概念和原理" class="headerlink" title="布隆过滤器的概念和原理"></a>布隆过滤器的概念和原理</h1><h2 id="1-基本概念"><a href="#1-基本概念" class="headerlink" title="1.基本概念"></a>1.基本概念</h2><span id="more"></span>
+<p>布隆过滤器是一种数据结构，用于快速检索元素是否可能存在于一个集合中。<br>布隆过滤器的两个重要组成：K个hash函数和一个bit数组。</p>
 <h2 id="3-布隆过滤器的工作过程"><a href="#3-布隆过滤器的工作过程" class="headerlink" title="3.布隆过滤器的工作过程"></a>3.布隆过滤器的工作过程</h2><p><strong>存储元素</strong><br>对于一个元素item，通过K个hash函数计算出多个hash索引，然后将这些索引对应的位都设置为1，如果这些位置已经为1，不需要再次设置。<br><strong>查询元素</strong><br>判断元素item是否存在，也是检查K个hash函数计算出来的位置是否都为1：</p>
 <ul>
 <li>如果有0，那这个元素一定不存在。</li>
