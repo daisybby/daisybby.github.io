@@ -246,7 +246,9 @@
   <entry>
     <title>Redis保存对象为String还是hash？</title>
     <url>/2024/06/23/save-object-as-string-or-hash/</url>
-    <content><![CDATA[<h1 id="1-对象序列化后保存到Redis"><a href="#1-对象序列化后保存到Redis" class="headerlink" title="1.对象序列化后保存到Redis"></a>1.对象序列化后保存到Redis</h1><p>保存的是序列化后的对象，这种方式在Redis中很难看出来对象的含义。<br><strong>优点：</strong></p>
+    <content><![CDATA[<h1 id="1-对象序列化后保存到Redis"><a href="#1-对象序列化后保存到Redis" class="headerlink" title="1.对象序列化后保存到Redis"></a>1.对象序列化后保存到Redis</h1><p>保存的是序列化后的对象，这种方式在Redis中很难看出来对象的含义。</p>
+<span id="more"></span>
+<p><strong>优点：</strong></p>
 <ul>
 <li><strong>简洁性：</strong> 直接序列化整个对象，不需要考虑字段的单独存储。</li>
 <li><strong>原子性：</strong> 对整个对象进行存取。</li>
