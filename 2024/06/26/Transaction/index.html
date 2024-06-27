@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/medium.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/small.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"daisybby.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="一、事务的四个特性ACID：原子性、一致性、隔离性、持久性。 二、事务的隔离级别数据库事务的隔离级别有四种，从低到高分别是:Read uncommitted、Read committed、Repeatable read、Serializable。事务可能会导致一些问题：脏读、幻读、不可重复读、事务丢失。  脏读：读取了未提交的事务，然后事务回滚了。  事务A修改了数据库，被事务B读取了，读取之后事">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring事务">
+<meta property="og:url" content="https://daisybby.github.io/2024/06/26/Transaction/index.html">
+<meta property="og:site_name" content="daisybby">
+<meta property="og:description" content="一、事务的四个特性ACID：原子性、一致性、隔离性、持久性。 二、事务的隔离级别数据库事务的隔离级别有四种，从低到高分别是:Read uncommitted、Read committed、Repeatable read、Serializable。事务可能会导致一些问题：脏读、幻读、不可重复读、事务丢失。  脏读：读取了未提交的事务，然后事务回滚了。  事务A修改了数据库，被事务B读取了，读取之后事">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-06-26T14:47:50.000Z">
+<meta property="article:modified_time" content="2024-06-27T13:25:26.918Z">
+<meta property="article:author" content="Daisybby">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://daisybby.github.io/2024/06/26/Transaction/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/06/26/Transaction/","path":"2024/06/26/Transaction/","title":"Spring事务"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Spring事务 | daisybby</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">daisybby</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Every step of some daisy.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">11</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%9B%9B%E4%B8%AA%E7%89%B9%E6%80%A7"><span class="nav-text">一、事务的四个特性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E4%BA%8B%E5%8A%A1%E7%9A%84%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB"><span class="nav-text">二、事务的隔离级别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E4%BA%8B%E5%8A%A1%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="nav-text">三、事务实现方式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-%E5%A3%B0%E6%98%8E%E5%BC%8F%E4%BA%8B%E5%8A%A1"><span class="nav-text">3.1.声明式事务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-%E7%BC%96%E7%A8%8B%E5%BC%8F%E4%BA%8B%E5%8A%A1"><span class="nav-text">3.2.编程式事务</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E4%BA%8B%E5%8A%A1%E7%9A%84%E4%B8%83%E7%A7%8D%E4%BC%A0%E6%92%AD%E6%9C%BA%E5%88%B6"><span class="nav-text">四、事务的七种传播机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-REQUIRED%EF%BC%88required%EF%BC%89%EF%BC%9A%E9%BB%98%E8%AE%A4"><span class="nav-text">1.REQUIRED（required）：默认</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-SUPPORTS%EF%BC%88supports"><span class="nav-text">2.SUPPORTS（supports)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E5%BD%93%E5%89%8D%E6%97%A0%E4%BA%8B%E5%8A%A1"><span class="nav-text">2.1.当前无事务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E5%BD%93%E5%89%8D%E6%9C%89%E4%BA%8B%E5%8A%A1"><span class="nav-text">2.2.当前有事务</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-MANDATORY%EF%BC%88mandatory"><span class="nav-text">3.MANDATORY（mandatory)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E5%BD%93%E5%89%8D%E6%B2%A1%E6%9C%89%E4%BA%8B%E5%8A%A1"><span class="nav-text">3.1.当前没有事务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E5%BD%93%E5%89%8D%E6%9C%89%E4%BA%8B%E5%8A%A1"><span class="nav-text">3.2.当前有事务</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-REQUIRES-NEW%EF%BC%88requires-new"><span class="nav-text">4.REQUIRES_NEW（requires_new)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-NO-SUPPORTED-no-supported"><span class="nav-text">5.NO_SUPPORTED(no_supported)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-%E5%BD%93%E5%89%8D%E6%B2%A1%E6%9C%89%E4%BA%8B%E5%8A%A1"><span class="nav-text">5.1.当前没有事务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-%E5%BD%93%E5%89%8D%E6%9C%89%E4%BA%8B%E5%8A%A1"><span class="nav-text">5.2.当前有事务</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-NEVER"><span class="nav-text">6.NEVER</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-%E5%BD%93%E5%89%8D%E6%B2%A1%E6%9C%89%E4%BA%8B%E5%8A%A1"><span class="nav-text">6.1.当前没有事务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-%E5%BD%93%E5%89%8D%E5%AD%98%E5%9C%A8%E4%BA%8B%E5%8A%A1"><span class="nav-text">6.2.当前存在事务</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-NESTED"><span class="nav-text">7.NESTED</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#7-1-%E5%BD%93%E5%89%8D%E6%B2%A1%E6%9C%89%E4%BA%8B%E5%8A%A1"><span class="nav-text">7.1.当前没有事务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-2-%E5%BD%93%E5%89%8D%E6%9C%89%E4%BA%8B%E5%8A%A1"><span class="nav-text">7.2.当前有事务</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Daisybby"
+      src="/images/header.jpg">
+  <p class="site-author-name" itemprop="name">Daisybby</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/06/26/Transaction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="Daisybby">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="daisybby">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Spring事务 | daisybby">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Spring事务
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-06-26 22:47:50" itemprop="dateCreated datePublished" datetime="2024-06-26T22:47:50+08:00">2024-06-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-06-27 21:25:26" itemprop="dateModified" datetime="2024-06-27T21:25:26+08:00">2024-06-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E5%92%8C%E5%8E%9F%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">基础概念和原理</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Spring/" itemprop="url" rel="index"><span itemprop="name">Spring</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="一、事务的四个特性"><a href="#一、事务的四个特性" class="headerlink" title="一、事务的四个特性"></a>一、事务的四个特性</h1><p>ACID：原子性、一致性、隔离性、持久性。</p>
+<h1 id="二、事务的隔离级别"><a href="#二、事务的隔离级别" class="headerlink" title="二、事务的隔离级别"></a>二、事务的隔离级别</h1><p>数据库事务的隔离级别有四种，从低到高分别是:Read uncommitted、Read committed、Repeatable read、Serializable。事务可能会导致一些问题：脏读、幻读、不可重复读、事务丢失。</p>
+<ul>
+<li><strong>脏读：读取了未提交的事务，然后事务回滚了。</strong><br>  事务A修改了数据库，被事务B读取了，读取之后事务A回滚。</li>
+<li><strong>不可重复读：读取了新提交的事务，指更新操作，导致同一个事务中两次读取不一致。</strong><br>事务A先读取数据库得到value1，然后事务B修改数据库为value2，然后事务A又读到了value2，value1与value2是不一致的。</li>
+<li><strong>幻读：读取了新提交的事务，指增删操作。</strong><br>也是两次查询数据不一致，不过是新增产生的问题。</li>
+<li><strong>第一类事务丢失（回滚丢失）</strong><br>事务A修改value1-num，事务B修改为value1-num+count，但是事务A不知道事务B的修改，直接将数据回滚为value1，这就导致事务B增加的count丢失了。</li>
+<li><strong>第二类事务丢失（提交覆盖）</strong><br>  事务A将数据库由value0修改为value1，事务B紧接着提交，覆盖了事务A的修改。</li>
+</ul>
+<p><strong>Read uncommitted：</strong>可能会导致脏读。<br><strong>Read committed：</strong>可能会导致不可重复读。<br><strong>Repeatable read：</strong>尽管避免了修改，但是没有避免新增和删除，会导致幻读。<br><strong>Serializable：</strong>隔离级别最高，但是性能很差，一般不用。<br>大多数数据库默认事务隔离级别是Read Committed，遇到了不可重复读按照最后一次读取即可，MySQL默认事务隔离级别是<strong>Repeatable read</strong>。</p>
+<h1 id="三、事务实现方式"><a href="#三、事务实现方式" class="headerlink" title="三、事务实现方式"></a>三、事务实现方式</h1><p>事务的实现方式分为<strong>声明式事务</strong>和<strong>编程式事务</strong>。</p>
+<h2 id="3-1-声明式事务"><a href="#3-1-声明式事务" class="headerlink" title="3.1.声明式事务"></a>3.1.声明式事务</h2><p>&ensp;&ensp;&ensp;&ensp;通过@Transactional注解或者xml配置方式开启声明式事务，可以被用在<strong>类</strong>上和<strong>方法</strong>上，用在类上表明整个类的方法都开启事务。<br><strong>优点：</strong></p>
+<ul>
+<li><strong>代码简洁，</strong>声明式事务能够自动在方法前开启事务，根据方法执行结果决定是提交事务还是回滚事务。避免手动编写的大量代码。</li>
+<li><strong>非侵入性：</strong>声明式事务本质上是通过AOP方式实现的，在目标方法前后添加拦截，在目标方法执行前添加或新建一个事务，在方法执行后根据结果来决定是提交事务（正常结束返回）还是回滚事务（抛出异常）。</li>
+</ul>
+<p><strong>缺点：</strong></p>
+<ul>
+<li><strong>事务粒度：</strong>事务执行的最小粒度是方法，如果想要给某一段代码块添加事务，需要把这部分代码独立出来作为一个方法。</li>
+<li><strong>容易被忽视：</strong>声明式事务通过注解即可，有时候还可以通过配置来实现，容易被忽略，进而导致问题。<blockquote>
+<p><strong>忽视了事务会导致什么问题？</strong><br>如果开发者忽略了某个方法开启了事务，在方法内部执行了RPC调用、消息发送、缓存更新、文件写入等不可以回滚的操作：<br>1.如果出现了问题，本地事务回滚了，但是RPC远程调用是不可以回滚的，其他操作类似。<br>2.事务中远程调用会拉长事务，导致本事务的数据库连接池一直被占用，进而导致数据库连接池被耗尽。如果是编程式事务，那么大的事务开启代码、事务提交和事务回滚代码，一般不会忽略。</p>
+</blockquote>
+</li>
+<li><strong>事务失效：</strong>某些场景下会导致声明式事务失效，这是一个常见八股。</li>
+</ul>
+<p><strong>常见的事务失效场景：</strong></p>
+<ul>
+<li>未指定回滚异常：<ul>
+<li>@Transactional开启的事务，回滚异常默认是运行时异常(RuntimeException)，如果是自定义异常，继承了Exception，那么抛出这个异常时，事务不能回滚。<br>○ 需要指定@Trandsactional(rollbackFor&#x3D;Exception.class)</li>
+</ul>
+</li>
+<li>异常被try catch捕获：<ul>
+<li>异常被try catch捕获的时候，事务会失效</li>
+<li>解决方案是throw异常，或者修改catch中的代码，手动回滚。</li>
+</ul>
+</li>
+<li>同一个类方法中调用：<ul>
+<li>和项目中出现的问题一样，开启事务的方法调用了所在类的其他方法，这个时候是this调用，而不是事务通过AOP的代理对象</li>
+<li>解决方案是获取代理对象来调用。</li>
+</ul>
+</li>
+<li>异步多线程：这部分不太懂。之后学了JUC可以回来补充。</li>
+<li>错误设置事务传播机制：事务传播机制设置不恰当可能会导致事务失效。例如在默认的事务中，调用了@Transactional(propagation &#x3D; Propagation.REQUIRES_NEW）设置的方法，在执行这个方法时，会新建事务，挂起已有事务，新建事务正确执行并提交后，原有事务才会恢复执行，即使原有事务因为异常发生了回滚，也不会影响已经提交的新事务。</li>
+<li>方法不是public：因为事务是基于AOP的动态代理机制来实现的，只有public方法能够被代理。</li>
+<li>当前类没有被spring容器托管：类没有被Spring容器所托管，那么也不会被Spring AOP所代理。</li>
+<li>数据库本身不支持事务。</li>
+</ul>
+<h2 id="3-2-编程式事务"><a href="#3-2-编程式事务" class="headerlink" title="3.2.编程式事务"></a>3.2.编程式事务</h2><p>Spring框架提供两种编程式事务方式：</p>
+<ul>
+<li>TransactionTemplate或者TransactionalOperator</li>
+<li>直接实现TransactionManager<br>具体如下：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Trans</span>&#123;</span><br><span class="line">    <span class="meta">@Resource</span></span><br><span class="line">    <span class="keyword">private</span> TransactionManager transactionManager;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">Test</span><span class="params">()</span>&#123;</span><br><span class="line">        TransactionDefinition def=<span class="keyword">new</span> <span class="title class_">DefaultTransactionDefinition</span>();</span><br><span class="line">        TransactionStatus status=transactionManager.getTransaction(def);</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            transactionManager.commit(status);</span><br><span class="line">        &#125;<span class="keyword">catch</span> (DataAccessExcetption e)&#123;</span><br><span class="line">            transactionManager.rollback(status);</span><br><span class="line">            <span class="keyword">throw</span> e;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+通过编程式事务，我们可以缩小事务粒度，但是实现方式比较麻烦。</li>
+</ul>
+<h1 id="四、事务的七种传播机制"><a href="#四、事务的七种传播机制" class="headerlink" title="四、事务的七种传播机制"></a>四、事务的七种传播机制</h1><h2 id="1-REQUIRED（required）：默认"><a href="#1-REQUIRED（required）：默认" class="headerlink" title="1.REQUIRED（required）：默认"></a>1.REQUIRED（required）：默认</h2><ul>
+<li>当前已有事务：加入该事务</li>
+<li>没有事务：新建一个事务<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//在roleService中有如下代码：</span></span><br><span class="line"><span class="meta">@Transactional(rollbackFor=Exception.class)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">insertRole</span><span class="params">()</span>&#123;</span><br><span class="line">    Role role=<span class="keyword">new</span> <span class="title class_">Role</span>();</span><br><span class="line">    roleMapper.insert(role);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//在userService中有如下代码:</span></span><br><span class="line"><span class="meta">@Transactional(rollbackFor=Exception.class)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">insertUser</span><span class="params">()</span>&#123;</span><br><span class="line">    User user=<span class="keyword">new</span> <span class="title class_">User</span>();</span><br><span class="line">    user.setId(<span class="string">&quot;1234&quot;</span>);</span><br><span class="line">    userMapper.insert(user);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//调用另一个需要事务的方法</span></span><br><span class="line">    roleService.insertRole();</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> num=<span class="number">10</span>/<span class="number">0</span>;<span class="comment">//制造一个异常</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<strong>过程分析：</strong>执行userService的insertUser方法之前开启一个事务-&gt;过程中遇到insertRole，加入当前事务-&gt;事务提交前抛出异常，事务回滚。<br><strong>结果：</strong>本质上是同一个事务，所以所有插入操作都被回滚。</li>
+</ul>
+<h2 id="2-SUPPORTS（supports"><a href="#2-SUPPORTS（supports" class="headerlink" title="2.SUPPORTS（supports)"></a>2.SUPPORTS（supports)</h2><ul>
+<li>当前有事务：加入该事务；</li>
+<li>没有事务：以非事务方式继续运行。</li>
+</ul>
+<h3 id="2-1-当前无事务"><a href="#2-1-当前无事务" class="headerlink" title="2.1.当前无事务"></a>2.1.当前无事务</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//insertUser修改为无事务方式，继续上面的代码</span></span><br></pre></td></tr></table></figure>
+<p><strong>过程分析：</strong>insertUser无事-&gt;遇到insertRole，设置了SUPPORTS的事务传播机制-&gt;以非事务方式执行-&gt;遇到异常，无事务不回滚。<br><strong>结果：</strong>两条数据都成功插入数据库，都没有回滚操作。</p>
+<h3 id="2-2-当前有事务"><a href="#2-2-当前有事务" class="headerlink" title="2.2.当前有事务"></a>2.2.当前有事务</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//insertUser使用默认数据传播机制，insertRole使用SUPPORTS传播机制</span></span><br></pre></td></tr></table></figure>
+<p><strong>过程分析：</strong>insertUser有事务-&gt;遇到insertRole也需要开启事务，则加入当前事务-&gt;都将数据插入数据库，但事务提交前遇到异常-&gt;事务回滚。<br><strong>结果：</strong>两者属于同一个事务，所以都会被回滚。</p>
+<h2 id="3-MANDATORY（mandatory"><a href="#3-MANDATORY（mandatory" class="headerlink" title="3.MANDATORY（mandatory)"></a>3.MANDATORY（mandatory)</h2><ul>
+<li>当前有事务：加入该事务</li>
+<li>没有事务：抛出异常</li>
+</ul>
+<h3 id="3-1-当前没有事务"><a href="#3-1-当前没有事务" class="headerlink" title="3.1.当前没有事务"></a>3.1.当前没有事务</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//insertRole使用@Transactional注解</span></span><br><span class="line"><span class="meta">@Transactional(rollbackFor=Exception.class,propagation=Propagation.MANDATORY)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">insertRole</span><span class="params">()</span>&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>过程分析：</strong>insertUser数据正常入库-&gt;但是insertRole会报错，role无法存入数据库。<br><strong>结果：</strong>报错，role无法入库，但是不影响前面user信息入库。</p>
+<h3 id="3-2-当前有事务"><a href="#3-2-当前有事务" class="headerlink" title="3.2.当前有事务"></a>3.2.当前有事务</h3><p>和REQUIRED、SUPPORTS的结果相同，因为报错了，所以事务都会回滚。</p>
+<h2 id="4-REQUIRES-NEW（requires-new"><a href="#4-REQUIRES-NEW（requires-new" class="headerlink" title="4.REQUIRES_NEW（requires_new)"></a>4.REQUIRES_NEW（requires_new)</h2><p>创建一个新的事务，如果当前存在事务，则把当前事务挂起，新事务结束才会恢复当前事务。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//insertUser和insertRole都开启事务，将insertRole的事务传播机制设置为REQUIRES_NEW</span></span><br></pre></td></tr></table></figure>
+<p><strong>过程分析：</strong>insertUser执行，开启事务-&gt;遇到insertRole，将insertUser的事务挂起，开启新事务，执行insertRole-&gt;Role信息正确进入数据库，新事务提交-&gt;insertUser当前事务恢复-&gt;遇到异常，当前事务回滚，之前提交的事务并不回滚。<br><strong>结果：</strong> insertUser遇到异常回滚，但是insertRole是另外的事务，不会回滚，user不存入数据库，Role存入数据库。</p>
+<h2 id="5-NO-SUPPORTED-no-supported"><a href="#5-NO-SUPPORTED-no-supported" class="headerlink" title="5.NO_SUPPORTED(no_supported)"></a>5.NO_SUPPORTED(no_supported)</h2><p>以非事务方式运行，当前存在事务，则挂起当前事务。</p>
+<h3 id="5-1-当前没有事务"><a href="#5-1-当前没有事务" class="headerlink" title="5.1.当前没有事务"></a>5.1.当前没有事务</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//insertUser没有事务</span></span><br><span class="line"><span class="comment">//insertRole设置为NO_SUPPORTED</span></span><br></pre></td></tr></table></figure>
+<p><strong>过程分析：</strong>都以非事务方式执行-&gt;尽管有异常，但是user和role都会正常存入数据库。<br><strong>结果：</strong>两者照常入库，抛出异常。</p>
+<h3 id="5-2-当前有事务"><a href="#5-2-当前有事务" class="headerlink" title="5.2.当前有事务"></a>5.2.当前有事务</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//insertRole设置为NO_SUPPORTED</span></span><br><span class="line"><span class="comment">//insertUser默认事务</span></span><br></pre></td></tr></table></figure>
+<p><strong>过程分析：</strong>insertUser开启事务，执行-&gt;遇到insertRole，挂起当前事务，以非事务方式insertRole-&gt;insertRole执行完毕，恢复当前事务-&gt;遇到异常，事务回滚，但是insertRole非事务，无法回滚。<br><strong>结果：</strong>因为事务回滚，user不会出现在数据库，但是role正常入库。</p>
+<h2 id="6-NEVER"><a href="#6-NEVER" class="headerlink" title="6.NEVER"></a>6.NEVER</h2><p>以非事务方式运行，如果当前存在事务，则抛出异常。（和MANDATORY相反，那个是必须有，没有就异常；这个是必须没有，有就异常）</p>
+<h3 id="6-1-当前没有事务"><a href="#6-1-当前没有事务" class="headerlink" title="6.1.当前没有事务"></a>6.1.当前没有事务</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//insertRole设置传播机制为NEVER</span></span><br><span class="line"><span class="comment">//insertUser没有事务</span></span><br></pre></td></tr></table></figure>
+<p><strong>过程分析：</strong>两者都以非事务方式执行。<br><strong>结果：</strong>user和role都入库，并不会回滚。</p>
+<h3 id="6-2-当前存在事务"><a href="#6-2-当前存在事务" class="headerlink" title="6.2.当前存在事务"></a>6.2.当前存在事务</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//insertRole设置传播机制为NEVER</span></span><br><span class="line"><span class="comment">//insertUser默认开启事务</span></span><br></pre></td></tr></table></figure>
+<p><strong>过程分析：</strong>insertUser方法执行前开启一个事务，insertUser执行-&gt;保存user到数据库-&gt;执行insertRole，因为当前有事务，所以抛出异常-&gt;因为遇到异常，所以insertUser事务回滚-&gt;那么其实int num&#x3D;10&#x2F;0;并没有被执行。<br><strong>结果：</strong>insertUser因为NEVER抛出的异常而回滚。</p>
+<h2 id="7-NESTED"><a href="#7-NESTED" class="headerlink" title="7.NESTED"></a>7.NESTED</h2><ul>
+<li>当前有事务：创建一个事务作为当前事务的嵌套事务来运行；</li>
+<li>没有事务：等价于REQUIRED（新建一个事务，没有算了，我自己干！）</li>
+</ul>
+<h3 id="7-1-当前没有事务"><a href="#7-1-当前没有事务" class="headerlink" title="7.1.当前没有事务"></a>7.1.当前没有事务</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//insertRole设置传播机制为NESTED</span></span><br><span class="line"><span class="comment">//insertUser没有事务</span></span><br></pre></td></tr></table></figure>
+<p><strong>过程分析：</strong>执行insertUser-&gt;遇到insertRole，当前没有事务，创建新事务执行-&gt;将role保存到数据库，事务提交-&gt;遇到异常，结束。<br><strong>结果：</strong>两条数据都能成功入库，因为insertUser的异常在insertRole事务提交之后，而insertUser又没有事务，异常不会导致回滚。</p>
+<h3 id="7-2-当前有事务"><a href="#7-2-当前有事务" class="headerlink" title="7.2.当前有事务"></a>7.2.当前有事务</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//insertRole设置事务，传播机制为NESTED</span></span><br><span class="line"><span class="comment">//insertUser默认事务</span></span><br></pre></td></tr></table></figure>
+<p><strong>过程分析：</strong>开启一个事务，执行insertUser-&gt;遇到了insertRole，因为当前有事务，所以开启新事务执行insertRole，新事务作为外部事务的子事务-&gt;执行insertRole,role信息入库-&gt;子事务提交，继续执行外部事务-&gt;外部事务发生异常，外部事务和<strong>所有子事务</strong>都回滚。<br><strong>结果：</strong>因为外部事务抛出异常，两个事务都回滚，user和role都不会保存到数据库。</p>
+<blockquote>
+<p>需要注意的是，外部事务的回滚会导致所有内部子事务的回滚；但是，嵌套子事务的回滚并<strong>不会</strong>导致外部事务的回滚。<br>如果不指定rollbackFor，那么只有<strong>RuntimeException</strong>和<strong>Error</strong>会导致事务回滚。</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+    <div>
+    
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+          
+
+    
+    </div>
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Daisybby
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://daisybby.github.io/2024/06/26/Transaction/" title="Spring事务">https://daisybby.github.io/2024/06/26/Transaction/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/06/25/interface-and-abstract-class/" rel="prev" title="抽象类和接口的区别">
+                  <i class="fa fa-angle-left"></i> 抽象类和接口的区别
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/06/27/redis-project-note2/" rel="next" title="Redis实战项目笔记三：优惠券秒杀">
+                  Redis实战项目笔记三：优惠券秒杀 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Daisybby</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

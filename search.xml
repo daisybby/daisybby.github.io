@@ -491,4 +491,167 @@
         <tag>数据库</tag>
       </tags>
   </entry>
+  <entry>
+    <title>抽象类和接口的区别</title>
+    <url>/2024/06/25/interface-and-abstract-class/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>基本概念和原理</category>
+      </categories>
+      <tags>
+        <tag>Java基础</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Spring事务</title>
+    <url>/2024/06/26/Transaction/</url>
+    <content><![CDATA[<h1 id="一、事务的四个特性"><a href="#一、事务的四个特性" class="headerlink" title="一、事务的四个特性"></a>一、事务的四个特性</h1><p>ACID：原子性、一致性、隔离性、持久性。</p>
+<h1 id="二、事务的隔离级别"><a href="#二、事务的隔离级别" class="headerlink" title="二、事务的隔离级别"></a>二、事务的隔离级别</h1><p>数据库事务的隔离级别有四种，从低到高分别是:Read uncommitted、Read committed、Repeatable read、Serializable。事务可能会导致一些问题：脏读、幻读、不可重复读、事务丢失。</p>
+<ul>
+<li><strong>脏读：读取了未提交的事务，然后事务回滚了。</strong><br>  事务A修改了数据库，被事务B读取了，读取之后事务A回滚。</li>
+<li><strong>不可重复读：读取了新提交的事务，指更新操作，导致同一个事务中两次读取不一致。</strong><br>事务A先读取数据库得到value1，然后事务B修改数据库为value2，然后事务A又读到了value2，value1与value2是不一致的。</li>
+<li><strong>幻读：读取了新提交的事务，指增删操作。</strong><br>也是两次查询数据不一致，不过是新增产生的问题。</li>
+<li><strong>第一类事务丢失（回滚丢失）</strong><br>事务A修改value1-num，事务B修改为value1-num+count，但是事务A不知道事务B的修改，直接将数据回滚为value1，这就导致事务B增加的count丢失了。</li>
+<li><strong>第二类事务丢失（提交覆盖）</strong><br>  事务A将数据库由value0修改为value1，事务B紧接着提交，覆盖了事务A的修改。</li>
+</ul>
+<p><strong>Read uncommitted：</strong>可能会导致脏读。<br><strong>Read committed：</strong>可能会导致不可重复读。<br><strong>Repeatable read：</strong>尽管避免了修改，但是没有避免新增和删除，会导致幻读。<br><strong>Serializable：</strong>隔离级别最高，但是性能很差，一般不用。<br>大多数数据库默认事务隔离级别是Read Committed，遇到了不可重复读按照最后一次读取即可，MySQL默认事务隔离级别是<strong>Repeatable read</strong>。</p>
+<h1 id="三、事务实现方式"><a href="#三、事务实现方式" class="headerlink" title="三、事务实现方式"></a>三、事务实现方式</h1><p>事务的实现方式分为<strong>声明式事务</strong>和<strong>编程式事务</strong>。</p>
+<h2 id="3-1-声明式事务"><a href="#3-1-声明式事务" class="headerlink" title="3.1.声明式事务"></a>3.1.声明式事务</h2><p>&ensp;&ensp;&ensp;&ensp;通过@Transactional注解或者xml配置方式开启声明式事务，可以被用在<strong>类</strong>上和<strong>方法</strong>上，用在类上表明整个类的方法都开启事务。<br><strong>优点：</strong></p>
+<ul>
+<li><strong>代码简洁，</strong>声明式事务能够自动在方法前开启事务，根据方法执行结果决定是提交事务还是回滚事务。避免手动编写的大量代码。</li>
+<li><strong>非侵入性：</strong>声明式事务本质上是通过AOP方式实现的，在目标方法前后添加拦截，在目标方法执行前添加或新建一个事务，在方法执行后根据结果来决定是提交事务（正常结束返回）还是回滚事务（抛出异常）。</li>
+</ul>
+<p><strong>缺点：</strong></p>
+<ul>
+<li><strong>事务粒度：</strong>事务执行的最小粒度是方法，如果想要给某一段代码块添加事务，需要把这部分代码独立出来作为一个方法。</li>
+<li><strong>容易被忽视：</strong>声明式事务通过注解即可，有时候还可以通过配置来实现，容易被忽略，进而导致问题。<blockquote>
+<p><strong>忽视了事务会导致什么问题？</strong><br>如果开发者忽略了某个方法开启了事务，在方法内部执行了RPC调用、消息发送、缓存更新、文件写入等不可以回滚的操作：<br>1.如果出现了问题，本地事务回滚了，但是RPC远程调用是不可以回滚的，其他操作类似。<br>2.事务中远程调用会拉长事务，导致本事务的数据库连接池一直被占用，进而导致数据库连接池被耗尽。如果是编程式事务，那么大的事务开启代码、事务提交和事务回滚代码，一般不会忽略。</p>
+</blockquote>
+</li>
+<li><strong>事务失效：</strong>某些场景下会导致声明式事务失效，这是一个常见八股。</li>
+</ul>
+<p><strong>常见的事务失效场景：</strong></p>
+<ul>
+<li>未指定回滚异常：<ul>
+<li>@Transactional开启的事务，回滚异常默认是运行时异常(RuntimeException)，如果是自定义异常，继承了Exception，那么抛出这个异常时，事务不能回滚。<br>○ 需要指定@Trandsactional(rollbackFor&#x3D;Exception.class)</li>
+</ul>
+</li>
+<li>异常被try catch捕获：<ul>
+<li>异常被try catch捕获的时候，事务会失效</li>
+<li>解决方案是throw异常，或者修改catch中的代码，手动回滚。</li>
+</ul>
+</li>
+<li>同一个类方法中调用：<ul>
+<li>和项目中出现的问题一样，开启事务的方法调用了所在类的其他方法，这个时候是this调用，而不是事务通过AOP的代理对象</li>
+<li>解决方案是获取代理对象来调用。</li>
+</ul>
+</li>
+<li>异步多线程：这部分不太懂。之后学了JUC可以回来补充。</li>
+<li>错误设置事务传播机制：事务传播机制设置不恰当可能会导致事务失效。例如在默认的事务中，调用了@Transactional(propagation &#x3D; Propagation.REQUIRES_NEW）设置的方法，在执行这个方法时，会新建事务，挂起已有事务，新建事务正确执行并提交后，原有事务才会恢复执行，即使原有事务因为异常发生了回滚，也不会影响已经提交的新事务。</li>
+<li>方法不是public：因为事务是基于AOP的动态代理机制来实现的，只有public方法能够被代理。</li>
+<li>当前类没有被spring容器托管：类没有被Spring容器所托管，那么也不会被Spring AOP所代理。</li>
+<li>数据库本身不支持事务。</li>
+</ul>
+<h2 id="3-2-编程式事务"><a href="#3-2-编程式事务" class="headerlink" title="3.2.编程式事务"></a>3.2.编程式事务</h2><p>Spring框架提供两种编程式事务方式：</p>
+<ul>
+<li>TransactionTemplate或者TransactionalOperator</li>
+<li>直接实现TransactionManager<br>具体如下：<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Trans</span>&#123;</span><br><span class="line">    <span class="meta">@Resource</span></span><br><span class="line">    <span class="keyword">private</span> TransactionManager transactionManager;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">Test</span><span class="params">()</span>&#123;</span><br><span class="line">        TransactionDefinition def=<span class="keyword">new</span> <span class="title class_">DefaultTransactionDefinition</span>();</span><br><span class="line">        TransactionStatus status=transactionManager.getTransaction(def);</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            transactionManager.commit(status);</span><br><span class="line">        &#125;<span class="keyword">catch</span> (DataAccessExcetption e)&#123;</span><br><span class="line">            transactionManager.rollback(status);</span><br><span class="line">            <span class="keyword">throw</span> e;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+通过编程式事务，我们可以缩小事务粒度，但是实现方式比较麻烦。</li>
+</ul>
+<h1 id="四、事务的七种传播机制"><a href="#四、事务的七种传播机制" class="headerlink" title="四、事务的七种传播机制"></a>四、事务的七种传播机制</h1><h2 id="1-REQUIRED（required）：默认"><a href="#1-REQUIRED（required）：默认" class="headerlink" title="1.REQUIRED（required）：默认"></a>1.REQUIRED（required）：默认</h2><ul>
+<li>当前已有事务：加入该事务</li>
+<li>没有事务：新建一个事务<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//在roleService中有如下代码：</span></span><br><span class="line"><span class="meta">@Transactional(rollbackFor=Exception.class)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">insertRole</span><span class="params">()</span>&#123;</span><br><span class="line">    Role role=<span class="keyword">new</span> <span class="title class_">Role</span>();</span><br><span class="line">    roleMapper.insert(role);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//在userService中有如下代码:</span></span><br><span class="line"><span class="meta">@Transactional(rollbackFor=Exception.class)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">insertUser</span><span class="params">()</span>&#123;</span><br><span class="line">    User user=<span class="keyword">new</span> <span class="title class_">User</span>();</span><br><span class="line">    user.setId(<span class="string">&quot;1234&quot;</span>);</span><br><span class="line">    userMapper.insert(user);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//调用另一个需要事务的方法</span></span><br><span class="line">    roleService.insertRole();</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> num=<span class="number">10</span>/<span class="number">0</span>;<span class="comment">//制造一个异常</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<strong>过程分析：</strong>执行userService的insertUser方法之前开启一个事务-&gt;过程中遇到insertRole，加入当前事务-&gt;事务提交前抛出异常，事务回滚。<br><strong>结果：</strong>本质上是同一个事务，所以所有插入操作都被回滚。</li>
+</ul>
+<h2 id="2-SUPPORTS（supports"><a href="#2-SUPPORTS（supports" class="headerlink" title="2.SUPPORTS（supports)"></a>2.SUPPORTS（supports)</h2><ul>
+<li>当前有事务：加入该事务；</li>
+<li>没有事务：以非事务方式继续运行。</li>
+</ul>
+<h3 id="2-1-当前无事务"><a href="#2-1-当前无事务" class="headerlink" title="2.1.当前无事务"></a>2.1.当前无事务</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//insertUser修改为无事务方式，继续上面的代码</span></span><br></pre></td></tr></table></figure>
+<p><strong>过程分析：</strong>insertUser无事-&gt;遇到insertRole，设置了SUPPORTS的事务传播机制-&gt;以非事务方式执行-&gt;遇到异常，无事务不回滚。<br><strong>结果：</strong>两条数据都成功插入数据库，都没有回滚操作。</p>
+<h3 id="2-2-当前有事务"><a href="#2-2-当前有事务" class="headerlink" title="2.2.当前有事务"></a>2.2.当前有事务</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//insertUser使用默认数据传播机制，insertRole使用SUPPORTS传播机制</span></span><br></pre></td></tr></table></figure>
+<p><strong>过程分析：</strong>insertUser有事务-&gt;遇到insertRole也需要开启事务，则加入当前事务-&gt;都将数据插入数据库，但事务提交前遇到异常-&gt;事务回滚。<br><strong>结果：</strong>两者属于同一个事务，所以都会被回滚。</p>
+<h2 id="3-MANDATORY（mandatory"><a href="#3-MANDATORY（mandatory" class="headerlink" title="3.MANDATORY（mandatory)"></a>3.MANDATORY（mandatory)</h2><ul>
+<li>当前有事务：加入该事务</li>
+<li>没有事务：抛出异常</li>
+</ul>
+<h3 id="3-1-当前没有事务"><a href="#3-1-当前没有事务" class="headerlink" title="3.1.当前没有事务"></a>3.1.当前没有事务</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//insertRole使用@Transactional注解</span></span><br><span class="line"><span class="meta">@Transactional(rollbackFor=Exception.class,propagation=Propagation.MANDATORY)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">insertRole</span><span class="params">()</span>&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>过程分析：</strong>insertUser数据正常入库-&gt;但是insertRole会报错，role无法存入数据库。<br><strong>结果：</strong>报错，role无法入库，但是不影响前面user信息入库。</p>
+<h3 id="3-2-当前有事务"><a href="#3-2-当前有事务" class="headerlink" title="3.2.当前有事务"></a>3.2.当前有事务</h3><p>和REQUIRED、SUPPORTS的结果相同，因为报错了，所以事务都会回滚。</p>
+<h2 id="4-REQUIRES-NEW（requires-new"><a href="#4-REQUIRES-NEW（requires-new" class="headerlink" title="4.REQUIRES_NEW（requires_new)"></a>4.REQUIRES_NEW（requires_new)</h2><p>创建一个新的事务，如果当前存在事务，则把当前事务挂起，新事务结束才会恢复当前事务。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//insertUser和insertRole都开启事务，将insertRole的事务传播机制设置为REQUIRES_NEW</span></span><br></pre></td></tr></table></figure>
+<p><strong>过程分析：</strong>insertUser执行，开启事务-&gt;遇到insertRole，将insertUser的事务挂起，开启新事务，执行insertRole-&gt;Role信息正确进入数据库，新事务提交-&gt;insertUser当前事务恢复-&gt;遇到异常，当前事务回滚，之前提交的事务并不回滚。<br><strong>结果：</strong> insertUser遇到异常回滚，但是insertRole是另外的事务，不会回滚，user不存入数据库，Role存入数据库。</p>
+<h2 id="5-NO-SUPPORTED-no-supported"><a href="#5-NO-SUPPORTED-no-supported" class="headerlink" title="5.NO_SUPPORTED(no_supported)"></a>5.NO_SUPPORTED(no_supported)</h2><p>以非事务方式运行，当前存在事务，则挂起当前事务。</p>
+<h3 id="5-1-当前没有事务"><a href="#5-1-当前没有事务" class="headerlink" title="5.1.当前没有事务"></a>5.1.当前没有事务</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//insertUser没有事务</span></span><br><span class="line"><span class="comment">//insertRole设置为NO_SUPPORTED</span></span><br></pre></td></tr></table></figure>
+<p><strong>过程分析：</strong>都以非事务方式执行-&gt;尽管有异常，但是user和role都会正常存入数据库。<br><strong>结果：</strong>两者照常入库，抛出异常。</p>
+<h3 id="5-2-当前有事务"><a href="#5-2-当前有事务" class="headerlink" title="5.2.当前有事务"></a>5.2.当前有事务</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//insertRole设置为NO_SUPPORTED</span></span><br><span class="line"><span class="comment">//insertUser默认事务</span></span><br></pre></td></tr></table></figure>
+<p><strong>过程分析：</strong>insertUser开启事务，执行-&gt;遇到insertRole，挂起当前事务，以非事务方式insertRole-&gt;insertRole执行完毕，恢复当前事务-&gt;遇到异常，事务回滚，但是insertRole非事务，无法回滚。<br><strong>结果：</strong>因为事务回滚，user不会出现在数据库，但是role正常入库。</p>
+<h2 id="6-NEVER"><a href="#6-NEVER" class="headerlink" title="6.NEVER"></a>6.NEVER</h2><p>以非事务方式运行，如果当前存在事务，则抛出异常。（和MANDATORY相反，那个是必须有，没有就异常；这个是必须没有，有就异常）</p>
+<h3 id="6-1-当前没有事务"><a href="#6-1-当前没有事务" class="headerlink" title="6.1.当前没有事务"></a>6.1.当前没有事务</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//insertRole设置传播机制为NEVER</span></span><br><span class="line"><span class="comment">//insertUser没有事务</span></span><br></pre></td></tr></table></figure>
+<p><strong>过程分析：</strong>两者都以非事务方式执行。<br><strong>结果：</strong>user和role都入库，并不会回滚。</p>
+<h3 id="6-2-当前存在事务"><a href="#6-2-当前存在事务" class="headerlink" title="6.2.当前存在事务"></a>6.2.当前存在事务</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//insertRole设置传播机制为NEVER</span></span><br><span class="line"><span class="comment">//insertUser默认开启事务</span></span><br></pre></td></tr></table></figure>
+<p><strong>过程分析：</strong>insertUser方法执行前开启一个事务，insertUser执行-&gt;保存user到数据库-&gt;执行insertRole，因为当前有事务，所以抛出异常-&gt;因为遇到异常，所以insertUser事务回滚-&gt;那么其实int num&#x3D;10&#x2F;0;并没有被执行。<br><strong>结果：</strong>insertUser因为NEVER抛出的异常而回滚。</p>
+<h2 id="7-NESTED"><a href="#7-NESTED" class="headerlink" title="7.NESTED"></a>7.NESTED</h2><ul>
+<li>当前有事务：创建一个事务作为当前事务的嵌套事务来运行；</li>
+<li>没有事务：等价于REQUIRED（新建一个事务，没有算了，我自己干！）</li>
+</ul>
+<h3 id="7-1-当前没有事务"><a href="#7-1-当前没有事务" class="headerlink" title="7.1.当前没有事务"></a>7.1.当前没有事务</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//insertRole设置传播机制为NESTED</span></span><br><span class="line"><span class="comment">//insertUser没有事务</span></span><br></pre></td></tr></table></figure>
+<p><strong>过程分析：</strong>执行insertUser-&gt;遇到insertRole，当前没有事务，创建新事务执行-&gt;将role保存到数据库，事务提交-&gt;遇到异常，结束。<br><strong>结果：</strong>两条数据都能成功入库，因为insertUser的异常在insertRole事务提交之后，而insertUser又没有事务，异常不会导致回滚。</p>
+<h3 id="7-2-当前有事务"><a href="#7-2-当前有事务" class="headerlink" title="7.2.当前有事务"></a>7.2.当前有事务</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//insertRole设置事务，传播机制为NESTED</span></span><br><span class="line"><span class="comment">//insertUser默认事务</span></span><br></pre></td></tr></table></figure>
+<p><strong>过程分析：</strong>开启一个事务，执行insertUser-&gt;遇到了insertRole，因为当前有事务，所以开启新事务执行insertRole，新事务作为外部事务的子事务-&gt;执行insertRole,role信息入库-&gt;子事务提交，继续执行外部事务-&gt;外部事务发生异常，外部事务和<strong>所有子事务</strong>都回滚。<br><strong>结果：</strong>因为外部事务抛出异常，两个事务都回滚，user和role都不会保存到数据库。</p>
+<blockquote>
+<p>需要注意的是，外部事务的回滚会导致所有内部子事务的回滚；但是，嵌套子事务的回滚并<strong>不会</strong>导致外部事务的回滚。<br>如果不指定rollbackFor，那么只有<strong>RuntimeException</strong>和<strong>Error</strong>会导致事务回滚。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>基础概念和原理</category>
+        <category>Spring</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Redis实战项目笔记三：优惠券秒杀</title>
+    <url>/2024/06/27/redis-project-note2/</url>
+    <content><![CDATA[<h1 id="一、全局唯一ID"><a href="#一、全局唯一ID" class="headerlink" title="一、全局唯一ID"></a>一、全局唯一ID</h1><p>&ensp;&ensp;&ensp;&ensp;全局唯一ID方法比较多，包括数据库自增、Redis实现和雪花算法。雪花算法用于分布式全局唯一ID，可以后续做分布式的时候重点解决这部分的问题。<br><strong>怎么通过Redis生成全局唯一id</strong><br>在Redis中设置一个String类型数据，key标识哪一业务的订单，value标识订单序列号。<br><strong>每次生成id就将Redis中的记录自增1.</strong><br><strong>key格式：</strong>icr:+keyPrefix+:+date（年月日）</p>
+<h1 id="二、添加优惠券和秒杀下单"><a href="#二、添加优惠券和秒杀下单" class="headerlink" title="二、添加优惠券和秒杀下单"></a>二、添加优惠券和秒杀下单</h1><p>&ensp;&ensp;&ensp;&ensp;优惠券分为普通优惠券和秒杀优惠券。秒杀优惠券是在普通优惠券的基础上增加了：秒杀开始时间、结束时间和库存量。</p>
+<h2 id="1-优惠券数据库设计"><a href="#1-优惠券数据库设计" class="headerlink" title="1.优惠券数据库设计"></a>1.优惠券数据库设计</h2><p>&ensp;&ensp;&ensp;&ensp;数据库分为voucher和seckill_voucher两个表，秒杀优惠券多出的信息保存在seckill_voucher表中。<br>&ensp;&ensp;&ensp;&ensp;读取优惠券列表时，根据xml重新配置的mapper联合读取两张表，信息都拼接到voucher对象中。普通优惠券的开始时间、结束时间和库存量为null。</p>
+<blockquote>
+<p>相当于在存储逻辑上没有分开存储，但是在业务处理逻辑上是分开的。</p>
+</blockquote>
+<h2 id="2-秒杀下单"><a href="#2-秒杀下单" class="headerlink" title="2.秒杀下单"></a>2.秒杀下单</h2><p><strong>业务需求：</strong><br>根据优惠券id下单，生成优惠券订单。<br><strong>实现流程图：</strong></p>
+<img src="/2024/06/27/redis-project-note2/img1.png" class="" title="img1">
+<h1 id="三、库存超卖问题"><a href="#三、库存超卖问题" class="headerlink" title="三、库存超卖问题*"></a>三、库存超卖问题*</h1><h2 id="1-问题详情"><a href="#1-问题详情" class="headerlink" title="1.问题详情"></a>1.问题详情</h2><p>在高并发场景下，例如200个线程同时去秒杀100份优惠券，会出现创建了109个订单，库存变成-9.</p>
+<img src="/2024/06/27/redis-project-note2/img2.png" class="" title="img2">
+<img src="/2024/06/27/redis-project-note2/img3.png" class="" title="img3">
+<p><strong>为什么会出现超卖？</strong></p>
+<img src="/2024/06/27/redis-project-note2/img4.png" class="" title="img4">
+<h2 id="2-怎么解决超卖？"><a href="#2-怎么解决超卖？" class="headerlink" title="2.怎么解决超卖？"></a>2.怎么解决超卖？</h2><h3 id="2-1-悲观锁"><a href="#2-1-悲观锁" class="headerlink" title="2.1.悲观锁"></a>2.1.悲观锁</h3><p>通过互斥锁、Sychronized、lock等方式。悲观锁实现方式简单，但是效率比较低。</p>
+<h3 id="2-2-乐观锁"><a href="#2-2-乐观锁" class="headerlink" title="2.2.乐观锁"></a>2.2.乐观锁</h3><p>具体概念看悲观锁和乐观锁的八股。乐观锁的实现方式包括：版本号和CAS方式。<br>乐观锁效率略高于悲观锁，适合多读少写的场景。在解决超卖问题的场景中，CAS方式解决超卖的方案会导致秒杀成功率很低。</p>
+<h3 id="2-3-利用数据库的锁"><a href="#2-3-利用数据库的锁" class="headerlink" title="2.3.利用数据库的锁"></a>2.3.利用数据库的锁</h3><p>在扣减库存时，只要库存量&gt;0就可以扣减成功，利用数据库同一时刻只有一个线程能写数据。</p>
+<h1 id="四、实现一人一单"><a href="#四、实现一人一单" class="headerlink" title="四、实现一人一单"></a>四、实现一人一单</h1><p><strong>业务需求：</strong><br>一个用户只能购买同一个优惠券一次。<br><strong>实现逻辑：</strong></p>
+<img src="/2024/06/27/redis-project-note2/img5.png" class="" title="img5">
+<p>关键点就是在扣减库存之前判断是不是已经有订单了。</p>
+<h2 id="1-问题分析"><a href="#1-问题分析" class="headerlink" title="1.问题分析"></a>1.问题分析</h2><p>用JMeter设置了200个请求，用的是同一个用户的token。正常情况下：<strong>只有一个订单，库存只减少1</strong>。<br>实际情况：</p>
+<img src="/2024/06/27/redis-project-note2/img6.png" class="" title="img6">
+<img src="/2024/06/27/redis-project-note2/img7.png" class="" title="img7">
+<p>库存减少了10，同一个用户创建了10个订单。为什么呢？其实这里出现的问题和超卖是一致的。<br><strong>问题分析：</strong><br> 出现一人多单的原因是：在线程1检查订单和创建完成之间，别的线程完成了订单检查，后续就会成功创建订单。</p>
+<h2 id="2-解决方案"><a href="#2-解决方案" class="headerlink" title="2.解决方案"></a>2.解决方案</h2><p>&ensp;&ensp;&ensp;&ensp;因为是添加订单，而不是修改数据，所以不能用乐观锁，要通过互斥锁来实现。将一人一单的逻辑代码抽象成createVoucherOrder方法。<br><strong>对秒杀的整个Service方法加synchronized：</strong><br>可以实现业务，但是同一时刻只能有一个线程能执行这个方法，这就影响到了其他用户秒杀。本质上一人一单是一个用户id只能秒杀一次。所以可以对用户id添加synchronized。<br><strong>针对用户id添加synchronized：</strong></p>
+<ul>
+<li>传入方法的userId是一个Long对象，每个线程都是从threadLocal获取用户，不同的请求对应不同的线程，也就是不同的userId，所以直接对userId加锁是不行的。</li>
+<li>本质是对userId值进行锁定，所以对Object.intern()的结果加synchronized锁。<blockquote>
+<p>intern()方法的作用是去字符串常量池查找是否有等效的字符串。如果有，则返回这个字符串的引用，如果没有，就把这个字符串放入字符串常量池，并返回其引用。</p>
+</blockquote>
+</li>
+</ul>
+<p><span style="color: red;"><strong>大坑1：释放锁的时机和事务</strong></span><br>这里还有个坑，如果对userId的字符串字面量加锁，实现方式如下：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Transactional</span></span><br><span class="line"><span class="keyword">public</span> Result <span class="title function_">createVoucherOrder</span><span class="params">(Long voucherId)</span> &#123;</span><br><span class="line">    <span class="comment">//用户id</span></span><br><span class="line">    UserDTO user= UserHolder.getUser();</span><br><span class="line">    Long userId=user.getId();</span><br><span class="line">    <span class="keyword">synchronized</span> (userId.toString().intern())&#123;</span><br><span class="line">        <span class="type">int</span> count=query().eq(<span class="string">&quot;user_id&quot;</span>,userId).eq(<span class="string">&quot;voucher_id&quot;</span>, voucherId).count();</span><br><span class="line">        <span class="keyword">if</span>(count&gt;<span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> Result.fail(<span class="string">&quot;已经购买过该优惠券！不允许重复购买！&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//扣减库存</span></span><br><span class="line">        seckillVoucherService.update().setSql(<span class="string">&quot;stock=stock-1&quot;</span>)</span><br><span class="line">                .eq(<span class="string">&quot;voucher_id&quot;</span>, voucherId).gt(<span class="string">&quot;stock&quot;</span>,<span class="number">0</span>).update();</span><br><span class="line">        <span class="comment">//生成秒杀订单</span></span><br><span class="line">        VoucherOrder order=<span class="keyword">new</span> <span class="title class_">VoucherOrder</span>();</span><br><span class="line">        <span class="comment">//1.订单id</span></span><br><span class="line">        <span class="type">long</span> orderId=redisWorker.nextId(<span class="string">&quot;voucherOrder&quot;</span>);</span><br><span class="line">        order.setId(orderId);</span><br><span class="line">        <span class="comment">//2.优惠券id</span></span><br><span class="line">        order.setVoucherId(voucherId);</span><br><span class="line"></span><br><span class="line">        order.setUserId(user.getId());</span><br><span class="line">        <span class="comment">//订单写入数据库</span></span><br><span class="line">        save(order);</span><br><span class="line">        <span class="comment">//返回订单id</span></span><br><span class="line">        <span class="keyword">return</span> Result.ok(orderId);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里可能牵扯到了八股，Spring的事务:</p>
+]]></content>
+      <categories>
+        <category>Redis项目笔记</category>
+      </categories>
+      <tags>
+        <tag>Redis</tag>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
 </search>
