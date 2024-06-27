@@ -506,6 +506,7 @@
     <title>Spring事务</title>
     <url>/2024/06/26/Transaction/</url>
     <content><![CDATA[<h1 id="一、事务的四个特性"><a href="#一、事务的四个特性" class="headerlink" title="一、事务的四个特性"></a>一、事务的四个特性</h1><p>ACID：原子性、一致性、隔离性、持久性。</p>
+<span id="more"></span>
 <h1 id="二、事务的隔离级别"><a href="#二、事务的隔离级别" class="headerlink" title="二、事务的隔离级别"></a>二、事务的隔离级别</h1><p>数据库事务的隔离级别有四种，从低到高分别是:Read uncommitted、Read committed、Repeatable read、Serializable。事务可能会导致一些问题：脏读、幻读、不可重复读、事务丢失。</p>
 <ul>
 <li><strong>脏读：读取了未提交的事务，然后事务回滚了。</strong><br>  事务A修改了数据库，被事务B读取了，读取之后事务A回滚。</li>
@@ -611,7 +612,8 @@
   <entry>
     <title>Redis实战项目笔记三：优惠券秒杀</title>
     <url>/2024/06/27/redis-project-note2/</url>
-    <content><![CDATA[<h1 id="一、全局唯一ID"><a href="#一、全局唯一ID" class="headerlink" title="一、全局唯一ID"></a>一、全局唯一ID</h1><p>&ensp;&ensp;&ensp;&ensp;全局唯一ID方法比较多，包括数据库自增、Redis实现和雪花算法。雪花算法用于分布式全局唯一ID，可以后续做分布式的时候重点解决这部分的问题。<br><strong>怎么通过Redis生成全局唯一id</strong><br>在Redis中设置一个String类型数据，key标识哪一业务的订单，value标识订单序列号。<br><strong>每次生成id就将Redis中的记录自增1.</strong><br><strong>key格式：</strong>icr:+keyPrefix+:+date（年月日）</p>
+    <content><![CDATA[<h1 id="一、全局唯一ID"><a href="#一、全局唯一ID" class="headerlink" title="一、全局唯一ID"></a>一、全局唯一ID</h1><span id="more"></span>
+<p>&ensp;&ensp;&ensp;&ensp;全局唯一ID方法比较多，包括数据库自增、Redis实现和雪花算法。雪花算法用于分布式全局唯一ID，可以后续做分布式的时候重点解决这部分的问题。<br><strong>怎么通过Redis生成全局唯一id</strong><br>在Redis中设置一个String类型数据，key标识哪一业务的订单，value标识订单序列号。<br><strong>每次生成id就将Redis中的记录自增1.</strong><br><strong>key格式：</strong>icr:+keyPrefix+:+date（年月日）</p>
 <h1 id="二、添加优惠券和秒杀下单"><a href="#二、添加优惠券和秒杀下单" class="headerlink" title="二、添加优惠券和秒杀下单"></a>二、添加优惠券和秒杀下单</h1><p>&ensp;&ensp;&ensp;&ensp;优惠券分为普通优惠券和秒杀优惠券。秒杀优惠券是在普通优惠券的基础上增加了：秒杀开始时间、结束时间和库存量。</p>
 <h2 id="1-优惠券数据库设计"><a href="#1-优惠券数据库设计" class="headerlink" title="1.优惠券数据库设计"></a>1.优惠券数据库设计</h2><p>&ensp;&ensp;&ensp;&ensp;数据库分为voucher和seckill_voucher两个表，秒杀优惠券多出的信息保存在seckill_voucher表中。<br>&ensp;&ensp;&ensp;&ensp;读取优惠券列表时，根据xml重新配置的mapper联合读取两张表，信息都拼接到voucher对象中。普通优惠券的开始时间、结束时间和库存量为null。</p>
 <blockquote>
@@ -642,9 +644,41 @@
 </blockquote>
 </li>
 </ul>
-<p><span style="color: red;"><strong>大坑1：释放锁的时机和事务</strong></span><br>这里还有个坑，如果对userId的字符串字面量加锁，实现方式如下：</p>
+<p><strong><font color=red>大坑1：释放锁的时机和事务</font></strong><br>这里还有个坑，如果对userId的字符串字面量加锁，实现方式如下：</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Transactional</span></span><br><span class="line"><span class="keyword">public</span> Result <span class="title function_">createVoucherOrder</span><span class="params">(Long voucherId)</span> &#123;</span><br><span class="line">    <span class="comment">//用户id</span></span><br><span class="line">    UserDTO user= UserHolder.getUser();</span><br><span class="line">    Long userId=user.getId();</span><br><span class="line">    <span class="keyword">synchronized</span> (userId.toString().intern())&#123;</span><br><span class="line">        <span class="type">int</span> count=query().eq(<span class="string">&quot;user_id&quot;</span>,userId).eq(<span class="string">&quot;voucher_id&quot;</span>, voucherId).count();</span><br><span class="line">        <span class="keyword">if</span>(count&gt;<span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> Result.fail(<span class="string">&quot;已经购买过该优惠券！不允许重复购买！&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//扣减库存</span></span><br><span class="line">        seckillVoucherService.update().setSql(<span class="string">&quot;stock=stock-1&quot;</span>)</span><br><span class="line">                .eq(<span class="string">&quot;voucher_id&quot;</span>, voucherId).gt(<span class="string">&quot;stock&quot;</span>,<span class="number">0</span>).update();</span><br><span class="line">        <span class="comment">//生成秒杀订单</span></span><br><span class="line">        VoucherOrder order=<span class="keyword">new</span> <span class="title class_">VoucherOrder</span>();</span><br><span class="line">        <span class="comment">//1.订单id</span></span><br><span class="line">        <span class="type">long</span> orderId=redisWorker.nextId(<span class="string">&quot;voucherOrder&quot;</span>);</span><br><span class="line">        order.setId(orderId);</span><br><span class="line">        <span class="comment">//2.优惠券id</span></span><br><span class="line">        order.setVoucherId(voucherId);</span><br><span class="line"></span><br><span class="line">        order.setUserId(user.getId());</span><br><span class="line">        <span class="comment">//订单写入数据库</span></span><br><span class="line">        save(order);</span><br><span class="line">        <span class="comment">//返回订单id</span></span><br><span class="line">        <span class="keyword">return</span> Result.ok(orderId);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这里可能牵扯到了八股，Spring的事务:</p>
+<p>这里可能牵扯到了八股，Spring的事务:<a href="https://daisybby.github.io/2024/06/26/Transaction/">Spring事务</a></p>
+<blockquote>
+<p>以上代码，执行完synchronized锁上的代码块后，释放互斥锁-&gt;return结果-&gt;事务提交。<br><strong>正常情况下：</strong></p>
+</blockquote>
+<ul>
+<li>加锁的代码块正常执行，遇到了return语句，要退出这个代码块，那么互斥锁会被释放；</li>
+<li>或者加锁的代码块正常执行，内部没有return语句，那么执行完退出这个代码块时，互斥锁被释放；</li>
+<li>事务修饰的方法正常执行，返回结果后提交事务。<br><strong>异常情况下：</strong></li>
+<li>加锁的代码块内部出现了异常，也是要退出这段代码块的，互斥锁被释放；</li>
+<li>@Transactional事务，如果抛出的异常满足设置的事务回滚条件，那么事务会回滚。<br>总结：只要退出synchronized加锁的代码块，互斥锁都会被释放。<br>这就导致在<strong>事务提交前互斥锁已经被释放</strong>，如果此时其他线程使用相同的userId，获取到了互斥锁，事务还没有提交，数据库还没有更新，这就又出现了多线程都进入创建订单阶段，导致一人多单。<br><strong><font color=green>正确做法：</font></strong></li>
+<li><strong>加锁对象依旧是userId；</strong></li>
+<li><strong>加锁时间：事务提交之前-&gt;事务提交之后。</strong></li>
+</ul>
+<p>实现方法就是在秒杀service方法seckillVoucher中调用createVoucherOrder方法之前就对userId加锁。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Long userId=UserHolder.getUser().getId();</span><br><span class="line"><span class="keyword">synchronized</span> (userId.toString().intern())&#123;</span><br><span class="line">    <span class="keyword">return</span> createVoucherOrder(voucherId);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这里和对createVoucherOrder函数加锁不同，尽管在方法执行期间都是被加锁状态，但是其他的userId没有被加锁，还是可以执行这段代码。而且是确保实物提交了才会释放互斥锁。</p>
+</blockquote>
+<p><strong><font color=red>大坑2：事务不生效</font></strong><br>&ensp;&ensp;&ensp;&ensp;在上面的代码块中，return本质是return this.createVoucherOrder，调用的是seckillVoucherOrderServiceImpl对象的属性方法，但是事务生效用的是这个对象的代理对象，this是会导致事务不生效的。</p>
+<blockquote>
+<p>这里有提到不建议用声明式事务的原因，总结了一些事务失效的原因，原因4就是同一个类中方法调用会导致事务失效。</p>
+</blockquote>
+<p><strong><font color=green>正确做法：</font></strong></p>
+<ul>
+<li><strong>设置代理对象可暴露，获取IVoucherOrderService的代理对象</strong></li>
+<li><strong>调用代理对象的createVoucherOrder方法</strong></li>
+</ul>
+<p>以上操作使得事务生效。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//安装aspectJ的依赖</span></span><br><span class="line"><span class="comment">//1.在项目启动类中添加注解</span></span><br><span class="line"><span class="meta">@EnableAspectJAutoProxy(exposeProxy = true)</span></span><br><span class="line"><span class="comment">//2.在调用createVoucherOrder的地方修改为调用代理类的方法</span></span><br><span class="line">Long userId=UserHolder.getUser().getId();</span><br><span class="line"><span class="keyword">synchronized</span> (userId.toString().intern())&#123;</span><br><span class="line">    IVoucherOrderService proxy= (IVoucherOrderService) AopContext.currentProxy();<span class="comment">//获取代理对象</span></span><br><span class="line">    <span class="keyword">return</span> proxy.createVoucherOrder(voucherId);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>八股里是不推荐实现<strong>声明式事务</strong>，推荐的是<strong>编程式事务</strong>。先把这部分功能实现，然后回来优化事务。</p>
+</blockquote>
+<p>需要注意的是，这里的一人一单策略，都是在单机模式下生效的，一旦到了集群模式下就会失效。</p>
 ]]></content>
       <categories>
         <category>Redis项目笔记</category>
