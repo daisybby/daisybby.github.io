@@ -688,4 +688,67 @@
         <tag>数据库</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Redis实战项目笔记三：分布式锁</title>
+    <url>/2024/06/30/lock/</url>
+    <content><![CDATA[<p><strong>业务背景:</strong></p>
+<span id="more"></span>
+<p>&ensp;&ensp;&ensp;&ensp;在单机模式下，通过给创建优惠券订单的函数添加synchronized，能够实现一人一单；但是在分布式系统下，<strong>synchronized无法跨服务器生效</strong>，还是会导致一人多单的问题。</p>
+<blockquote>
+<p>跨服务器场景下，如果要实现线程之间的同步，需要通过<strong>分布式锁</strong>。</p>
+</blockquote>
+<h1 id="1-Redis分布式锁"><a href="#1-Redis分布式锁" class="headerlink" title="1.Redis分布式锁"></a>1.Redis分布式锁</h1><p><strong>业务逻辑：</strong><br>之前基于互斥锁synchronized实现了一台服务器上的一人一单，现在通过Redis的setnx方法实现分布式锁。</p>
+<ul>
+<li>锁针对的依然是优惠券秒杀业务下的userId，因此Redis中锁的key是和业务以及userId相关。</li>
+<li>value可以设置为申请到分布式锁的线程id。</li>
+<li>和单机模式下类似，在创建订单前获取分布式锁，finally释放分布式锁。</li>
+</ul>
+<h1 id="2-分布式锁误删问题"><a href="#2-分布式锁误删问题" class="headerlink" title="2.分布式锁误删问题"></a>2.分布式锁误删问题</h1><p><strong>问题背景：</strong><br>&ensp;&ensp;&ensp;&ensp;创建秒杀订单前，线程获取分布式锁，成功后才行，在任务执行完释放分布式锁。但是并发场景下，会存在如下问题：</p>
+<img src="/2024/06/30/lock/img1.png" class="" title="img1">
+<ul>
+<li>线程1的业务发生了阻塞，导致持有的分布式锁过期自动释放。</li>
+<li>线程2在线程1业务完成之前、分布式锁过期释放后申请获取锁，成功，线程2进入业务。</li>
+<li>线程1在线程2业务结束之前释放分布式锁，这个时候锁的key是前缀+userId+业务，是有可能重复的，<strong>错误释放了线程2持有的分布式锁</strong>。</li>
+<li>线程3在线程2任务结束前到达，申请获取分布式锁，成功，此时<strong>线程2和线程3</strong>同时执行。</li>
+</ul>
+<p><strong>解决思路：</strong><br>&ensp;&ensp;&ensp;&ensp;归根结底，出现问题的原因是线程释放分布式锁时，根本没看锁属不属于自己，直接就释放了。正常情况下，如果不是当前线程持有的锁，不释放。释放分布式锁之前检查<strong>锁是否为当前线程所持有</strong>。<br>&ensp;&ensp;&ensp;&ensp;在之前，锁的value值是没有用上的，存储的是获得锁的线程号，但是<strong>不同JVM上线程号</strong>可能相同，因此需要在线程号前面加上能够标识JVM的：</p>
+<ul>
+<li>赋予当前类一个属性，这台JVM所有执行这部分代码的线程都具有一样的编号UUID，而且要保证这个UUID不能被修改</li>
+<li>用static修饰，表示变量属于类</li>
+<li>final修饰，表示变量一旦被初始化，就不能修改</li>
+</ul>
+<h1 id="3-分布式锁原子性问题"><a href="#3-分布式锁原子性问题" class="headerlink" title="3.分布式锁原子性问题"></a>3.分布式锁原子性问题</h1><p><strong>问题背景：</strong><br>释放分布式锁分为两步：一是判断锁标识，二是删除锁。</p>
+<img src="/2024/06/30/lock/img2.png" class="" title="img2">
+<ul>
+<li>线程1判断线程标识后，释放锁之前被阻塞；</li>
+<li>分布式锁超时释放，被后来的线程2获得；</li>
+<li>线程2执行期间，线程1恢复，此时不需要再次判断锁标识，直接释放，释放错了锁。</li>
+</ul>
+<blockquote>
+<p>线程2和线程1所用锁的key可能会相同吗？<br>锁的key是JVM唯一的前缀+userId+voucherId，并没有线程相关的标识，是可能相同的。</p>
+</blockquote>
+<p>造成问题的原因是判断锁标识和删除锁的<strong>非原子性</strong>。<br><strong>解决思路：</strong> 利用Lua脚本完成锁标识判断和分布式锁删除。<br><strong>Lua脚本内容：</strong></p>
+<figure class="highlight lua"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(redis.call(<span class="string">&#x27;get&#x27;</span>,KEYS[<span class="number">1</span>])==ARGVS[<span class="number">1</span>]) <span class="keyword">then</span></span><br><span class="line">  <span class="keyword">return</span> redis.call(<span class="string">&#x27;del&#x27;</span>,KEYS[<span class="number">1</span>])</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span> <span class="comment">--表示没有删除锁</span></span><br></pre></td></tr></table></figure>
+<p>上一节中，Redis实现分布式锁的内容都在simpleRedisLock类中，包括tryLock和unlock，在unlock中调用Lua脚本。<br>首先在类中注入相关工具类和脚本路径：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SimpleRedisLock</span> <span class="keyword">implements</span> <span class="title class_">ILock</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> DefaultRedisScript&lt;Long&gt; UNLOCK_SCRIPT;<span class="comment">//这里的Long是函数返回类型</span></span><br><span class="line">    <span class="keyword">static</span>&#123;</span><br><span class="line">        UNLOCK_SCRIPT=<span class="keyword">new</span> <span class="title class_">DefaultRedisScript</span>&lt;&gt;();</span><br><span class="line">        UNLOCK_SCRIPT.setLocation(<span class="keyword">new</span> <span class="title class_">ClassPath</span>(<span class="string">&quot;unlock.lua&quot;</span>));</span><br><span class="line">        UNLOCK.SCRIPT.setReturnType(Long.class);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在unlock中调用Lua脚本：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">unlock</span><span class="params">()</span> &#123;</span><br><span class="line">        String threadId=VALUE_PREFIX+Thread.currentThread().getId();</span><br><span class="line">        stringRedisTemplate.execute(</span><br><span class="line">                UNLOCK_SCRIPT,</span><br><span class="line">                Collections.singletonList(KEY_PREFIX+name),</span><br><span class="line">                threadId</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h1 id="4-setnx分布式锁存在的问题"><a href="#4-setnx分布式锁存在的问题" class="headerlink" title="4.setnx分布式锁存在的问题"></a>4.setnx分布式锁存在的问题</h1><p><strong>不可重入性：</strong><br>线程1持有分布式锁，业务收到了阻塞，在这期间线程1可能还需要获取这个锁，但之前的实现方式是不允许的。<br><strong>不可重试性：</strong><br>线程获取锁失败后就返回，没有重试机制。<br><strong>超时释放：</strong><br>超时释放的问题在于，这个时间为多久？有些线程涉及到的业务流程比较长，有些线程比较短，超时释放存在一定的安全隐患。<br><strong>主从一致性：</strong><br>在集群环境下，如果主数据库宕机，此时从数据库中还没有把获得的分布式锁同步，选择一台从数据库作为新的主数据库时可能会导致问题。</p>
+<h1 id="5-Redission"><a href="#5-Redission" class="headerlink" title="5.Redission"></a>5.Redission</h1><h2 id="5-1-Redission实现可重入锁的原理"><a href="#5-1-Redission实现可重入锁的原理" class="headerlink" title="5.1.Redission实现可重入锁的原理"></a>5.1.Redission实现可重入锁的原理</h2><img src="/2024/06/30/lock/img3.png" class="" title="img3">
+<p>与setnx不同的是，redission用hash结构来实现分布式锁：fieldKey是线程标识，fieldValue标识锁计数。</p>
+<ul>
+<li>先检查有没有分布式锁，没有就新建一个；有就计数+1，同时刷新锁有效时间；</li>
+<li>删除锁的时候，检查锁是不是自己的，如果不是说明已经过期等原因造成锁已经释放；</li>
+<li>删除锁应该先锁计数-1，然后判断是不是计数&#x3D;0，等于0则直接释放锁，不是0要刷新锁有效时间。</li>
+</ul>
+<p>Redission都解决了setnx方式所存在的：不可重入性，不可重试性、超时释放、主从一致性问题。具体内容涉及到源码，暂时没了解。</p>
+]]></content>
+      <categories>
+        <category>Redis项目笔记</category>
+      </categories>
+      <tags>
+        <tag>Redis</tag>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
 </search>
