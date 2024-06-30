@@ -526,7 +526,7 @@
 <li>抽象类用于代码复用。</li>
 </ul>
 <p>在实际开发中，如果多个实现类有相同可复用的代码，那么就在接口和实现类之间增加一层抽象类。</p>
-]]></content>
+<img src="/2024/06/25/interface-and-abstract-class/img1.png" class="" title="img1">]]></content>
       <categories>
         <category>基本概念和原理</category>
       </categories>
