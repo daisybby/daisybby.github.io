@@ -496,7 +496,7 @@
     <url>/2024/06/25/interface-and-abstract-class/</url>
     <content><![CDATA[<p><strong>方法定义：</strong></p>
 <ul>
-<li>接口只是定义了一些方法；</li>
+<li>接口只是定义了一些方法；<span id="more"></span></li>
 <li>抽象类中方法是有具体实现代码的。</li>
 </ul>
 <p><strong>修饰符：</strong></p>
