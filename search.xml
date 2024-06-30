@@ -494,7 +494,39 @@
   <entry>
     <title>抽象类和接口的区别</title>
     <url>/2024/06/25/interface-and-abstract-class/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<p><strong>方法定义：</strong></p>
+<ul>
+<li>接口只是定义了一些方法；</li>
+<li>抽象类中方法是有具体实现代码的。</li>
+</ul>
+<p><strong>修饰符：</strong></p>
+<ul>
+<li>接口中的方法只能被public修饰</li>
+<li>抽象类种的方法可以是private、protected和public，也可以是<default>的。<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">Test</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> String a;</span><br><span class="line">    <span class="keyword">private</span> String b;</span><br><span class="line">    String c;</span><br><span class="line">    <span class="keyword">protected</span> String d;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<strong>构造器：</strong></li>
+<li>接口不能有构造器；</li>
+<li>抽象类可以有构造器。</li>
+</ul>
+<blockquote>
+<p>抽象类不能被实例化，但是构造器还是有意义的。抽象类的构造器可以在<strong>其子类的构造器</strong>中被调用，然后再执行子类自己的构造器代码。</p>
+</blockquote>
+<p><strong>继承与实现：</strong></p>
+<ul>
+<li>接口只能被实现；</li>
+<li>抽象类可以被继承。</li>
+</ul>
+<p><strong>单继承，多实现：</strong></p>
+<ul>
+<li>一个类可以实现多个接口</li>
+<li>一个类只能继承一个抽象类</li>
+</ul>
+<p><strong>职责不同：</strong></p>
+<ul>
+<li>接口用于制定规范；</li>
+<li>抽象类用于代码复用。</li>
+</ul>
+<p>在实际开发中，如果多个实现类有相同可复用的代码，那么就在接口和实现类之间增加一层抽象类。</p>
+]]></content>
       <categories>
         <category>基本概念和原理</category>
       </categories>
