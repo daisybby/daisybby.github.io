@@ -784,7 +784,7 @@
       </tags>
   </entry>
   <entry>
-    <title>Redis实战项目笔记四：秒杀优化</title>
+    <title>Redis实战项目笔记五：秒杀优化</title>
     <url>/2024/07/01/Redis-project-note4/</url>
     <content><![CDATA[<p>&ensp;&ensp;&ensp;&ensp;在之前的秒杀业务实现逻辑中，主要业务流程是：<span id="more"></span>查询优惠券信息-&gt;校验秒杀时间-&gt;判断库存-&gt;检查是否重复下单-&gt;生成秒杀订单。这些业务都是基本都是利用<strong>数据库</strong>完成，用到Redis的场景是：生成唯一ID、分布式锁实现一人一单。</p>
 <h1 id="1-优化思路"><a href="#1-优化思路" class="headerlink" title="1.优化思路"></a>1.优化思路</h1><p><strong>优化思路：</strong></p>
