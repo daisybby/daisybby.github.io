@@ -925,9 +925,9 @@
 </blockquote>
 <h1 id="四、对比"><a href="#四、对比" class="headerlink" title="四、对比"></a>四、对比</h1><img src="/2024/07/01/redis-message-queue/img1.png" class="" title="img1">]]></content>
       <categories>
-        <category>基本概念和原理</category>
-        <category>Redis</category>
+        <category>基础概念和原理</category>
         <category>消息队列</category>
+        <category>Redis</category>
       </categories>
       <tags>
         <tag>Redis</tag>
