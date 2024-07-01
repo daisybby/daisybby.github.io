@@ -783,4 +783,155 @@
         <tag>数据库</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Redis实战项目笔记四：秒杀优化</title>
+    <url>/2024/07/01/Redis-project-note4/</url>
+    <content><![CDATA[<p>&ensp;&ensp;&ensp;&ensp;在之前的秒杀业务实现逻辑中，主要业务流程是：<span id="more"></span>查询优惠券信息-&gt;校验秒杀时间-&gt;判断库存-&gt;检查是否重复下单-&gt;生成秒杀订单。这些业务都是基本都是利用<strong>数据库</strong>完成，用到Redis的场景是：生成唯一ID、分布式锁实现一人一单。</p>
+<h1 id="1-优化思路"><a href="#1-优化思路" class="headerlink" title="1.优化思路"></a>1.优化思路</h1><p><strong>优化思路：</strong></p>
+<ul>
+<li><strong>校验库存：</strong>每个用户进行秒杀都需要判断库存，访问数据库，可以将<strong>库存</strong>保存到<strong>Redis</strong>，提升效率；</li>
+<li><strong>检查是否重复下单：</strong>这部分本质上是检查当前用户是否已有当前优惠券的订单，也不需要修改数据库，把当前优惠券对应的秒杀成功的用户<strong>保存到Redis</strong>。</li>
+<li><strong>校验秒杀时间：</strong>为了达到上述两点优化，我们需要将库存和订单用户都保存到Redis，如果优惠券不在秒杀时间内，直接不在Redis中保存就行，而且前端界面也可以不显示过期优惠券。<br><strong>优化后的业务逻辑：</strong><img src="/2024/07/01/Redis-project-note4/img1.png" class="" title="img1">
+以上是Redis中实现的业务，为了保证原子性，直接用Lua脚本完成。<img src="/2024/07/01/Redis-project-note4/img2.png" class="" title="img2">
+<blockquote>
+<p>这里我自己加了一点逻辑，在添加新优惠券到数据库的时候，不仅要保存到数据库，还要使用voucherId和库存量，将库存量保存到Redis。Redis中优惠券数据的有效时间与秒杀活动的结束时间是一致的，我们可以计算endTime和now的时间间隔，设置为Redis中库存信息的有效时间。</p>
+</blockquote>
+</li>
+</ul>
+<p>对于后续创建订单，并更新数据库操作，可以开启异步线程完成，从阻塞队列中读取秒杀信息，进行后续操作。用BlockingQueue可以完成，但并不成熟，这部分代码没有动手实现。稍微看看。</p>
+<h1 id="2-Redis消息队列"><a href="#2-Redis消息队列" class="headerlink" title="2.Redis消息队列"></a>2.Redis消息队列</h1><p><strong>问题背景：</strong><br>基于阻塞队列实现异步创建并保存订单，虽然也能实现大部分业务，但是存在着一些问题：</p>
+<ul>
+<li>阻塞队列使用的是JVM内存，在高并发场景下，大量的消息存在阻塞队列中，可能会使得JVM内存空间耗尽；</li>
+<li>没有消息持久化机制，当JVM宕机时，会发生消息丢失。<br><strong>解决方案：</strong><br>一是使用专门的消息队列中间件，二是Redis提供了部分简单的消息队列功能。<br>项目中使用的是Redis消息队列，具体内容整理成了另外的笔记：<br><strong><font color=red>待补充：</font></strong><br>可以用简单的消息队列完成这一节，但是后续想试试专业的消息队列工具。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Redis项目笔记</category>
+      </categories>
+      <tags>
+        <tag>Redis</tag>
+        <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Redis消息队列</title>
+    <url>/2024/07/01/redis-message-queue/</url>
+    <content><![CDATA[<p>Redis提供了三种方式来实现消息队列：</p>
+<span id="more"></span>
+<ul>
+<li>list结构：基于list来模拟消息队列</li>
+<li>PubSub：发布订阅模式，基本的点对点消息模型</li>
+<li>Stream：比较完善的消息队列</li>
+</ul>
+<h1 id="一、List结构"><a href="#一、List结构" class="headerlink" title="一、List结构"></a>一、List结构</h1><p>Redis提供的List可以模拟消息队列。<br>队列的特性是先进先出，可以用LPUSH和RPOP构成消息队列，也可以用RPUSH和LPOP来构成消息队列。<br>队列中没有消息时，会返回null；而阻塞队列是在队列中没有消息时进程被阻塞；使用<strong>BRPOP</strong>和<strong>BLPOP</strong>可以实现阻塞效果。<br><strong>生产者发送消息：</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">生产者向名称为list1的消息队列中发送两个消息msg1和msg2</span></span><br><span class="line">LPUSH list1 msg1 msg2 </span><br></pre></td></tr></table></figure>
+<p><strong>消费者消费消息：</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">RPOP list1</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">返回的结果是msg1，表示获取到了msg1这个消息</span></span><br><span class="line">BRPOP list1 20</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">以上表示使用阻塞的方式，等待20秒还没有消息就结束阻塞</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>list结构实现消息队列的优缺点：<br><strong>优点：</strong></p>
+<ul>
+<li>利用Redis存储，实现消息的持久化</li>
+<li>避免了JVM内存空间限制<br><strong>缺点：</strong></li>
+<li>无法避免消息丢失，取出的消息还没来得及处理丢失后无法重复获取</li>
+<li>只支持单消费者</li>
+</ul>
+</blockquote>
+<h1 id="二、发布订阅模型"><a href="#二、发布订阅模型" class="headerlink" title="二、发布订阅模型"></a>二、发布订阅模型</h1><p>&ensp;&ensp;&ensp;&ensp;消费者可以订阅一个或多个channel(频道)，生产者向对应的channel发送消息后，所有订阅了该频道的消费者都能收到消息。<br><strong>相关命令：</strong></p>
+<ul>
+<li>SUBSCRIBE channel名：订阅指定的channel</li>
+<li>PUBLISH channel名 msg：向指定的channel发送消息</li>
+<li>PSUBSCRIBE pattern：订阅所有与pattern匹配的频道。</li>
+</ul>
+<blockquote>
+<p>目前pattern匹配规则就三种：</p>
+<ul>
+<li>h?llo：?表示任意一个字符。</li>
+<li>h<em>llo：</em>表示任意一个或者多个字符。</li>
+<li>h[ae]llo：表示只能匹配hello和hallo。</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>发布订阅模型的优缺点：<br><strong>优点：</strong></p>
+<ul>
+<li>支持多个生产者、多个消费者<br><strong>缺点：</strong></li>
+<li>不支持消息持久化</li>
+<li>无法避免消息丢失</li>
+<li>消息堆积有上限，超出上限时，最早进入队列的消息会丢失</li>
+</ul>
+</blockquote>
+<h1 id="三、基于Stream的消息队列"><a href="#三、基于Stream的消息队列" class="headerlink" title="三、基于Stream的消息队列"></a>三、基于Stream的消息队列</h1><p>Stream是Redis5.0引入的新数据类型，可以实现功能相对比较完善的消息队列。</p>
+<h2 id="3-1-Stream单消费模式"><a href="#3-1-Stream单消费模式" class="headerlink" title="3.1.Stream单消费模式"></a>3.1.Stream单消费模式</h2><p><strong>发送消息：</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">发送消息需要指定消息队列名称，消息的唯一<span class="built_in">id</span>，消息是多个k-v键值对</span></span><br><span class="line">XADD users * name jack age 20</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">以上命令向<span class="built_in">users</span>消息队列发送了一个消息，其中消息的唯一<span class="built_in">id</span> *表示由redis自行生成</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">消息内容为&#123;name=jack,age=20&#125;</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">如果想要自行生成消息<span class="built_in">id</span>，最好按照<span class="string">&quot;时间戳-自增ID&quot;</span>的格式，时间戳是毫秒值，同一时刻的消息ID递增，不同时刻则ID都是0</span></span><br></pre></td></tr></table></figure>
+<p><strong>读取消息：</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">XREAD COUNT count STREAMS key ID</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">其中count表示一次读取中最大读取消息数，key表示消息队列名称，ID表示读取消息的起始ID，0表示从第一个消息开始</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">$表示读取最新的消息</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">读取消息的例子如下：</span></span><br><span class="line">XREAD COUNT 1 STREAMS s1 0</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">读取s1中的1条消息，从第一条消息开始读取</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">阻塞读取消息</span></span><br><span class="line">XREAD COUNT 1 BLOCK 0 STREAMS S1 $</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">表示阻塞读取最新消息，阻塞时间0表示一直阻塞</span></span><br></pre></td></tr></table></figure>
+<p>消息可以重复读取，但是$是不能读取已经读过的消息。如果读取了最新的一条消息，在处理消息期间消息队列堆积了多个新的消息，$还是只能读取最新的一条消息，<strong>导致漏读消息</strong>。</p>
+<blockquote>
+<p>STREAM读取消息的特点：</p>
+<ul>
+<li>消息可回溯</li>
+<li>一个消息可以被多个消费者读取（PubSub也有这个特点，不过那边更像是被动通知，而不是主动读取）</li>
+<li>可以阻塞读取</li>
+<li>有漏读消息的风险。</li>
+</ul>
+</blockquote>
+<h2 id="3-2-Stream的消费者组"><a href="#3-2-Stream的消费者组" class="headerlink" title="3.2.Stream的消费者组"></a>3.2.Stream的消费者组</h2><p><strong>消费者组：</strong>将多个消费者划分成一个组，监听同一个消息队列。</p>
+<blockquote>
+<p>同一个消息队列的不同消费者组，各自维护自己的消息偏移量，允许以不同的速度处理消息，各自处理消息的逻辑也是独立的，互不影响。可能消费者组1已经把全部的消息都处理完了，消费者组2才处理了一点点。</p>
+</blockquote>
+<p><strong>特点：</strong></p>
+<ul>
+<li><strong>消息分流：</strong> 一个消费者组内部的各个消费者是竞争关系，队列中的消息是分流给消费者们，而不是重复消费，多个消费者加快消息处理速度，避免消息堆积。</li>
+<li><strong>消息标示：</strong>消费者组会维护一个标示，标记最后一个被处理的消息，即使消费者宕机，回来后还是可以通过标记恢复进度。</li>
+<li><strong>消息确认：</strong>消费者获取消息后，消息处于pending状态，并被存入pending-list。只有被XACK确认的消息才会被标记已处理，且从pending-list中删除。</li>
+</ul>
+<p><strong>创建消费者组：</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">XGROUP CREATE key groupName ID [MKSTREAM]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>key：队列名称</li>
+<li>groupName：消费者组名称</li>
+<li>ID：起始ID标识，$表示队列中最后一个消息，0表示队列中第一个消息</li>
+<li>MKSTREAM：队列不存在时自动创建队列，默认就行。</li>
+</ul>
+<p><strong>其他常见命令：</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">删除指定的消费者组</span></span><br><span class="line">XGROUP DESTROY key groupName</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">给指定的消费者组添加消费者</span></span><br><span class="line">XGROUP CREATECONSUMER key groupName consumerName</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">删除指定消费者组中的消费者</span></span><br><span class="line">XGROUP DELCONSUMER key groupName consumerName</span><br></pre></td></tr></table></figure>
+<p><strong>从消费者组中读取消息：</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">XREADGROUP GROUP groupName consumerName [COUNT count] [BLOCK milliseconds] [NOACK] STREAMS key [key ...] ID [ID ...]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>groupName：指定消费者组名称</li>
+<li>consumerName：指定消费者名称</li>
+<li>count：一次读取最大消息数</li>
+<li>Block milliseconds：阻塞时间</li>
+<li>NOACK：无需手动ACK，获取到消息后自动确认，默认即可</li>
+<li>STREAMS key：指定消息队列名称</li>
+<li>ID：获取消息的起始ID：<ul>
+<li>&gt;：表示从下一个未消费的消息开始</li>
+<li>其他：根据指定id从pending-list中获取已消费但未确认的消息，例如0，从pending-list第一个消息开始处理。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>消息消费的逻辑是先设置ID为&gt;，处理完消息队列中的消息，然后设置为0，处理完pending-list中没有确认的消息。</p>
+</blockquote>
+<p>具体使用命令不再赘述，可以查阅官方文档。</p>
+<blockquote>
+<p>XREADGROUP命令的特点：</p>
+<ul>
+<li>消息可回溯</li>
+<li>支持多消费者消费消息，加快消费速度</li>
+<li>可以阻塞读取</li>
+<li>没有漏读消息的风险</li>
+<li>通过消息确认机制，确保每个消息至少被消费一次</li>
+</ul>
+</blockquote>
+<h1 id="四、对比"><a href="#四、对比" class="headerlink" title="四、对比"></a>四、对比</h1><img src="/2024/07/01/redis-message-queue/img1.png" class="" title="img1">]]></content>
+      <categories>
+        <category>基本概念和原理</category>
+        <category>Redis</category>
+        <category>消息队列</category>
+      </categories>
+      <tags>
+        <tag>Redis</tag>
+        <tag>消息队列</tag>
+      </tags>
+  </entry>
 </search>
