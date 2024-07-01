@@ -175,7 +175,7 @@
 </ul>
 ]]></content>
       <categories>
-        <category>Spring基础</category>
+        <category>Spring</category>
       </categories>
       <tags>
         <tag>Spring</tag>
@@ -528,7 +528,7 @@
 <p>在实际开发中，如果多个实现类有相同可复用的代码，那么就在接口和实现类之间增加一层抽象类。</p>
 <img src="/2024/06/25/interface-and-abstract-class/img1.png" class="" title="img1">]]></content>
       <categories>
-        <category>基本概念和原理</category>
+        <category>基础概念和原理</category>
       </categories>
       <tags>
         <tag>Java基础</tag>
