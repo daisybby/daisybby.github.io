@@ -244,54 +244,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Redis保存对象为String还是hash？</title>
-    <url>/2024/06/23/save-object-as-string-or-hash/</url>
-    <content><![CDATA[<h1 id="1-对象序列化后保存到Redis"><a href="#1-对象序列化后保存到Redis" class="headerlink" title="1.对象序列化后保存到Redis"></a>1.对象序列化后保存到Redis</h1><p>保存的是序列化后的对象，这种方式在Redis中很难看出来对象的含义。</p>
-<span id="more"></span>
-<p><strong>优点：</strong></p>
-<ul>
-<li><strong>简洁性：</strong> 直接序列化整个对象，不需要考虑字段的单独存储。</li>
-<li><strong>原子性：</strong> 对整个对象进行存取。</li>
-</ul>
-<p><strong>缺点：</strong></p>
-<ul>
-<li><strong>序列化依赖：</strong> 依赖于特定的序列化库，可能影响性能和跨语言使用。</li>
-<li><strong>可读性：</strong> 二进制格式的字符串不易于阅读和调试。</li>
-<li><strong>灵活性差：</strong> 如果对象结构发生变化，需要重新序列化。</li>
-</ul>
-<h1 id="2-将对象转换成Json格式"><a href="#2-将对象转换成Json格式" class="headerlink" title="2.将对象转换成Json格式"></a>2.将对象转换成Json格式</h1><p>Redis中保存的是JSON格式的字符串，可以清晰阅读对象的内容。<br><strong>优点：</strong> </p>
-<ul>
-<li><strong>跨语言性：</strong> JSON是一种跨语言的格式，易于在不同语言和系统之间交换数据。</li>
-<li><strong>可读性：</strong> JSON格式的数据易于阅读。</li>
-</ul>
-<p><strong>缺点：</strong></p>
-<ul>
-<li><strong>灵活性：</strong>不支持对象单个属性的存取，如果要修改对象属性只能整个对象读取修改重建。</li>
-<li><strong>复杂结构存储：</strong>不适合存储复杂的对象结构，比如对象存在嵌套。</li>
-</ul>
-<h1 id="3-用hash存储对象"><a href="#3-用hash存储对象" class="headerlink" title="3.用hash存储对象"></a>3.用hash存储对象</h1><p>Redis的key作为整个hash结构在Redis中的索引；<br>fieldName是对象的属性名称；<br>fieldValue就是属性值。<br><strong>优点：</strong></p>
-<ul>
-<li><strong>可读性：</strong>hash保存对象结构清晰；</li>
-<li><strong>灵活性：</strong>支持对单个属性的操作，只需要根据对应的fieldName来设置fieldValue即可。</li>
-</ul>
-<p><strong>缺点：</strong></p>
-<ul>
-<li>处理嵌套的对象比较麻烦。</li>
-</ul>
-<h1 id="4-怎么选取呢？"><a href="#4-怎么选取呢？" class="headerlink" title="4.怎么选取呢？"></a>4.怎么选取呢？</h1><p><strong>更新频繁的数据：</strong> 可以通过hash结构存储对象。<br><strong>读频繁的数据：</strong> 对于更新频率比较低，但是读取比较频繁的数据，选择string是比较好的方案。</p>
-<blockquote>
-<p>实际业务开发中，可以结合string和hash。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>基础概念和原理</category>
-      </categories>
-      <tags>
-        <tag>Redis</tag>
-        <tag>数据库</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Redis实战项目笔记二：查询缓存</title>
     <url>/2024/06/23/redis-project-note2/</url>
     <content><![CDATA[<h1 id="一、添加商户缓存"><a href="#一、添加商户缓存" class="headerlink" title="一、添加商户缓存"></a>一、添加商户缓存</h1><p><strong>业务需求：</strong></p>
@@ -492,46 +444,51 @@
       </tags>
   </entry>
   <entry>
-    <title>抽象类和接口的区别</title>
-    <url>/2024/06/25/interface-and-abstract-class/</url>
-    <content><![CDATA[<p><strong>方法定义：</strong></p>
+    <title>Redis保存对象为String还是hash？</title>
+    <url>/2024/06/23/save-object-as-string-or-hash/</url>
+    <content><![CDATA[<h1 id="1-对象序列化后保存到Redis"><a href="#1-对象序列化后保存到Redis" class="headerlink" title="1.对象序列化后保存到Redis"></a>1.对象序列化后保存到Redis</h1><p>保存的是序列化后的对象，这种方式在Redis中很难看出来对象的含义。</p>
+<span id="more"></span>
+<p><strong>优点：</strong></p>
 <ul>
-<li>接口只是定义了一些方法；<span id="more"></span></li>
-<li>抽象类中方法是有具体实现代码的。</li>
+<li><strong>简洁性：</strong> 直接序列化整个对象，不需要考虑字段的单独存储。</li>
+<li><strong>原子性：</strong> 对整个对象进行存取。</li>
 </ul>
-<p><strong>修饰符：</strong></p>
+<p><strong>缺点：</strong></p>
 <ul>
-<li>接口中的方法只能被public修饰</li>
-<li>抽象类种的方法可以是private、protected和public，也可以是<default>的。<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">Test</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> String a;</span><br><span class="line">    <span class="keyword">private</span> String b;</span><br><span class="line">    String c;</span><br><span class="line">    <span class="keyword">protected</span> String d;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<strong>构造器：</strong></li>
-<li>接口不能有构造器；</li>
-<li>抽象类可以有构造器。</li>
+<li><strong>序列化依赖：</strong> 依赖于特定的序列化库，可能影响性能和跨语言使用。</li>
+<li><strong>可读性：</strong> 二进制格式的字符串不易于阅读和调试。</li>
+<li><strong>灵活性差：</strong> 如果对象结构发生变化，需要重新序列化。</li>
 </ul>
+<h1 id="2-将对象转换成Json格式"><a href="#2-将对象转换成Json格式" class="headerlink" title="2.将对象转换成Json格式"></a>2.将对象转换成Json格式</h1><p>Redis中保存的是JSON格式的字符串，可以清晰阅读对象的内容。<br><strong>优点：</strong> </p>
+<ul>
+<li><strong>跨语言性：</strong> JSON是一种跨语言的格式，易于在不同语言和系统之间交换数据。</li>
+<li><strong>可读性：</strong> JSON格式的数据易于阅读。</li>
+</ul>
+<p><strong>缺点：</strong></p>
+<ul>
+<li><strong>灵活性：</strong>不支持对象单个属性的存取，如果要修改对象属性只能整个对象读取修改重建。</li>
+<li><strong>复杂结构存储：</strong>不适合存储复杂的对象结构，比如对象存在嵌套。</li>
+</ul>
+<h1 id="3-用hash存储对象"><a href="#3-用hash存储对象" class="headerlink" title="3.用hash存储对象"></a>3.用hash存储对象</h1><p>Redis的key作为整个hash结构在Redis中的索引；<br>fieldName是对象的属性名称；<br>fieldValue就是属性值。<br><strong>优点：</strong></p>
+<ul>
+<li><strong>可读性：</strong>hash保存对象结构清晰；</li>
+<li><strong>灵活性：</strong>支持对单个属性的操作，只需要根据对应的fieldName来设置fieldValue即可。</li>
+</ul>
+<p><strong>缺点：</strong></p>
+<ul>
+<li>处理嵌套的对象比较麻烦。</li>
+</ul>
+<h1 id="4-怎么选取呢？"><a href="#4-怎么选取呢？" class="headerlink" title="4.怎么选取呢？"></a>4.怎么选取呢？</h1><p><strong>更新频繁的数据：</strong> 可以通过hash结构存储对象。<br><strong>读频繁的数据：</strong> 对于更新频率比较低，但是读取比较频繁的数据，选择string是比较好的方案。</p>
 <blockquote>
-<p>抽象类不能被实例化，但是构造器还是有意义的。抽象类的构造器可以在<strong>其子类的构造器</strong>中被调用，然后再执行子类自己的构造器代码。</p>
+<p>实际业务开发中，可以结合string和hash。</p>
 </blockquote>
-<p><strong>继承与实现：</strong></p>
-<ul>
-<li>接口只能被实现；</li>
-<li>抽象类可以被继承。</li>
-</ul>
-<p><strong>单继承，多实现：</strong></p>
-<ul>
-<li>一个类可以实现多个接口</li>
-<li>一个类只能继承一个抽象类</li>
-</ul>
-<p><strong>职责不同：</strong></p>
-<ul>
-<li>接口用于制定规范；</li>
-<li>抽象类用于代码复用。</li>
-</ul>
-<p>在实际开发中，如果多个实现类有相同可复用的代码，那么就在接口和实现类之间增加一层抽象类。</p>
-<img src="/2024/06/25/interface-and-abstract-class/img1.png" class="" title="img1">]]></content>
+]]></content>
       <categories>
         <category>基础概念和原理</category>
       </categories>
       <tags>
-        <tag>Java基础</tag>
+        <tag>Redis</tag>
+        <tag>数据库</tag>
       </tags>
   </entry>
   <entry>
@@ -640,6 +597,49 @@
         <category>基础概念和原理</category>
         <category>Spring</category>
       </categories>
+  </entry>
+  <entry>
+    <title>抽象类和接口的区别</title>
+    <url>/2024/06/25/interface-and-abstract-class/</url>
+    <content><![CDATA[<p><strong>方法定义：</strong></p>
+<ul>
+<li>接口只是定义了一些方法；<span id="more"></span></li>
+<li>抽象类中方法是有具体实现代码的。</li>
+</ul>
+<p><strong>修饰符：</strong></p>
+<ul>
+<li>接口中的方法只能被public修饰</li>
+<li>抽象类种的方法可以是private、protected和public，也可以是<default>的。<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">Test</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> String a;</span><br><span class="line">    <span class="keyword">private</span> String b;</span><br><span class="line">    String c;</span><br><span class="line">    <span class="keyword">protected</span> String d;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<strong>构造器：</strong></li>
+<li>接口不能有构造器；</li>
+<li>抽象类可以有构造器。</li>
+</ul>
+<blockquote>
+<p>抽象类不能被实例化，但是构造器还是有意义的。抽象类的构造器可以在<strong>其子类的构造器</strong>中被调用，然后再执行子类自己的构造器代码。</p>
+</blockquote>
+<p><strong>继承与实现：</strong></p>
+<ul>
+<li>接口只能被实现；</li>
+<li>抽象类可以被继承。</li>
+</ul>
+<p><strong>单继承，多实现：</strong></p>
+<ul>
+<li>一个类可以实现多个接口</li>
+<li>一个类只能继承一个抽象类</li>
+</ul>
+<p><strong>职责不同：</strong></p>
+<ul>
+<li>接口用于制定规范；</li>
+<li>抽象类用于代码复用。</li>
+</ul>
+<p>在实际开发中，如果多个实现类有相同可复用的代码，那么就在接口和实现类之间增加一层抽象类。</p>
+<img src="/2024/06/25/interface-and-abstract-class/img1.png" class="" title="img1">]]></content>
+      <categories>
+        <category>基础概念和原理</category>
+      </categories>
+      <tags>
+        <tag>Java基础</tag>
+      </tags>
   </entry>
   <entry>
     <title>Redis实战项目笔记三：优惠券秒杀</title>
@@ -926,8 +926,8 @@
 <h1 id="四、对比"><a href="#四、对比" class="headerlink" title="四、对比"></a>四、对比</h1><img src="/2024/07/01/redis-message-queue/img1.png" class="" title="img1">]]></content>
       <categories>
         <category>基础概念和原理</category>
-        <category>消息队列</category>
         <category>Redis</category>
+        <category>消息队列</category>
       </categories>
       <tags>
         <tag>Redis</tag>
