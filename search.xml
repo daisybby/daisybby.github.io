@@ -937,7 +937,8 @@
   <entry>
     <title>点赞、关注、附近商铺</title>
     <url>/2024/07/12/Redis-project-note5/</url>
-    <content><![CDATA[<h1 id="一、点赞功能"><a href="#一、点赞功能" class="headerlink" title="一、点赞功能"></a>一、点赞功能</h1><h2 id="1-1-点赞"><a href="#1-1-点赞" class="headerlink" title="1.1.点赞"></a>1.1.点赞</h2><p><strong>业务需求：</strong></p>
+    <content><![CDATA[<h1 id="一、点赞功能"><a href="#一、点赞功能" class="headerlink" title="一、点赞功能"></a>一、点赞功能</h1><span id="more"></span>
+<h2 id="1-1-点赞"><a href="#1-1-点赞" class="headerlink" title="1.1.点赞"></a>1.1.点赞</h2><p><strong>业务需求：</strong></p>
 <ul>
 <li>用户对发布的笔记点赞，只能赞一次，再次点击是取消点赞；</li>
 </ul>
