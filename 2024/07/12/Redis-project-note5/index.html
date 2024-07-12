@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/medium.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/small.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"daisybby.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="一、点赞功能1.1.点赞业务需求：  用户对发布的笔记点赞，只能赞一次，再次点击是取消点赞；  实现逻辑：  blog类添加一个字段isLike，表示blog是否被当前用户点赞 Redis中维护一个set，key为笔记id，元素就是已点赞用户id（和优惠券秒杀判断是否已经下单过的逻辑一致）； 用户点击时，判断用户id在不在set里： 不在：用户没有点赞过，需要更新blog的点赞次数+1，并将用户i">
+<meta property="og:type" content="article">
+<meta property="og:title" content="点赞、关注、附近商铺">
+<meta property="og:url" content="https://daisybby.github.io/2024/07/12/Redis-project-note5/index.html">
+<meta property="og:site_name" content="daisybby">
+<meta property="og:description" content="一、点赞功能1.1.点赞业务需求：  用户对发布的笔记点赞，只能赞一次，再次点击是取消点赞；  实现逻辑：  blog类添加一个字段isLike，表示blog是否被当前用户点赞 Redis中维护一个set，key为笔记id，元素就是已点赞用户id（和优惠券秒杀判断是否已经下单过的逻辑一致）； 用户点击时，判断用户id在不在set里： 不在：用户没有点赞过，需要更新blog的点赞次数+1，并将用户i">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://daisybby.github.io/2024/07/12/Redis-project-note5/img1.png">
+<meta property="article:published_time" content="2024-07-12T05:28:20.000Z">
+<meta property="article:modified_time" content="2024-07-12T06:02:20.811Z">
+<meta property="article:author" content="Daisybby">
+<meta property="article:tag" content="Redis">
+<meta property="article:tag" content="数据库">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://daisybby.github.io/2024/07/12/Redis-project-note5/img1.png">
+
+
+<link rel="canonical" href="https://daisybby.github.io/2024/07/12/Redis-project-note5/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/07/12/Redis-project-note5/","path":"2024/07/12/Redis-project-note5/","title":"点赞、关注、附近商铺"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>点赞、关注、附近商铺 | daisybby</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">daisybby</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Every step of some daisy.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">7</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">15</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E7%82%B9%E8%B5%9E%E5%8A%9F%E8%83%BD"><span class="nav-text">一、点赞功能</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-%E7%82%B9%E8%B5%9E"><span class="nav-text">1.1.点赞</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-%E5%8A%A0%E8%BD%BD%E7%82%B9%E8%B5%9E%E5%88%97%E8%A1%A8"><span class="nav-text">1.2.加载点赞列表</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%85%B3%E6%B3%A8%E5%8A%9F%E8%83%BD"><span class="nav-text">二、关注功能</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-%E5%85%B3%E6%B3%A8%E5%92%8C%E5%8F%96%E6%B6%88%E5%85%B3%E6%B3%A8"><span class="nav-text">2.1.关注和取消关注</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%E5%85%B1%E5%90%8C%E5%85%B3%E6%B3%A8"><span class="nav-text">2.2.共同关注</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-%E7%AC%94%E8%AE%B0%E6%8E%A8%E9%80%81%E7%BB%99%E7%B2%89%E4%B8%9D"><span class="nav-text">2.3.笔记推送给粉丝</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-%E5%88%86%E9%A1%B5%E6%9F%A5%E8%AF%A2"><span class="nav-text">2.4.分页查询</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E9%99%84%E8%BF%91%E5%95%86%E6%88%B7"><span class="nav-text">三、附近商户</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E7%94%A8%E6%88%B7%E7%AD%BE%E5%88%B0"><span class="nav-text">四、用户签到</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-%E7%94%A8%E6%88%B7%E7%AD%BE%E5%88%B0"><span class="nav-text">4.1.用户签到</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-%E7%AD%BE%E5%88%B0%E7%BB%9F%E8%AE%A1"><span class="nav-text">4.2.签到统计</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Daisybby"
+      src="/images/header.jpg">
+  <p class="site-author-name" itemprop="name">Daisybby</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/07/12/Redis-project-note5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="Daisybby">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="daisybby">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="点赞、关注、附近商铺 | daisybby">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          点赞、关注、附近商铺
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-07-12 13:28:20 / 修改时间：14:02:20" itemprop="dateCreated datePublished" datetime="2024-07-12T13:28:20+08:00">2024-07-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Redis%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">Redis项目笔记</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="一、点赞功能"><a href="#一、点赞功能" class="headerlink" title="一、点赞功能"></a>一、点赞功能</h1><h2 id="1-1-点赞"><a href="#1-1-点赞" class="headerlink" title="1.1.点赞"></a>1.1.点赞</h2><p><strong>业务需求：</strong></p>
+<ul>
+<li>用户对发布的笔记点赞，只能赞一次，再次点击是取消点赞；</li>
+</ul>
+<p><strong>实现逻辑：</strong></p>
+<ul>
+<li>blog类添加一个字段isLike，表示blog是否被当前用户点赞</li>
+<li>Redis中维护一个set，key为笔记id，元素就是已点赞用户id（和优惠券秒杀判断是否已经下单过的逻辑一致）；</li>
+<li>用户点击时，判断用户id在不在set里：<ul>
+<li><strong>不在：</strong>用户没有点赞过，需要更新blog的点赞次数+1，并将用户id保存到set中；</li>
+<li><strong>在：</strong>用户已经点赞，此时需要取消点赞，更新blog点赞次数-1，并将用户id从set中删除。</li>
+</ul>
+</li>
+<li>根据id查询blog的业务代码也要修改，在查询blog时，还要根据当前用户是否点赞过来设置isLike字段</li>
+</ul>
+<h2 id="1-2-加载点赞列表"><a href="#1-2-加载点赞列表" class="headerlink" title="1.2.加载点赞列表"></a>1.2.加载点赞列表</h2><p><strong>业务需求：</strong></p>
+<ul>
+<li>在笔记详情中，显示最先点赞的前5个用户的头像；<br><strong>实现逻辑：</strong></li>
+<li>点赞列表保存在redis中，利用zset可以实现排序，排序依据是时间，用点赞时刻的毫秒数作为score；</li>
+<li>加载笔记详情时，从Redis中加载笔记对应的点赞列表，选出top5从数据库查询用户信息。</li>
+</ul>
+<blockquote>
+<p>这里有一个坑，尽管交给SQL数据库的userId顺序是top5，但是返回的用户信息顺序是会按照数据库的默认设置来排序，需要使用ORDER BY来规定返回顺序。</p>
+</blockquote>
+<h1 id="二、关注功能"><a href="#二、关注功能" class="headerlink" title="二、关注功能"></a>二、关注功能</h1><h2 id="2-1-关注和取消关注"><a href="#2-1-关注和取消关注" class="headerlink" title="2.1.关注和取消关注"></a>2.1.关注和取消关注</h2><p><strong>业务需求：</strong></p>
+<ul>
+<li>用户可以关注另一个用户</li>
+<li>也可以取关已有的关注。</li>
+</ul>
+<p><strong>实现逻辑：</strong></p>
+<ul>
+<li>关注是用户之间的关系，在数据库中维护一个中间表，保存用户id和关注的用户id。</li>
+<li>点击关注，传入被关注用户id，获取当前登录用户，将这个关系保存到数据库。</li>
+</ul>
+<h2 id="2-2-共同关注"><a href="#2-2-共同关注" class="headerlink" title="2.2.共同关注"></a>2.2.共同关注</h2><p><strong>业务需求：</strong><br>&ensp;&ensp;&ensp;&ensp;点开某用户首页，可以看到该用户的基本信息、已发布的笔记，和共同关注选项，这个选项显示了“我”和这个用户共同关注的对象。<br><strong>实现逻辑：</strong><br>&ensp;&ensp;&ensp;&ensp;所谓共同关注，其实就是两个用户关注列表的交集，我们可以将每个用户的关注列表设置为一个Redis的set，然后求两个用户对应set的交集，再根据交集查到的用户id，返回真实的user列表即可。</p>
+<h2 id="2-3-笔记推送给粉丝"><a href="#2-3-笔记推送给粉丝" class="headerlink" title="2.3.笔记推送给粉丝"></a>2.3.笔记推送给粉丝</h2><p><strong>业务需求：</strong></p>
+<ul>
+<li>像B站的动态一样，博主更新了笔记，可以推送给博主的粉丝们。</li>
+</ul>
+<p><strong>推送流(Feed流)：</strong></p>
+<ul>
+<li><strong>拉模式（读扩散）：</strong>博主发布笔记到发件箱，粉丝登录后从发件箱拉取到自己的收件箱查看。</li>
+<li><strong>推模式（写扩散）：</strong>博主发布笔记后，推送到每一个粉丝的收件箱。</li>
+<li><strong>推拉混合模式：</strong>对于大v发布的笔记，推送到活跃粉丝的收件箱，普通粉丝则是从大V发件箱中拉取。</li>
+</ul>
+<p><strong>优缺点分析：</strong></p>
+<img src="/2024/07/12/Redis-project-note5/img1.png" class="" title="img1">
+<p>在我们的项目中，并不存在大V，用户量也不是很多，所以采用推送模式。用户获得的关注列表发送的笔记，是要按照时间顺序排列，最新的排在第一个。而且要实现分页查询。</p>
+<h2 id="2-4-分页查询"><a href="#2-4-分页查询" class="headerlink" title="2.4.分页查询"></a>2.4.分页查询</h2><p>利用Redis实现，需要满足以下需求：</p>
+<ul>
+<li>一个用户对应一个收件箱</li>
+<li>收件箱中的笔记按照时间排序</li>
+<li>收件箱需要支持分页查询</li>
+</ul>
+<p>List和ZSet都能够实现排序，也能够实现分页查询（List按照下标查询，ZSet也能按照下标查询）。<br><strong>List分页查询的问题：</strong><br>&ensp;&ensp;&ensp;&ensp;收件箱中的笔记数量是会动态变化的，使用List可能会导致查询第二页时，第一页新增了一条笔记，导致原来第一页最后一条笔记成为第二页第一条笔记，查询到的第二页包含重复笔记。<br><strong>怎么解决这个问题？</strong><br>&ensp;&ensp;&ensp;&ensp;ZSet支持按照Score范围来查询，笔记排序的Score就是时间，我们记住第一页最后一条笔记的score，下次查询毫秒数&lt;记录的即可。<br><strong>实现：</strong><br>需要对发布笔记进行改造，不仅要保存到数据库，还要将blogId保存到粉丝的收件箱中。<br><strong>分页查询实现：</strong></p>
+<ul>
+<li>每一页n个元素相当于每一次从Redis中查询n个元素，上次查询最后一条记录的time，就是下次查询最大的time；</li>
+<li>每一页的count是固定的，如果score相同的元素个数超过了count，可能会存在跨页的问题，为了避免跳过数据，或者查询到重复数据，需要记录上一次查询中等于minTime的元素共有多少个，下一次直接用偏移量来开始即可。</li>
+<li>查询出来的只有BlogId，具体内容还是需要从数据库中查询，查询时同样需要拼接id，使用ORDER BY来维持正确顺序；</li>
+<li>针对查询出来的每个Blog，填充其用户信息和点赞信息。</li>
+</ul>
+<h1 id="三、附近商户"><a href="#三、附近商户" class="headerlink" title="三、附近商户"></a>三、附近商户</h1><p><strong>业务场景：</strong></p>
+<ul>
+<li>在首页，用户根据分类查看商铺列表，商铺列表是按照距离由近到远排序的。</li>
+<li>从代码角度理解，用户所在位置的经纬度传递给后端，然后分页查询。</li>
+</ul>
+<p><strong>实现逻辑：</strong><br>&ensp;&ensp;&ensp;&ensp;将商铺信息按照类别分组，一个类别保存到一个key中，value就是一系列的(lon,lat,member)，所谓member就是商铺id。在查询的时候，根据前端传递来的经纬度坐标，以用户坐标为圆心，指定半径查询。<br>&ensp;&ensp;&ensp;&ensp;这部分的分页查询难以实现from，只能实现end，所以比较麻烦。具体代码没有实现，这部分的功能不是重点。</p>
+<h1 id="四、用户签到"><a href="#四、用户签到" class="headerlink" title="四、用户签到"></a>四、用户签到</h1><h2 id="4-1-用户签到"><a href="#4-1-用户签到" class="headerlink" title="4.1.用户签到"></a>4.1.用户签到</h2><p>用户签到信息的保存，用BitMap可以用二进制，一个bit位表示某天用户是否签到。<br>在Redis中，底层是通过String数据结构来实现BitMap。<br><strong>实现逻辑：</strong><br>一个BitMap记录一个月的签到记录。将用户id和年月拼接成key。</p>
+<h2 id="4-2-签到统计"><a href="#4-2-签到统计" class="headerlink" title="4.2.签到统计"></a>4.2.签到统计</h2><p>统计到今天为止，连续签到了多少天。<br><strong>实现逻辑：</strong><br>从BitMap最后一个bit位往前统计，遇到0则停止统计。</p>
+
+    </div>
+
+    
+    
+    
+    <div>
+    
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+          
+
+    
+    </div>
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Daisybby
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://daisybby.github.io/2024/07/12/Redis-project-note5/" title="点赞、关注、附近商铺">https://daisybby.github.io/2024/07/12/Redis-project-note5/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Redis/" rel="tag"># Redis</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 数据库</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/07/01/redis-message-queue/" rel="prev" title="Redis消息队列">
+                  <i class="fa fa-angle-left"></i> Redis消息队列
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Daisybby</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">35k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">32 分钟</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
