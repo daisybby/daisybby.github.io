@@ -1021,7 +1021,7 @@
     <url>/2024/07/12/String-StringBuilder-and-StringBuffer/</url>
     <content><![CDATA[<h1 id="一、基础"><a href="#一、基础" class="headerlink" title="一、基础"></a>一、基础</h1><span id="more"></span>
 <ul>
-<li><strong>可变性：</strong>String是不可变的，StringBuilder和StringBuffer是可变的。</li>
+<li><strong>可变性：</strong> String是不可变的，StringBuilder和StringBuffer是可变的。</li>
 <li><strong>安全性：</strong> StringBuffer是线程安全的，而StringBuilder是非线程安全的。</li>
 </ul>
 <h1 id="二、String是怎么实现不可变的？"><a href="#二、String是怎么实现不可变的？" class="headerlink" title="二、String是怎么实现不可变的？"></a>二、String是怎么实现不可变的？</h1><p>从Java8的源码看：</p>
@@ -1050,6 +1050,7 @@
 ]]></content>
       <categories>
         <category>Java基础</category>
+        <category>基础概念和原理</category>
       </categories>
   </entry>
 </search>
