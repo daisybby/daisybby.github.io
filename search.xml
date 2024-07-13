@@ -1056,7 +1056,8 @@
   <entry>
     <title>Java泛型</title>
     <url>/2024/07/13/Java-Generics/</url>
-    <content><![CDATA[<h1 id="一、什么是泛型？"><a href="#一、什么是泛型？" class="headerlink" title="一、什么是泛型？"></a>一、什么是泛型？</h1><p>&ensp;&ensp;&ensp;&ensp;泛型是Java5引入的新特性，我们在开发时，可以自己定义<strong>类</strong>、<strong>接口</strong>或者<strong>方法</strong> 的数据类型。在泛型类实例化或者泛型方法调用时指定具体是什么数据类型。（我感觉和C++的模板功能很像）。<br>比如一个泛型类的定义：</p>
+    <content><![CDATA[<h1 id="一、什么是泛型？"><a href="#一、什么是泛型？" class="headerlink" title="一、什么是泛型？"></a>一、什么是泛型？</h1><span id="more"></span>
+<p>&ensp;&ensp;&ensp;&ensp;泛型是Java5引入的新特性，我们在开发时，可以自己定义<strong>类</strong>、<strong>接口</strong>或者<strong>方法</strong> 的数据类型。在泛型类实例化或者泛型方法调用时指定具体是什么数据类型。（我感觉和C++的模板功能很像）。<br>比如一个泛型类的定义：</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Result</span>&lt;T&gt;&#123;</span><br><span class="line">    <span class="keyword">private</span> T data;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">set</span><span class="params">(T data)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.data=data;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> T <span class="title function_">get</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>.data;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><strong>为什么要引入泛型类呢？</strong></p>
 <ol>

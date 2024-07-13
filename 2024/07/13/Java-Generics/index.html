@@ -19,15 +19,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"daisybby.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="一、什么是泛型？&ensp;&ensp;&ensp;&ensp;泛型是Java5引入的新特性，我们在开发时，可以自己定义类、接口或者方法 的数据类型。在泛型类实例化或者泛型方法调用时指定具体是什么数据类型。（我感觉和C++的模板功能很像）。比如一个泛型类的定义： 123456789public class Result&lt;T&gt;&#123;    private T data;    pu">
+    <meta name="description" content="一、什么是泛型？">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java泛型">
 <meta property="og:url" content="https://daisybby.github.io/2024/07/13/Java-Generics/index.html">
 <meta property="og:site_name" content="daisybby">
-<meta property="og:description" content="一、什么是泛型？&ensp;&ensp;&ensp;&ensp;泛型是Java5引入的新特性，我们在开发时，可以自己定义类、接口或者方法 的数据类型。在泛型类实例化或者泛型方法调用时指定具体是什么数据类型。（我感觉和C++的模板功能很像）。比如一个泛型类的定义： 123456789public class Result&lt;T&gt;&#123;    private T data;    pu">
+<meta property="og:description" content="一、什么是泛型？">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-07-13T10:24:20.000Z">
-<meta property="article:modified_time" content="2024-07-13T14:37:40.768Z">
+<meta property="article:modified_time" content="2024-07-13T14:44:59.427Z">
 <meta property="article:author" content="Daisybby">
 <meta name="twitter:card" content="summary">
 
@@ -225,7 +225,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2024-07-13 18:24:20 / 修改时间：22:37:40" itemprop="dateCreated datePublished" datetime="2024-07-13T18:24:20+08:00">2024-07-13</time>
+      <time title="创建时间：2024-07-13 18:24:20 / 修改时间：22:44:59" itemprop="dateCreated datePublished" datetime="2024-07-13T18:24:20+08:00">2024-07-13</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -261,7 +261,8 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="一、什么是泛型？"><a href="#一、什么是泛型？" class="headerlink" title="一、什么是泛型？"></a>一、什么是泛型？</h1><p>&ensp;&ensp;&ensp;&ensp;泛型是Java5引入的新特性，我们在开发时，可以自己定义<strong>类</strong>、<strong>接口</strong>或者<strong>方法</strong> 的数据类型。在泛型类实例化或者泛型方法调用时指定具体是什么数据类型。（我感觉和C++的模板功能很像）。<br>比如一个泛型类的定义：</p>
+    <div class="post-body" itemprop="articleBody"><h1 id="一、什么是泛型？"><a href="#一、什么是泛型？" class="headerlink" title="一、什么是泛型？"></a>一、什么是泛型？</h1><span id="more"></span>
+<p>&ensp;&ensp;&ensp;&ensp;泛型是Java5引入的新特性，我们在开发时，可以自己定义<strong>类</strong>、<strong>接口</strong>或者<strong>方法</strong> 的数据类型。在泛型类实例化或者泛型方法调用时指定具体是什么数据类型。（我感觉和C++的模板功能很像）。<br>比如一个泛型类的定义：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Result</span>&lt;T&gt;&#123;</span><br><span class="line">    <span class="keyword">private</span> T data;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">set</span><span class="params">(T data)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.data=data;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> T <span class="title function_">get</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>.data;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><strong>为什么要引入泛型类呢？</strong></p>
 <ol>
