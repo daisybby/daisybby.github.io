@@ -27,7 +27,7 @@
 <meta property="og:description" content="一、什么是泛型？">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-07-13T10:24:20.000Z">
-<meta property="article:modified_time" content="2024-07-13T14:44:59.427Z">
+<meta property="article:modified_time" content="2024-07-13T14:57:07.233Z">
 <meta property="article:author" content="Daisybby">
 <meta name="twitter:card" content="summary">
 
@@ -88,7 +88,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">10</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">7</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">18</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">10</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">7</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">19</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -154,7 +154,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-count">19</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -225,7 +225,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2024-07-13 18:24:20 / 修改时间：22:44:59" itemprop="dateCreated datePublished" datetime="2024-07-13T18:24:20+08:00">2024-07-13</time>
+      <time title="创建时间：2024-07-13 18:24:20 / 修改时间：22:57:07" itemprop="dateCreated datePublished" datetime="2024-07-13T18:24:20+08:00">2024-07-13</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -266,7 +266,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Result</span>&lt;T&gt;&#123;</span><br><span class="line">    <span class="keyword">private</span> T data;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">set</span><span class="params">(T data)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.data=data;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> T <span class="title function_">get</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>.data;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><strong>为什么要引入泛型类呢？</strong></p>
 <ol>
-<li><strong>方便：</strong>泛型提高了代码的复用性。在实际项目开发中，我们会定义通用的返回结果类。<a href="">为什么要定义通用返回结果类？</a><br>例如，List中保存的数据可能是Integer，也可能是String。如果不用泛型，就只能定义多个List接口，而泛型可以很好的解决这个问题。</li>
+<li><strong>方便：</strong>泛型提高了代码的复用性。在实际项目开发中，我们会定义通用的返回结果类。<a href="https://daisybby.github.io/2024/07/13/why-to-read-common-Result/">为什么要定义通用返回结果类？</a><br>例如，List中保存的数据可能是Integer，也可能是String。如果不用泛型，就只能定义多个List接口，而泛型可以很好的解决这个问题。</li>
 <li><strong>安全：</strong>在泛型之前，一些需要通用性的功能可以用Object来实现，毕竟Object是一切类的父类，Object的类型转换是在<strong>运行时</strong>检查的，如果类型转换出错，程序直接崩溃；而泛型是在<strong>编译时</strong>做类型检查，问题提前暴露出来。</li>
 </ol>
 <h1 id="二、泛型是怎么实现的？"><a href="#二、泛型是怎么实现的？" class="headerlink" title="二、泛型是怎么实现的？"></a>二、泛型是怎么实现的？</h1><p>在底层，泛型是通过<strong>类型擦除</strong>来实现的。</p>

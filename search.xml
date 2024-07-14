@@ -1061,7 +1061,7 @@
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Result</span>&lt;T&gt;&#123;</span><br><span class="line">    <span class="keyword">private</span> T data;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">set</span><span class="params">(T data)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.data=data;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> T <span class="title function_">get</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>.data;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><strong>为什么要引入泛型类呢？</strong></p>
 <ol>
-<li><strong>方便：</strong>泛型提高了代码的复用性。在实际项目开发中，我们会定义通用的返回结果类。<a href="">为什么要定义通用返回结果类？</a><br>例如，List中保存的数据可能是Integer，也可能是String。如果不用泛型，就只能定义多个List接口，而泛型可以很好的解决这个问题。</li>
+<li><strong>方便：</strong>泛型提高了代码的复用性。在实际项目开发中，我们会定义通用的返回结果类。<a href="https://daisybby.github.io/2024/07/13/why-to-read-common-Result/">为什么要定义通用返回结果类？</a><br>例如，List中保存的数据可能是Integer，也可能是String。如果不用泛型，就只能定义多个List接口，而泛型可以很好的解决这个问题。</li>
 <li><strong>安全：</strong>在泛型之前，一些需要通用性的功能可以用Object来实现，毕竟Object是一切类的父类，Object的类型转换是在<strong>运行时</strong>检查的，如果类型转换出错，程序直接崩溃；而泛型是在<strong>编译时</strong>做类型检查，问题提前暴露出来。</li>
 </ol>
 <h1 id="二、泛型是怎么实现的？"><a href="#二、泛型是怎么实现的？" class="headerlink" title="二、泛型是怎么实现的？"></a>二、泛型是怎么实现的？</h1><p>在底层，泛型是通过<strong>类型擦除</strong>来实现的。</p>
@@ -1097,6 +1097,43 @@
   <entry>
     <title>why to read common Result</title>
     <url>/2024/07/13/why-to-read-common-Result/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<h1 id="一、"><a href="#一、" class="headerlink" title="一、"></a>一、</h1>]]></content>
+      <categories>
+        <category>Redis项目笔记</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Java反射机制</title>
+    <url>/2024/07/13/Java-Reflection/</url>
+    <content><![CDATA[<h1 id="一、基本概念"><a href="#一、基本概念" class="headerlink" title="一、基本概念"></a>一、基本概念</h1><p>反射机制是指程序在<strong>运行时</strong>能够获得自身的信息。<br>Java的反射机制可以实现：</p>
+<ul>
+<li>在运行时判断任意对象所属类；</li>
+<li>在运行时判断一个类所具有的成员变量和方法</li>
+<li>在运行时调用对象的方法</li>
+<li>在运行时构造任意类的对象</li>
+</ul>
+<p>反射机制使得程序开发更加灵活，在运行时能够执行更多操作，但是反射机制也带来了一些问题:</p>
+<ol>
+<li>代码可读性和可维护性降低</li>
+<li>反射代码的执行性能低</li>
+<li>反射破坏了封装性</li>
+</ol>
+<h1 id="二、为什么反射速度慢？"><a href="#二、为什么反射速度慢？" class="headerlink" title="二、为什么反射速度慢？"></a>二、为什么反射速度慢？</h1><ol>
+<li>反射涉及到动态解析的类型，因此不能执行某些Java虚拟机优化</li>
+<li>使用反射时，单数需要包装成Object[]类型，但是方法真正执行时又要解包；打包和解包的操作不仅耗费时间，中间还会产生很多对象，更容易导致GC；</li>
+<li>反射调用方法时会从方法数组中遍历查找，检查方法可见性，这些操作都比较耗时；</li>
+<li>参数额外检查。</li>
+</ol>
+<h1 id="三、反射常见的应用场景"><a href="#三、反射常见的应用场景" class="headerlink" title="三、反射常见的应用场景"></a>三、反射常见的应用场景</h1><ol>
+<li>动态代理</li>
+<li>BeanUtils中的属性拷贝</li>
+<li>RPC框架</li>
+<li>Spring的IOC&#x2F;DI</li>
+</ol>
+<h1 id="四、反射和Class的关系"><a href="#四、反射和Class的关系" class="headerlink" title="四、反射和Class的关系"></a>四、反射和Class的关系</h1><p>Java的Class类时反射机制的基础。被装入到JVM中的所有类，都有一个关联的Class对象，通过这个对象，可以实现被装入类的详细信息访问。</p>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+      </categories>
   </entry>
 </search>

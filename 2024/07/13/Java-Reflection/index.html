@@ -19,29 +19,27 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"daisybby.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="1.对象序列化后保存到Redis保存的是序列化后的对象，这种方式在Redis中很难看出来对象的含义。">
+    <meta name="description" content="一、基本概念反射机制是指程序在运行时能够获得自身的信息。Java的反射机制可以实现：  在运行时判断任意对象所属类； 在运行时判断一个类所具有的成员变量和方法 在运行时调用对象的方法 在运行时构造任意类的对象  反射机制使得程序开发更加灵活，在运行时能够执行更多操作，但是反射机制也带来了一些问题:  代码可读性和可维护性降低 反射代码的执行性能低 反射破坏了封装性  二、为什么反射速度慢？ 反射涉">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Redis保存对象为String还是hash？">
-<meta property="og:url" content="https://daisybby.github.io/2024/06/23/save-object-as-string-or-hash/index.html">
+<meta property="og:title" content="Java反射机制">
+<meta property="og:url" content="https://daisybby.github.io/2024/07/13/Java-Reflection/index.html">
 <meta property="og:site_name" content="daisybby">
-<meta property="og:description" content="1.对象序列化后保存到Redis保存的是序列化后的对象，这种方式在Redis中很难看出来对象的含义。">
+<meta property="og:description" content="一、基本概念反射机制是指程序在运行时能够获得自身的信息。Java的反射机制可以实现：  在运行时判断任意对象所属类； 在运行时判断一个类所具有的成员变量和方法 在运行时调用对象的方法 在运行时构造任意类的对象  反射机制使得程序开发更加灵活，在运行时能够执行更多操作，但是反射机制也带来了一些问题:  代码可读性和可维护性降低 反射代码的执行性能低 反射破坏了封装性  二、为什么反射速度慢？ 反射涉">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-06-23T05:54:38.000Z">
-<meta property="article:modified_time" content="2024-06-23T07:04:55.241Z">
+<meta property="article:published_time" content="2024-07-13T14:58:16.000Z">
+<meta property="article:modified_time" content="2024-07-14T08:47:28.491Z">
 <meta property="article:author" content="Daisybby">
-<meta property="article:tag" content="Redis">
-<meta property="article:tag" content="数据库">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://daisybby.github.io/2024/06/23/save-object-as-string-or-hash/">
+<link rel="canonical" href="https://daisybby.github.io/2024/07/13/Java-Reflection/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/06/23/save-object-as-string-or-hash/","path":"2024/06/23/save-object-as-string-or-hash/","title":"Redis保存对象为String还是hash？"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/07/13/Java-Reflection/","path":"2024/07/13/Java-Reflection/","title":"Java反射机制"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Redis保存对象为String还是hash？ | daisybby</title>
+<title>Java反射机制 | daisybby</title>
   
 
 
@@ -141,7 +139,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E5%AF%B9%E8%B1%A1%E5%BA%8F%E5%88%97%E5%8C%96%E5%90%8E%E4%BF%9D%E5%AD%98%E5%88%B0Redis"><span class="nav-text">1.对象序列化后保存到Redis</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E5%B0%86%E5%AF%B9%E8%B1%A1%E8%BD%AC%E6%8D%A2%E6%88%90Json%E6%A0%BC%E5%BC%8F"><span class="nav-text">2.将对象转换成Json格式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E7%94%A8hash%E5%AD%98%E5%82%A8%E5%AF%B9%E8%B1%A1"><span class="nav-text">3.用hash存储对象</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E6%80%8E%E4%B9%88%E9%80%89%E5%8F%96%E5%91%A2%EF%BC%9F"><span class="nav-text">4.怎么选取呢？</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-text">一、基本概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E5%8F%8D%E5%B0%84%E9%80%9F%E5%BA%A6%E6%85%A2%EF%BC%9F"><span class="nav-text">二、为什么反射速度慢？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E5%8F%8D%E5%B0%84%E5%B8%B8%E8%A7%81%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-text">三、反射常见的应用场景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E5%8F%8D%E5%B0%84%E5%92%8CClass%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-text">四、反射和Class的关系</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -197,7 +195,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/06/23/save-object-as-string-or-hash/">
+    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/07/13/Java-Reflection/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/header.jpg">
@@ -210,12 +208,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Redis保存对象为String还是hash？ | daisybby">
+      <meta itemprop="name" content="Java反射机制 | daisybby">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Redis保存对象为String还是hash？
+          Java反射机制
         </h1>
 
         <div class="post-meta-container">
@@ -225,9 +223,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2024-06-23 13:54:38 / 修改时间：15:04:55" itemprop="dateCreated datePublished" datetime="2024-06-23T13:54:38+08:00">2024-06-23</time>
+      <time title="创建时间：2024-07-13 22:58:16" itemprop="dateCreated datePublished" datetime="2024-07-13T22:58:16+08:00">2024-07-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-07-14 16:47:28" itemprop="dateModified" datetime="2024-07-14T16:47:28+08:00">2024-07-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -235,7 +239,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E5%92%8C%E5%8E%9F%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">基础概念和原理</span></a>
+          <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
         </span>
     </span>
 
@@ -246,7 +250,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>606</span>
+      <span>466</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -263,42 +267,32 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="1-对象序列化后保存到Redis"><a href="#1-对象序列化后保存到Redis" class="headerlink" title="1.对象序列化后保存到Redis"></a>1.对象序列化后保存到Redis</h1><p>保存的是序列化后的对象，这种方式在Redis中很难看出来对象的含义。</p>
-<span id="more"></span>
-<p><strong>优点：</strong></p>
+    <div class="post-body" itemprop="articleBody"><h1 id="一、基本概念"><a href="#一、基本概念" class="headerlink" title="一、基本概念"></a>一、基本概念</h1><p>反射机制是指程序在<strong>运行时</strong>能够获得自身的信息。<br>Java的反射机制可以实现：</p>
 <ul>
-<li><strong>简洁性：</strong> 直接序列化整个对象，不需要考虑字段的单独存储。</li>
-<li><strong>原子性：</strong> 对整个对象进行存取。</li>
+<li>在运行时判断任意对象所属类；</li>
+<li>在运行时判断一个类所具有的成员变量和方法</li>
+<li>在运行时调用对象的方法</li>
+<li>在运行时构造任意类的对象</li>
 </ul>
-<p><strong>缺点：</strong></p>
-<ul>
-<li><strong>序列化依赖：</strong> 依赖于特定的序列化库，可能影响性能和跨语言使用。</li>
-<li><strong>可读性：</strong> 二进制格式的字符串不易于阅读和调试。</li>
-<li><strong>灵活性差：</strong> 如果对象结构发生变化，需要重新序列化。</li>
-</ul>
-<h1 id="2-将对象转换成Json格式"><a href="#2-将对象转换成Json格式" class="headerlink" title="2.将对象转换成Json格式"></a>2.将对象转换成Json格式</h1><p>Redis中保存的是JSON格式的字符串，可以清晰阅读对象的内容。<br><strong>优点：</strong> </p>
-<ul>
-<li><strong>跨语言性：</strong> JSON是一种跨语言的格式，易于在不同语言和系统之间交换数据。</li>
-<li><strong>可读性：</strong> JSON格式的数据易于阅读。</li>
-</ul>
-<p><strong>缺点：</strong></p>
-<ul>
-<li><strong>灵活性：</strong>不支持对象单个属性的存取，如果要修改对象属性只能整个对象读取修改重建。</li>
-<li><strong>复杂结构存储：</strong>不适合存储复杂的对象结构，比如对象存在嵌套。</li>
-</ul>
-<h1 id="3-用hash存储对象"><a href="#3-用hash存储对象" class="headerlink" title="3.用hash存储对象"></a>3.用hash存储对象</h1><p>Redis的key作为整个hash结构在Redis中的索引；<br>fieldName是对象的属性名称；<br>fieldValue就是属性值。<br><strong>优点：</strong></p>
-<ul>
-<li><strong>可读性：</strong>hash保存对象结构清晰；</li>
-<li><strong>灵活性：</strong>支持对单个属性的操作，只需要根据对应的fieldName来设置fieldValue即可。</li>
-</ul>
-<p><strong>缺点：</strong></p>
-<ul>
-<li>处理嵌套的对象比较麻烦。</li>
-</ul>
-<h1 id="4-怎么选取呢？"><a href="#4-怎么选取呢？" class="headerlink" title="4.怎么选取呢？"></a>4.怎么选取呢？</h1><p><strong>更新频繁的数据：</strong> 可以通过hash结构存储对象。<br><strong>读频繁的数据：</strong> 对于更新频率比较低，但是读取比较频繁的数据，选择string是比较好的方案。</p>
-<blockquote>
-<p>实际业务开发中，可以结合string和hash。</p>
-</blockquote>
+<p>反射机制使得程序开发更加灵活，在运行时能够执行更多操作，但是反射机制也带来了一些问题:</p>
+<ol>
+<li>代码可读性和可维护性降低</li>
+<li>反射代码的执行性能低</li>
+<li>反射破坏了封装性</li>
+</ol>
+<h1 id="二、为什么反射速度慢？"><a href="#二、为什么反射速度慢？" class="headerlink" title="二、为什么反射速度慢？"></a>二、为什么反射速度慢？</h1><ol>
+<li>反射涉及到动态解析的类型，因此不能执行某些Java虚拟机优化</li>
+<li>使用反射时，单数需要包装成Object[]类型，但是方法真正执行时又要解包；打包和解包的操作不仅耗费时间，中间还会产生很多对象，更容易导致GC；</li>
+<li>反射调用方法时会从方法数组中遍历查找，检查方法可见性，这些操作都比较耗时；</li>
+<li>参数额外检查。</li>
+</ol>
+<h1 id="三、反射常见的应用场景"><a href="#三、反射常见的应用场景" class="headerlink" title="三、反射常见的应用场景"></a>三、反射常见的应用场景</h1><ol>
+<li>动态代理</li>
+<li>BeanUtils中的属性拷贝</li>
+<li>RPC框架</li>
+<li>Spring的IOC&#x2F;DI</li>
+</ol>
+<h1 id="四、反射和Class的关系"><a href="#四、反射和Class的关系" class="headerlink" title="四、反射和Class的关系"></a>四、反射和Class的关系</h1><p>Java的Class类时反射机制的基础。被装入到JVM中的所有类，都有一个关联的Class对象，通过这个对象，可以实现被装入类的详细信息访问。</p>
 
     </div>
 
@@ -328,7 +322,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://daisybby.github.io/2024/06/23/save-object-as-string-or-hash/" title="Redis保存对象为String还是hash？">https://daisybby.github.io/2024/06/23/save-object-as-string-or-hash/</a>
+      <a href="https://daisybby.github.io/2024/07/13/Java-Reflection/" title="Java反射机制">https://daisybby.github.io/2024/07/13/Java-Reflection/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -336,23 +330,16 @@
 </ul>
 </div>
 
-          <div class="post-tags">
-              <a href="/tags/Redis/" rel="tag"># Redis</a>
-              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 数据库</a>
-          </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2024/06/22/Bloom-Filter/" rel="prev" title="布隆过滤器">
-                  <i class="fa fa-angle-left"></i> 布隆过滤器
+                <a href="/2024/07/13/why-to-read-common-Result/" rel="prev" title="why to read common Result">
+                  <i class="fa fa-angle-left"></i> why to read common Result
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2024/06/23/redis-project-note2/" rel="next" title="Redis实战项目笔记二：查询缓存">
-                  Redis实战项目笔记二：查询缓存 <i class="fa fa-angle-right"></i>
-                </a>
             </div>
           </div>
     </footer>
