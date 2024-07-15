@@ -1113,7 +1113,8 @@
   <entry>
     <title>Java反射机制</title>
     <url>/2024/07/13/Java-Reflection/</url>
-    <content><![CDATA[<h1 id="一、基本概念"><a href="#一、基本概念" class="headerlink" title="一、基本概念"></a>一、基本概念</h1><p>反射机制是指程序在<strong>运行时</strong>能够获得自身的信息。<br>Java的反射机制可以实现：</p>
+    <content><![CDATA[<h1 id="一、基本概念"><a href="#一、基本概念" class="headerlink" title="一、基本概念"></a>一、基本概念</h1><span id="more"></span>
+<p>反射机制是指程序在<strong>运行时</strong>能够获得自身的信息。<br>Java的反射机制可以实现：</p>
 <ul>
 <li>在运行时判断任意对象所属类；</li>
 <li>在运行时判断一个类所具有的成员变量和方法</li>
