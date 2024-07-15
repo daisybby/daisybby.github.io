@@ -19,27 +19,23 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"daisybby.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="一、基本概念">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Java反射机制">
-<meta property="og:url" content="https://daisybby.github.io/2024/07/13/Java-Reflection/index.html">
+    <meta property="og:type" content="website">
+<meta property="og:title" content="daisybby">
+<meta property="og:url" content="https://daisybby.github.io/archives/2024/page/3/index.html">
 <meta property="og:site_name" content="daisybby">
-<meta property="og:description" content="一、基本概念">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-07-13T14:58:16.000Z">
-<meta property="article:modified_time" content="2024-07-15T08:34:59.115Z">
 <meta property="article:author" content="Daisybby">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://daisybby.github.io/2024/07/13/Java-Reflection/">
+<link rel="canonical" href="https://daisybby.github.io/archives/2024/page/3/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/07/13/Java-Reflection/","path":"2024/07/13/Java-Reflection/","title":"Java反射机制"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"archives/2024/page/3/index.html","title":""}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Java反射机制 | daisybby</title>
+<title>归档 | daisybby</title>
   
 
 
@@ -72,7 +68,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <p class="site-title">daisybby</p>
+      <h1 class="site-title">daisybby</h1>
       <i class="logo-line"></i>
     </a>
       <p class="site-subtitle" itemprop="description">Every step of some daisy.</p>
@@ -126,7 +122,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+    <div class="sidebar-inner sidebar-overview-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -139,7 +135,6 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-text">一、基本概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E5%8F%8D%E5%B0%84%E9%80%9F%E5%BA%A6%E6%85%A2%EF%BC%9F"><span class="nav-text">二、为什么反射速度慢？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E5%8F%8D%E5%B0%84%E5%B8%B8%E8%A7%81%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-text">三、反射常见的应用场景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E5%8F%8D%E5%B0%84%E5%92%8CClass%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-text">四、反射和Class的关系</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -184,176 +179,52 @@
 
     </div>
 
-    <div class="main-inner post posts-expand">
+    <div class="main-inner archive posts-collapse">
 
 
   
-
-
-<div class="post-block">
   
   
+  <div class="post-block">
+    <div class="post-content">
+      <div class="collection-title">
+        <span class="collection-header">嗯..! 目前共计 21 篇日志。 继续努力。</span>
+      </div>
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/07/13/Java-Reflection/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="Daisybby">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="daisybby">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Java反射机制 | daisybby">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          Java反射机制
-        </h1>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2024-07-13 22:58:16" itemprop="dateCreated datePublished" datetime="2024-07-13T22:58:16+08:00">2024-07-13</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-07-15 16:34:59" itemprop="dateModified" datetime="2024-07-15T16:34:59+08:00">2024-07-15</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>466</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody"><h1 id="一、基本概念"><a href="#一、基本概念" class="headerlink" title="一、基本概念"></a>一、基本概念</h1><span id="more"></span>
-<p>反射机制是指程序在<strong>运行时</strong>能够获得自身的信息。<br>Java的反射机制可以实现：</p>
-<ul>
-<li>在运行时判断任意对象所属类；</li>
-<li>在运行时判断一个类所具有的成员变量和方法</li>
-<li>在运行时调用对象的方法</li>
-<li>在运行时构造任意类的对象</li>
-</ul>
-<p>反射机制使得程序开发更加灵活，在运行时能够执行更多操作，但是反射机制也带来了一些问题:</p>
-<ol>
-<li>代码可读性和可维护性降低</li>
-<li>反射代码的执行性能低</li>
-<li>反射破坏了封装性</li>
-</ol>
-<h1 id="二、为什么反射速度慢？"><a href="#二、为什么反射速度慢？" class="headerlink" title="二、为什么反射速度慢？"></a>二、为什么反射速度慢？</h1><ol>
-<li>反射涉及到动态解析的类型，因此不能执行某些Java虚拟机优化</li>
-<li>使用反射时，单数需要包装成Object[]类型，但是方法真正执行时又要解包；打包和解包的操作不仅耗费时间，中间还会产生很多对象，更容易导致GC；</li>
-<li>反射调用方法时会从方法数组中遍历查找，检查方法可见性，这些操作都比较耗时；</li>
-<li>参数额外检查。</li>
-</ol>
-<h1 id="三、反射常见的应用场景"><a href="#三、反射常见的应用场景" class="headerlink" title="三、反射常见的应用场景"></a>三、反射常见的应用场景</h1><ol>
-<li>动态代理</li>
-<li>BeanUtils中的属性拷贝</li>
-<li>RPC框架</li>
-<li>Spring的IOC&#x2F;DI</li>
-</ol>
-<h1 id="四、反射和Class的关系"><a href="#四、反射和Class的关系" class="headerlink" title="四、反射和Class的关系"></a>四、反射和Class的关系</h1><p>Java的Class类时反射机制的基础。被装入到JVM中的所有类，都有一个关联的Class对象，通过这个对象，可以实现被装入类的详细信息访问。</p>
-
+      
+    <div class="collection-year">
+      <span class="collection-header">2024<span class="collection-year-count">21</span></span>
     </div>
 
-    
-    
-    
-    <div>
-    
-    <div>
-    
-        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
-    
-</div>
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <div class="post-meta-container">
+        <time itemprop="dateCreated"
+              datetime="2024-06-17T17:26:03+08:00"
+              content="2024-06-17">
+          06-17
+        </time>
+      </div>
 
-          
+      <div class="post-title">
+          <a class="post-title-link" href="/2024/06/17/Redis%E6%B3%A8%E5%86%8C%E4%B8%BAwindows%E6%9C%8D%E5%8A%A1/" itemprop="url">
+            <span itemprop="name">Redis注册为windows服务</span>
+          </a>
+      </div>
 
-    
-    </div>
-
-    <footer class="post-footer">
-          
-
-<div class="post-copyright">
-<ul>
-  <li class="post-copyright-author">
-      <strong>本文作者： </strong>Daisybby
-  </li>
-  <li class="post-copyright-link">
-      <strong>本文链接：</strong>
-      <a href="https://daisybby.github.io/2024/07/13/Java-Reflection/" title="Java反射机制">https://daisybby.github.io/2024/07/13/Java-Reflection/</a>
-  </li>
-  <li class="post-copyright-license">
-      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
-  </li>
-</ul>
-</div>
-
-
-        
-
-          <div class="post-nav">
-            <div class="post-nav-item">
-                <a href="/2024/07/13/why-to-read-common-Result/" rel="prev" title="统一结果返回类">
-                  <i class="fa fa-angle-left"></i> 统一结果返回类
-                </a>
-            </div>
-            <div class="post-nav-item">
-                <a href="/2024/07/15/all-appoaches-to-create-object/" rel="next" title="Java中创建对象有哪些方式？">
-                  Java中创建对象有哪些方式？ <i class="fa fa-angle-right"></i>
-                </a>
-            </div>
-          </div>
-    </footer>
+      
+    </header>
   </article>
-</div>
 
 
-
-
-
+    </div>
+  </div>
+  
+  
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/archives/2024/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/archives/2024/">1</a><a class="page-number" href="/archives/2024/page/2/">2</a><span class="page-number current">3</span>
+  </nav>
 
 </div>
   </main>

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/medium.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/small.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"daisybby.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="一、Java代理模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java代理模式">
+<meta property="og:url" content="https://daisybby.github.io/2024/07/15/Java-Dynamic-proxy/index.html">
+<meta property="og:site_name" content="daisybby">
+<meta property="og:description" content="一、Java代理模式">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://daisybby.github.io/2024/07/15/Java-Dynamic-proxy/img1.png">
+<meta property="article:published_time" content="2024-07-15T08:37:35.000Z">
+<meta property="article:modified_time" content="2024-07-15T11:00:09.729Z">
+<meta property="article:author" content="Daisybby">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://daisybby.github.io/2024/07/15/Java-Dynamic-proxy/img1.png">
+
+
+<link rel="canonical" href="https://daisybby.github.io/2024/07/15/Java-Dynamic-proxy/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/07/15/Java-Dynamic-proxy/","path":"2024/07/15/Java-Dynamic-proxy/","title":"Java代理模式"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Java代理模式 | daisybby</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">daisybby</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Every step of some daisy.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">10</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">7</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">21</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81Java%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F"><span class="nav-text">一、Java代理模式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E9%9D%99%E6%80%81%E4%BB%A3%E7%90%86"><span class="nav-text">二、静态代理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="nav-text">三、动态代理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-JDK%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E5%AE%9E%E7%8E%B0"><span class="nav-text">3.1.JDK动态代理实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-Cglib%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="nav-text">3.2.Cglib动态代理</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Daisybby"
+      src="/images/header.jpg">
+  <p class="site-author-name" itemprop="name">Daisybby</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/07/15/Java-Dynamic-proxy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="Daisybby">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="daisybby">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Java代理模式 | daisybby">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java代理模式
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-07-15 16:37:35 / 修改时间：19:00:09" itemprop="dateCreated datePublished" datetime="2024-07-15T16:37:35+08:00">2024-07-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="一、Java代理模式"><a href="#一、Java代理模式" class="headerlink" title="一、Java代理模式"></a>一、Java代理模式</h1><span id="more"></span>
+<p><strong>1. 是什么？</strong><br>代理模式是设计模式的一种。<br>代理模式允许通过代理独享访问目标对象，而且还能够在不修改被代理的目标对象的前提下，对目标对象进行功能的增强和扩展。<br><strong>2.实现方式</strong><br>Java有静态代理和动态代理两种实现方式。<br>个人理解静态代理就是程序员自己编写的增强代码，并没有涉及到别的库或者框架之类。<br><strong>两种方式的主要区别：</strong></p>
+<ul>
+<li>静态代理在<strong>编译时</strong>就确定了代理对象和目标对象之间的关系。</li>
+<li>动态代理在<strong>运行时</strong>才能确定代理对象和目标对象之间的关系。</li>
+</ul>
+<h1 id="二、静态代理"><a href="#二、静态代理" class="headerlink" title="二、静态代理"></a>二、静态代理</h1><p>关键点：</p>
+<ul>
+<li>代理类需要程序员手动编写，且代理类必须与目标类实现相同的接口；</li>
+<li>代理类内部持有目标类的引用；</li>
+<li>先调用代理对象方法，再转而调用目标对象的方法。<br>动态代理的缺点：</li>
+<li>需要对每一个被代理的类手动编写代理对象，增加了程序员的代码量；</li>
+<li>代理对象和目标对象之间的关系在编译时就已经确定，灵活性比较差；</li>
+<li>代理类是必须和目标类实现相同的接口。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Animal</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">eat</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//实现一个具体类</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Dog</span> <span class="keyword">implements</span> <span class="title class_">Animal</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">eat</span><span class="params">()</span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;A dog is eating!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//实现静态代理类</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DogProxy</span> <span class="keyword">implements</span> <span class="title class_">Animal</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Animal animal;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">DogProxy</span><span class="params">(Animal animal)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.animal=animal;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">eat</span><span class="params">()</span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;DogProxy start:&quot;</span>);</span><br><span class="line">        animal.eat();</span><br><span class="line">        System.out.println(<span class="string">&quot;DogProxy end:&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>说实话，感觉就是基于代理模式写的普通代码。</p>
+</blockquote>
+</li>
+</ul>
+<h1 id="三、动态代理"><a href="#三、动态代理" class="headerlink" title="三、动态代理"></a>三、动态代理</h1><ol>
+<li><strong>JDK动态代理：</strong>Java.lang.reflect的Proxy类提供了InvocationHandler接口，能够生成动态代理类。</li>
+<li><strong>Cglib动态代理：</strong>Cglib是第三方代码生成类库，运行时能够在内存中动态生成一个子类对象，从而实现对目标对象功能的扩展。</li>
+</ol>
+<p><strong>两种方式之间的区别：</strong></p>
+<ol>
+<li>使用JDK动态代理的对象必须实现一个或多个接口；</li>
+<li>Cglib可以在运行期扩展Java类，实现Java接口，被Spring AOP等框架广泛使用，不需要类必须实现接口，能够达到代理类无侵入。</li>
+</ol>
+<h2 id="3-1-JDK动态代理实现"><a href="#3-1-JDK动态代理实现" class="headerlink" title="3.1.JDK动态代理实现"></a>3.1.JDK动态代理实现</h2><ol>
+<li>定义一个接口，比如常用的service接口等；</li>
+<li>创建InvocationHandler接口的实现类，这个类负责目标对象的方法调用+额外的增强功能；</li>
+<li>使用Proxy类的newProxyInstance方法生成一个代理对象，传入目标对象.class的classLoader和接口数组、以及第2步实现的InvocationHandler子类对象</li>
+<li>通过代理对象调用目标对象的方法。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Dog</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Dog</span><span class="params">(String name)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.name=name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">eat</span><span class="params">()</span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;A dog is eating!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyInvocationHandler</span> <span class="keyword">implements</span> <span class="title class_">InvocationHandler</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Object targetObject;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">MyInvocationHandler</span><span class="params">(Object targetObject)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.targetObject=targetObject;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">invoke</span><span class="params">(Object proxy,Method method,Object[] args)</span> <span class="keyword">throw</span> Exception&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;动态代理开始。&quot;</span>);</span><br><span class="line">        Object result=method.invoke(targetObject,args);</span><br><span class="line">        System.out.println(<span class="string">&quot;动态代理结束。&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Test</span>&#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span>&#123;</span><br><span class="line">        Dog dog=<span class="keyword">new</span> <span class="title class_">dog</span>();</span><br><span class="line">        MyInvocationHandler handler=<span class="keyword">new</span> <span class="title class_">MyInvocationHandler</span>(dog);</span><br><span class="line">        <span class="comment">//获取代理对象</span></span><br><span class="line">        Dog proxy=(Dog)Proxy.newProxyInstance(dog.class.getClassLoader(),<span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;dog.class&#125;,handler);</span><br><span class="line">        proxy.eat();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+个人理解的JDK动态代理：<img src="/2024/07/15/Java-Dynamic-proxy/img1.png" class="" title="img1">
+proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强代码段+method.invoke-&gt;跳转到目标对象的方法执行-&gt;返回到InvocationHandler的invoke，执行剩下的增强代码段。<br><strong>InvocationHandler接口：</strong><br>实现JDK动态代理，需要实现InvocationHandler接口，创建一个调用处理程序，在创建代理对象的时候将调用处理程序handler传入。<br>接口中有一个invoke方法，这是方法调用的核心方法。<br>方法的参数表：</li>
+</ol>
+<ul>
+<li>Object：目标对象</li>
+<li>Method：被调用的方法</li>
+<li>Object[]：参数列表，被打包成了Object数组<br>方法返回类型是Object。<br>在invoke方法中实现目标方法的增强，也是在这里通过Method.invoke调用目标对象的方法。<br><strong>Proxy类：</strong><br>用Proxy.newProxyInstancce方法来创建代理对象。<br>方法参数：</li>
+<li>ClassLoader：目标对象所属类的类加载器；</li>
+<li>Class&lt;?&gt;[] interfaces：目标对象所实现接口的数组，以便代理对象实现这些接口，只有实现这些接口才能调用接口中的方法。</li>
+<li>InvocationHandler：调用处理器。<blockquote>
+<p>关于动态代理灵活性的思考：<br>在实现InvocationHandler接口的时候，targetObject的类型是Object，这意味着可以传入任意类的对象；在invoke方法中，也可以调用对象的任意方法。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="3-2-Cglib动态代理"><a href="#3-2-Cglib动态代理" class="headerlink" title="3.2.Cglib动态代理"></a>3.2.Cglib动态代理</h2><p>Cglib在运行时动态生成被代理类的<strong>子类</strong>，是通过<strong>继承</strong>的方式实现动态代理，所以如果类被声明为final，则无法用CGLIB来实现动态代理。</p>
+
+    </div>
+
+    
+    
+    
+    <div>
+    
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+          
+
+    
+    </div>
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Daisybby
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://daisybby.github.io/2024/07/15/Java-Dynamic-proxy/" title="Java代理模式">https://daisybby.github.io/2024/07/15/Java-Dynamic-proxy/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/07/15/all-appoaches-to-create-object/" rel="prev" title="Java中创建对象有哪些方式？">
+                  <i class="fa fa-angle-left"></i> Java中创建对象有哪些方式？
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Daisybby</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">50k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">45 分钟</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
