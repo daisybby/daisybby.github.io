@@ -1144,4 +1144,25 @@
         <category>Java基础</category>
       </categories>
   </entry>
+  <entry>
+    <title>Java中创建对象有哪些方式？</title>
+    <url>/2024/07/15/all-appoaches-to-create-object/</url>
+    <content><![CDATA[<h1 id="1-使用new关键字"><a href="#1-使用new关键字" class="headerlink" title="1.使用new关键字"></a>1.使用new关键字</h1><span id="more"></span>
+<p>这是我们最常见的、最简单的创建对象方法，通过调用构造函数来创建对象。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">User user=<span class="keyword">new</span> <span class="title class_">User</span>();</span><br></pre></td></tr></table></figure>
+<h1 id="2-使用反射机制"><a href="#2-使用反射机制" class="headerlink" title="2.使用反射机制"></a>2.使用反射机制</h1><h2 id="2-1-使用Java-lang-Class地newInstance-方法"><a href="#2-1-使用Java-lang-Class地newInstance-方法" class="headerlink" title="2.1.使用Java.lang.Class地newInstance()方法"></a>2.1.使用Java.lang.Class地newInstance()方法</h2><p>Java中每个类都有唯一的Class对象，通过Class对象调用newInstance()创建一个对象。通过这种方法我们可以调用<strong>无参</strong>的构造函数。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//通过类的路径来获取Class对象</span></span><br><span class="line">User user=(User)Class.forName(<span class="string">&quot;xx.xx.User&quot;</span>).newInstance();</span><br><span class="line"><span class="comment">//或者是通过类直接获取Class对象</span></span><br><span class="line">User user=User.Class.newInstance();</span><br></pre></td></tr></table></figure>
+<h2 id="2-2-使用Java-lang-reflect-Constructor类的newInstance-方法"><a href="#2-2-使用Java-lang-reflect-Constructor类的newInstance-方法" class="headerlink" title="2.2.使用Java.lang.reflect.Constructor类的newInstance()方法"></a>2.2.使用Java.lang.reflect.Constructor类的newInstance()方法</h2><p>通过这种方法，我们可以调用<strong>有参或者无参</strong>的构造函数。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//获取类的构造器</span></span><br><span class="line">Constructor constructor=User.class.getConstructor();</span><br><span class="line">User user=constructor.newInstance();</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>需要注意的是，以上两种方法只能调用被public修饰的构造方法，Class类是不能访问的，会抛出IllegalAccessException异常；Contructor虽然可以获取到private或者Protected的构造函数，但是调用时也会抛出IllegalAccessException异常，需要constructor.setAccessible(true)来修改访问权限。<br>例如:</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyClass</span>()&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">MyClass</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> Class Main&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            Constructor&lt;MyClass&gt; constructor=MyClass.class.getDeclaredContructor();</span><br><span class="line">            constructor.setAccessible(<span class="literal">true</span>);</span><br><span class="line">            MyClass instance=constructor.newInstance();</span><br><span class="line">        &#125;<span class="keyword">catch</span>(Exception e)&#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="3-反序列化时，JVM创建对象"><a href="#3-反序列化时，JVM创建对象" class="headerlink" title="3.反序列化时，JVM创建对象"></a>3.反序列化时，JVM创建对象</h1><p>这里不再用代码演示，例如从文件中读取序列化后的对象，并反序列化还原的时候会创建新的对象。</p>
+<h1 id="4-使用clone方法"><a href="#4-使用clone方法" class="headerlink" title="4.使用clone方法"></a>4.使用clone方法</h1><p>无论何时调用一个对象的clone方法，JVM都会将当前对象的所有内容复制到新对象中。使用clone方法创建对象并<strong>不会调用</strong>任何构造函数。<br>要使用clone方法，类需要实现Cloneable接口，并实现clone方法。如果没有重写clone方法，会调用Object类的clone方法，这是一个native方法。</p>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+      </categories>
+  </entry>
 </search>
