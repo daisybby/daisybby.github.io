@@ -1222,4 +1222,44 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java基础</category>
       </categories>
   </entry>
+  <entry>
+    <title>Java注解</title>
+    <url>/2024/07/16/Java-Meta-Annotation/</url>
+    <content><![CDATA[<h1 id="一、Java注解的作用是什么？"><a href="#一、Java注解的作用是什么？" class="headerlink" title="一、Java注解的作用是什么？"></a>一、Java注解的作用是什么？</h1><span id="more"></span>
+<p>Java注解并不直接影响代码的执行，不过有些注解可以用于这一目的。<br>通俗来讲，注解相当于一种标识，可以用来标识一个<strong>类</strong>、<strong>方法</strong>或者是<strong>字段</strong>。在其他地方的业务代码里，可以判断有某个注解的代码段，进而定制一些处理。<br>例如，@Bean注解，标识了要向IOC容器中注入一个Java Bean。</p>
+<h1 id="二、元注解"><a href="#二、元注解" class="headerlink" title="二、元注解"></a>二、元注解</h1><p>元注解就是用来定义其他注解的注解。<br>例如：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Target(ElementType.METHOD)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.SOURCE)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Override&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上代码定义了Override注解，其中的@Target和@Retention就是元注解。<br><strong>四个元注解：</strong></p>
+<ul>
+<li>@Target：表示注解可以用于修饰什么内容</li>
+<li>@Retention：表示注解能够保存到什么级别</li>
+<li>@Documented：将此注解包含到javadoc中</li>
+<li>@Inherited：允许子类继承父类中的注解</li>
+</ul>
+<h2 id="2-1-Retention"><a href="#2-1-Retention" class="headerlink" title="2.1.@Retention"></a>2.1.@Retention</h2><p>指定被修饰的注解的生命周期，有三个可选值：</p>
+<ul>
+<li>SOURCE：注解仅在源代码保留，编译后就没了。</li>
+<li>CLASS：注解在编译时保存到字节码中，但是在运行时不能被访问，仅用于编译时的检查。这是默认取值。</li>
+<li>RUNTIME：注解在编译时保存到字节码中，并且在运行时可以通过反射进行访问，支持运行时检查注解信息。这也是最常用的取值。</li>
+</ul>
+<h2 id="2-2-Target"><a href="#2-2-Target" class="headerlink" title="2.2.@Target"></a>2.2.@Target</h2><p>指定被修饰的注解可以修饰什么元素类型，例如类、方法和字段等。这样可以限制注解的使用范围。<br>取值范围：</p>
+<ul>
+<li>ElementType.CONSTRUCTOR: 表示注解可以应用于构造器。</li>
+<li>ElementType.FIELD: 表示注解可以应用于字段（包括枚举的常量）。</li>
+<li>ElementType.LOCAL_VARIABLE: 表示注解可以应用于局部变量。这个选项从Java 8开始支持。</li>
+<li>ElementType.METHOD: 表示注解可以应用于方法。</li>
+<li>ElementType.PACKAGE: 表示注解可以应用于包声明。</li>
+<li>ElementType.PARAMETER: 表示注解可以应用于参数。</li>
+<li>ElementType.TYPE: 表示注解可以应用于类、接口（包括注解类型）或枚举类型。</li>
+<li>ElementType.ANNOTATION_TYPE: 表示注解可以应用于另一个注解类型。</li>
+<li>ElementType.TYPE_PARAMETER: 表示注解可以应用于类型参数（泛型）。这个选项从Java 8开始支持。</li>
+<li>ElementType.TYPE_USE: 表示注解可以应用于任何类型使用的地方，比如实例化对象、类型转换等。这个选项从Java 8开始支持。</li>
+</ul>
+<h2 id="2-3-Documented"><a href="#2-3-Documented" class="headerlink" title="2.3.@Documented"></a>2.3.@Documented</h2><p>用于指示注解是否会出现在生成的Java文旦中，如果被@Documented元注解修饰，则该注解的信息会出现在API文档中。</p>
+<h2 id="2-4-Inherited"><a href="#2-4-Inherited" class="headerlink" title="2.4.@Inherited"></a>2.4.@Inherited</h2><p>指示该注解修饰的注解能不能被继承。默认情况下，注解不能被继承，也就是子类并不能继承父类的注解，但是@Inherited修饰的注解可以被子类继承。</p>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+      </categories>
+  </entry>
 </search>

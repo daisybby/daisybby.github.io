@@ -19,29 +19,27 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"daisybby.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="1.对象序列化后保存到Redis保存的是序列化后的对象，这种方式在Redis中很难看出来对象的含义。">
+    <meta name="description" content="一、Java注解的作用是什么？">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Redis保存对象为String还是hash？">
-<meta property="og:url" content="https://daisybby.github.io/2024/06/23/save-object-as-string-or-hash/index.html">
+<meta property="og:title" content="Java注解">
+<meta property="og:url" content="https://daisybby.github.io/2024/07/16/Java-Meta-Annotation/index.html">
 <meta property="og:site_name" content="daisybby">
-<meta property="og:description" content="1.对象序列化后保存到Redis保存的是序列化后的对象，这种方式在Redis中很难看出来对象的含义。">
+<meta property="og:description" content="一、Java注解的作用是什么？">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-06-23T05:54:38.000Z">
-<meta property="article:modified_time" content="2024-06-23T07:04:55.241Z">
+<meta property="article:published_time" content="2024-07-16T06:42:15.000Z">
+<meta property="article:modified_time" content="2024-07-16T08:18:50.183Z">
 <meta property="article:author" content="Daisybby">
-<meta property="article:tag" content="Redis">
-<meta property="article:tag" content="数据库">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://daisybby.github.io/2024/06/23/save-object-as-string-or-hash/">
+<link rel="canonical" href="https://daisybby.github.io/2024/07/16/Java-Meta-Annotation/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/06/23/save-object-as-string-or-hash/","path":"2024/06/23/save-object-as-string-or-hash/","title":"Redis保存对象为String还是hash？"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/07/16/Java-Meta-Annotation/","path":"2024/07/16/Java-Meta-Annotation/","title":"Java注解"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Redis保存对象为String还是hash？ | daisybby</title>
+<title>Java注解 | daisybby</title>
   
 
 
@@ -141,7 +139,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E5%AF%B9%E8%B1%A1%E5%BA%8F%E5%88%97%E5%8C%96%E5%90%8E%E4%BF%9D%E5%AD%98%E5%88%B0Redis"><span class="nav-text">1.对象序列化后保存到Redis</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E5%B0%86%E5%AF%B9%E8%B1%A1%E8%BD%AC%E6%8D%A2%E6%88%90Json%E6%A0%BC%E5%BC%8F"><span class="nav-text">2.将对象转换成Json格式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E7%94%A8hash%E5%AD%98%E5%82%A8%E5%AF%B9%E8%B1%A1"><span class="nav-text">3.用hash存储对象</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E6%80%8E%E4%B9%88%E9%80%89%E5%8F%96%E5%91%A2%EF%BC%9F"><span class="nav-text">4.怎么选取呢？</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81Java%E6%B3%A8%E8%A7%A3%E7%9A%84%E4%BD%9C%E7%94%A8%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-text">一、Java注解的作用是什么？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%85%83%E6%B3%A8%E8%A7%A3"><span class="nav-text">二、元注解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-Retention"><span class="nav-text">2.1.@Retention</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-Target"><span class="nav-text">2.2.@Target</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-Documented"><span class="nav-text">2.3.@Documented</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-Inherited"><span class="nav-text">2.4.@Inherited</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -197,7 +195,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/06/23/save-object-as-string-or-hash/">
+    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/07/16/Java-Meta-Annotation/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/header.jpg">
@@ -210,12 +208,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Redis保存对象为String还是hash？ | daisybby">
+      <meta itemprop="name" content="Java注解 | daisybby">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Redis保存对象为String还是hash？
+          Java注解
         </h1>
 
         <div class="post-meta-container">
@@ -227,7 +225,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2024-06-23 13:54:38 / 修改时间：15:04:55" itemprop="dateCreated datePublished" datetime="2024-06-23T13:54:38+08:00">2024-06-23</time>
+      <time title="创建时间：2024-07-16 14:42:15 / 修改时间：16:18:50" itemprop="dateCreated datePublished" datetime="2024-07-16T14:42:15+08:00">2024-07-16</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -235,7 +233,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E5%92%8C%E5%8E%9F%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">基础概念和原理</span></a>
+          <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
         </span>
     </span>
 
@@ -246,7 +244,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>606</span>
+      <span>1.3k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -263,42 +261,38 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="1-对象序列化后保存到Redis"><a href="#1-对象序列化后保存到Redis" class="headerlink" title="1.对象序列化后保存到Redis"></a>1.对象序列化后保存到Redis</h1><p>保存的是序列化后的对象，这种方式在Redis中很难看出来对象的含义。</p>
-<span id="more"></span>
-<p><strong>优点：</strong></p>
+    <div class="post-body" itemprop="articleBody"><h1 id="一、Java注解的作用是什么？"><a href="#一、Java注解的作用是什么？" class="headerlink" title="一、Java注解的作用是什么？"></a>一、Java注解的作用是什么？</h1><span id="more"></span>
+<p>Java注解并不直接影响代码的执行，不过有些注解可以用于这一目的。<br>通俗来讲，注解相当于一种标识，可以用来标识一个<strong>类</strong>、<strong>方法</strong>或者是<strong>字段</strong>。在其他地方的业务代码里，可以判断有某个注解的代码段，进而定制一些处理。<br>例如，@Bean注解，标识了要向IOC容器中注入一个Java Bean。</p>
+<h1 id="二、元注解"><a href="#二、元注解" class="headerlink" title="二、元注解"></a>二、元注解</h1><p>元注解就是用来定义其他注解的注解。<br>例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target(ElementType.METHOD)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.SOURCE)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Override&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上代码定义了Override注解，其中的@Target和@Retention就是元注解。<br><strong>四个元注解：</strong></p>
 <ul>
-<li><strong>简洁性：</strong> 直接序列化整个对象，不需要考虑字段的单独存储。</li>
-<li><strong>原子性：</strong> 对整个对象进行存取。</li>
+<li>@Target：表示注解可以用于修饰什么内容</li>
+<li>@Retention：表示注解能够保存到什么级别</li>
+<li>@Documented：将此注解包含到javadoc中</li>
+<li>@Inherited：允许子类继承父类中的注解</li>
 </ul>
-<p><strong>缺点：</strong></p>
+<h2 id="2-1-Retention"><a href="#2-1-Retention" class="headerlink" title="2.1.@Retention"></a>2.1.@Retention</h2><p>指定被修饰的注解的生命周期，有三个可选值：</p>
 <ul>
-<li><strong>序列化依赖：</strong> 依赖于特定的序列化库，可能影响性能和跨语言使用。</li>
-<li><strong>可读性：</strong> 二进制格式的字符串不易于阅读和调试。</li>
-<li><strong>灵活性差：</strong> 如果对象结构发生变化，需要重新序列化。</li>
+<li>SOURCE：注解仅在源代码保留，编译后就没了。</li>
+<li>CLASS：注解在编译时保存到字节码中，但是在运行时不能被访问，仅用于编译时的检查。这是默认取值。</li>
+<li>RUNTIME：注解在编译时保存到字节码中，并且在运行时可以通过反射进行访问，支持运行时检查注解信息。这也是最常用的取值。</li>
 </ul>
-<h1 id="2-将对象转换成Json格式"><a href="#2-将对象转换成Json格式" class="headerlink" title="2.将对象转换成Json格式"></a>2.将对象转换成Json格式</h1><p>Redis中保存的是JSON格式的字符串，可以清晰阅读对象的内容。<br><strong>优点：</strong> </p>
+<h2 id="2-2-Target"><a href="#2-2-Target" class="headerlink" title="2.2.@Target"></a>2.2.@Target</h2><p>指定被修饰的注解可以修饰什么元素类型，例如类、方法和字段等。这样可以限制注解的使用范围。<br>取值范围：</p>
 <ul>
-<li><strong>跨语言性：</strong> JSON是一种跨语言的格式，易于在不同语言和系统之间交换数据。</li>
-<li><strong>可读性：</strong> JSON格式的数据易于阅读。</li>
+<li>ElementType.CONSTRUCTOR: 表示注解可以应用于构造器。</li>
+<li>ElementType.FIELD: 表示注解可以应用于字段（包括枚举的常量）。</li>
+<li>ElementType.LOCAL_VARIABLE: 表示注解可以应用于局部变量。这个选项从Java 8开始支持。</li>
+<li>ElementType.METHOD: 表示注解可以应用于方法。</li>
+<li>ElementType.PACKAGE: 表示注解可以应用于包声明。</li>
+<li>ElementType.PARAMETER: 表示注解可以应用于参数。</li>
+<li>ElementType.TYPE: 表示注解可以应用于类、接口（包括注解类型）或枚举类型。</li>
+<li>ElementType.ANNOTATION_TYPE: 表示注解可以应用于另一个注解类型。</li>
+<li>ElementType.TYPE_PARAMETER: 表示注解可以应用于类型参数（泛型）。这个选项从Java 8开始支持。</li>
+<li>ElementType.TYPE_USE: 表示注解可以应用于任何类型使用的地方，比如实例化对象、类型转换等。这个选项从Java 8开始支持。</li>
 </ul>
-<p><strong>缺点：</strong></p>
-<ul>
-<li><strong>灵活性：</strong>不支持对象单个属性的存取，如果要修改对象属性只能整个对象读取修改重建。</li>
-<li><strong>复杂结构存储：</strong>不适合存储复杂的对象结构，比如对象存在嵌套。</li>
-</ul>
-<h1 id="3-用hash存储对象"><a href="#3-用hash存储对象" class="headerlink" title="3.用hash存储对象"></a>3.用hash存储对象</h1><p>Redis的key作为整个hash结构在Redis中的索引；<br>fieldName是对象的属性名称；<br>fieldValue就是属性值。<br><strong>优点：</strong></p>
-<ul>
-<li><strong>可读性：</strong>hash保存对象结构清晰；</li>
-<li><strong>灵活性：</strong>支持对单个属性的操作，只需要根据对应的fieldName来设置fieldValue即可。</li>
-</ul>
-<p><strong>缺点：</strong></p>
-<ul>
-<li>处理嵌套的对象比较麻烦。</li>
-</ul>
-<h1 id="4-怎么选取呢？"><a href="#4-怎么选取呢？" class="headerlink" title="4.怎么选取呢？"></a>4.怎么选取呢？</h1><p><strong>更新频繁的数据：</strong> 可以通过hash结构存储对象。<br><strong>读频繁的数据：</strong> 对于更新频率比较低，但是读取比较频繁的数据，选择string是比较好的方案。</p>
-<blockquote>
-<p>实际业务开发中，可以结合string和hash。</p>
-</blockquote>
+<h2 id="2-3-Documented"><a href="#2-3-Documented" class="headerlink" title="2.3.@Documented"></a>2.3.@Documented</h2><p>用于指示注解是否会出现在生成的Java文旦中，如果被@Documented元注解修饰，则该注解的信息会出现在API文档中。</p>
+<h2 id="2-4-Inherited"><a href="#2-4-Inherited" class="headerlink" title="2.4.@Inherited"></a>2.4.@Inherited</h2><p>指示该注解修饰的注解能不能被继承。默认情况下，注解不能被继承，也就是子类并不能继承父类的注解，但是@Inherited修饰的注解可以被子类继承。</p>
 
     </div>
 
@@ -328,7 +322,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://daisybby.github.io/2024/06/23/save-object-as-string-or-hash/" title="Redis保存对象为String还是hash？">https://daisybby.github.io/2024/06/23/save-object-as-string-or-hash/</a>
+      <a href="https://daisybby.github.io/2024/07/16/Java-Meta-Annotation/" title="Java注解">https://daisybby.github.io/2024/07/16/Java-Meta-Annotation/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -336,23 +330,16 @@
 </ul>
 </div>
 
-          <div class="post-tags">
-              <a href="/tags/Redis/" rel="tag"># Redis</a>
-              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 数据库</a>
-          </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2024/06/22/Bloom-Filter/" rel="prev" title="布隆过滤器">
-                  <i class="fa fa-angle-left"></i> 布隆过滤器
+                <a href="/2024/07/15/Java-Dynamic-proxy/" rel="prev" title="Java代理模式">
+                  <i class="fa fa-angle-left"></i> Java代理模式
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2024/06/23/redis-project-note2/" rel="next" title="Redis实战项目笔记二：查询缓存">
-                  Redis实战项目笔记二：查询缓存 <i class="fa fa-angle-right"></i>
-                </a>
             </div>
           </div>
     </footer>
