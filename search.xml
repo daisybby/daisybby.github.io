@@ -1316,10 +1316,52 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
 <blockquote>
 <p>在实际开发中，建议显式定义serialVersionUID。如果不显式定义，系统会自动生成UID，一旦类实现代码有修改，对应的UID也会修改，修改之前序列化的类就再也没办法反序列化回来了。<br>但是，如果显式定义了serialVersionUID，尽管我们修改了类实现代码，比如新增了属性字段，但是serialVersionUID是不变的，所以依然能够反序列化，这就实现了序列化机制的向后兼容。</p>
 <ul>
-<li>新增属性段：反序列化时这些新字段设置为默认值；<br>删除属性字段：反序列化时会忽略掉那些多余的字段，并不会报错。</li>
+<li>新增属性段：反序列化时这些新字段设置为默认值；</li>
+<li>删除属性字段：反序列化时会忽略掉那些多余的字段，并不会报错。</li>
 </ul>
 </blockquote>
 <p>在实际开发中，有一些序列化框架，比如kryo、hessian、gson、fastjson等。</p>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Java异常</title>
+    <url>/2024/07/16/Java-Exception/</url>
+    <content><![CDATA[<h1 id="一、Java异常分类"><a href="#一、Java异常分类" class="headerlink" title="一、Java异常分类"></a>一、Java异常分类</h1><span id="more"></span>
+<p>Java的异常可以分为两大类：<strong>受检异常和非受检异常</strong>。<br><strong>受检异常：</strong><br>意味着如果方法声明中写了throws Exception，在程序中调用这个方法的时候，一定要对异常进行处理——进一步向上抛出，或者是catch异常。<br>受检异常强制开发者明确地处理一些特殊情况，比如读取文件的时候，就是必须要考虑找不到文件的情况，这里的FileNotFoundException就是必须要处理。<br>当我们希望我们写的方法被调用时，调用者明确地处理特殊情况，<strong>就可以使用受检异常</strong>。<br><strong>非受检异常：</strong><br>一般是运行时异常，即RuntimeException，在编写代码的时候，并不是显式捕获，但是这类异常发生的时候，程序执行就会停止。<br>非受检异常一般是代码的bug引起的，比如数组越界、空指针异常，只要代码写的没问题，就不会出现这些异常，所以不需要显式处理。而且这类异常要事无巨细地都显式处理，开发压力属实有点大。</p>
+<h1 id="二、Throwable、Error和Excetption"><a href="#二、Throwable、Error和Excetption" class="headerlink" title="二、Throwable、Error和Excetption"></a>二、Throwable、Error和Excetption</h1><p>Throwable是Java中最顶级的异常类，继承自Object，实现了Serializable接口，有两个子类：Error和Exception。<br><strong>Error和Exception的区别与联系：</strong><br><strong>Error：</strong><br>Error是Java运行环境内部错误或者是硬件的问题，由Java虚拟机抛出。例如OutOfMemoryError，StackOverflow这两种常见的错误。<br><strong>Exception：</strong><br>Exception是需要catch和处理的异常，是程序不完善导致的，Exception是程序必须处理的问题。分为运行时异常RuntimeException和其他异常。</p>
+<h1 id="三、throws、throw、try、catch和finally，异常处理关键字"><a href="#三、throws、throw、try、catch和finally，异常处理关键字" class="headerlink" title="三、throws、throw、try、catch和finally，异常处理关键字"></a>三、throws、throw、try、catch和finally，异常处理关键字</h1><p><strong>try</strong>用来指定一块预防所有异常的程序；<br><strong>catch</strong>紧跟try，用来指定要捕获的异常类型；<br><strong>finally</strong>确保一段代码，无论发生什么异常都要被执行；<br><strong>throw</strong>用来明确地抛出异常；<br><strong>throws</strong>用来声明一个方法可能抛出的各种异常。</p>
+<h2 id="3-1-try、catch、finally中return"><a href="#3-1-try、catch、finally中return" class="headerlink" title="3.1.try、catch、finally中return"></a>3.1.try、catch、finally中return</h2><p>如下代码：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">String</span>(<span class="string">&quot;try&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">String</span>(<span class="string">&quot;catch&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">finally</span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">String</span>(<span class="string">&quot;finally&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最终返回的结果是”finally”。因为在finally中有return的情况下，方法最终执行的是finally中的return，覆盖掉try和catch中的return。<br>相似的问题还有：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">        <span class="type">int</span> res=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            res=<span class="number">1</span>;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">            res=<span class="number">2</span>;</span><br><span class="line">        &#125; <span class="keyword">finally</span>&#123;</span><br><span class="line">            res=<span class="number">3</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(res);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最终输出的结果是3，和上面的return是一样的，finally中的代码一定会执行。</p>
+<h2 id="3-2-finally和return的关系"><a href="#3-2-finally和return的关系" class="headerlink" title="3.2.finally和return的关系"></a>3.2.finally和return的关系</h2><p>在一般情况下，return是独立在try-catch-finally块之外的，例如：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">        <span class="type">int</span> i=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            i=<span class="number">1</span>;</span><br><span class="line">            <span class="keyword">return</span> i;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">            i=<span class="number">2</span>;</span><br><span class="line">        &#125; <span class="keyword">finally</span>&#123;</span><br><span class="line">            i=<span class="number">100</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个例子和之前的例子，区别在于最后一个return是在try-catch-finally之外，执行顺序是try中return i，但是后面还有finally要执行，所以就在这里先把要返回的值保存起来，然后去执行后面的finally，执行完再把暂存的结果return。<br>所以在try中将1保存起来，执行完finally之后，虽然i修改了值为100，但是return缓存还是1，最后的return是2.最后一行的return是不会执行的。<br>另外一个例子：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">    <span class="type">int</span> i=<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">try</span>&#123;</span><br><span class="line">        i++;</span><br><span class="line">        System.out.println(i/<span class="number">0</span>);</span><br><span class="line">        <span class="keyword">return</span> i;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">        i=<span class="number">66</span>;</span><br><span class="line">        <span class="keyword">return</span> i;</span><br><span class="line">    &#125;<span class="keyword">finally</span>&#123;</span><br><span class="line">        i=<span class="number">100</span>;</span><br><span class="line">        <span class="keyword">return</span> i;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在这个例子中，遇到了异常，所以finally一定会执行，最终return的是100；<br>如果没有finally这部分，最终return的是66.<br><strong>如果finally中有return的语句，那么这里的return就是整个try-catch-finally结构的返回值，如果没有，就看try和catch中哪个return执行了。</strong></p>
+<h2 id="3-3-finally中的代码一定会执行吗？"><a href="#3-3-finally中的代码一定会执行吗？" class="headerlink" title="3.3.finally中的代码一定会执行吗？"></a>3.3.finally中的代码一定会执行吗？</h2><p>正常情况下，finally中的代码一定会执行，但也有一些“场外因素”：</p>
+<ul>
+<li>System.out.exit()方法被执行，程序结束了；</li>
+<li>Runtime.getRuntime().halt()方法被执行</li>
+<li>try或者catch中有死循环</li>
+<li>操作系统强制kill掉JVM进程</li>
+<li>虚拟机崩溃</li>
+<li>虚拟机所运行的环境挂了</li>
+<li>如果运行这段代码的是守护线程，如果所有的用户线程都运行完了，守护线程还没运行完，但是JVM要退出，这个时候是不会等守护线程运行完的。<blockquote>
+<p>总结而言，只要JVM虚拟机正常运行，线程正常执行，没有这些外界因素干扰的情况下，finally中的代码是会正常执行的。<br>插播：一般执行用户级任务的线程就是用户线程，守护线程即“后台线程”，一般用于执行后台任务。最典型的守护线程应用就是GC。两种线程唯一的区别就是JVM在所有<strong>用户线程</strong>都结束后退出，而不会等<strong>守护线程</strong>执行完。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="3-4-final、finally、finallize有什么区别？"><a href="#3-4-final、finally、finallize有什么区别？" class="headerlink" title="3.4.final、finally、finallize有什么区别？"></a>3.4.final、finally、finallize有什么区别？</h2><p>毫无关系！就是长得像！</p>
+<ul>
+<li><strong>final：</strong>用来修饰类、方法、成员变量，使其不可继承、不可重写、不可变；</li>
+<li><strong>finally：</strong>异常处理的一部分，保证部分代码一定会被执行（通常用于资源清理，比如file.close())</li>
+<li><strong>finallize：</strong>是Object类的一个方法，在对象要被垃圾回收时，在回收之前执行一些操作，通常不推荐使用。</li>
+</ul>
 ]]></content>
       <categories>
         <category>Java基础</category>
