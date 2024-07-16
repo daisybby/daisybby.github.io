@@ -1262,4 +1262,67 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java基础</category>
       </categories>
   </entry>
+  <entry>
+    <title>Java 序列化</title>
+    <url>/2024/07/16/Java-Serialization/</url>
+    <content><![CDATA[<h1 id="一、什么是序列化和反序列化？"><a href="#一、什么是序列化和反序列化？" class="headerlink" title="一、什么是序列化和反序列化？"></a>一、什么是序列化和反序列化？</h1><span id="more"></span>
+<p>在程序运行时，对象是保存在JVM堆内存的，只要对象没有被回收，我们都可以更方便地使用对象。但是JVM停止运行后，Java对象都丢失了。<br>在一些业务场景中，我们需要持久化保存对象，怎么将动态的对象保存呢？这就需要对象序列化。<br><strong>对象序列化就是将对象的状态保存为字节数组，在需要用到对象时，将字节数组反序列化为对象。</strong><br>实际开发中，需要对象序列化的应用场景很多，对象持久化被广泛应用于网络传输、RPC中。<br>被序列化的类必须属于Enum、Array和Serializable类型其中的任何一种。</p>
+<h1 id="二、如何进行序列化和反序列化？"><a href="#二、如何进行序列化和反序列化？" class="headerlink" title="二、如何进行序列化和反序列化？"></a>二、如何进行序列化和反序列化？</h1><p>一个类实现了java.io.Serializable接口才能被序列化。<br>例如：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.Serializable;</span><br><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">User</span> <span class="keyword">implements</span> <span class="title class_">Serializable</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> Integer age;</span><br><span class="line">    <span class="comment">//......定义类属性</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">long</span> serialVersionUID=XXXXXXXXXXL;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对User进行序列化和反序列化：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">serializableDemo</span>&#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">        User user=<span class="keyword">new</span> <span class="title class_">User</span>();</span><br><span class="line">        <span class="comment">//填写User各属性信息</span></span><br><span class="line">        User.setName(<span class="string">&quot;user&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//将对象序列化到文件中</span></span><br><span class="line">        ObjectOutputStream output=<span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            output=<span class="keyword">new</span> <span class="title class_">ObjectOutputStream</span>(<span class="keyword">new</span> <span class="title class_">FileOutputStream</span>(<span class="string">&quot;tempObjectFile&quot;</span>));</span><br><span class="line">            output.writeObject(user);</span><br><span class="line">        &#125;<span class="keyword">catch</span> (IOException e)&#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">finally</span>&#123;</span><br><span class="line">            IOUtils.closeQuietly(output);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//从文件反序列化对象</span></span><br><span class="line">        File file=<span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;tempObjectFile&quot;</span>);</span><br><span class="line">        ObjectInputStream input=<span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            input=<span class="keyword">new</span> <span class="title class_">ObjectInputStream</span>(<span class="keyword">new</span> <span class="title class_">FileInputStream</span>(file));</span><br><span class="line">            User newUser=(User)input.readObject();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e)&#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">finally</span>&#123;</span><br><span class="line">            IOUtils.closeQuietly(input);</span><br><span class="line">            <span class="keyword">try</span>&#123;</span><br><span class="line">                FileUtils.forceDelete(file);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (IOException e)&#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>注意事项：</strong></p>
+<ol>
+<li>一个类只要实现了Serializable接口就能被序列化；</li>
+<li>Java通过ObjectInputStream和ObjectOutputStream序列化和反序列化；</li>
+<li>JVM是否允许反序列化，不仅取决于类路径和功能代码一致，更取决于序列化ID是否一致（就是User中定义的private static final long serialVersionUID）；</li>
+<li>序列化的时候并不保存静态变量，因为静态变量是属于类的，而不是对象。</li>
+<li>transient关键字修饰的成员变量不会被序列化，这一类变量在反序列化时，以初始化值填充，比如int类型被填充为0，boolean被填充为false。</li>
+<li>可序列化类的所有子类都是可序列化的；如果一个类的父类不能序列化，但是想要将父类中定义的变量持久化，那么父类也要修改为可序列化的。</li>
+</ol>
+<h1 id="三、Externalizable接口是什么？与Serializable有什么区别？"><a href="#三、Externalizable接口是什么？与Serializable有什么区别？" class="headerlink" title="三、Externalizable接口是什么？与Serializable有什么区别？"></a>三、Externalizable接口是什么？与Serializable有什么区别？</h1><p>Externalizable继承自Serializable接口，使得开发者能够更加精细地控制序列化。<br>两者的区别如下：</p>
+<ol>
+<li>接口类型：<ul>
+<li>Serializable是Java提供的默认序列化机制，实现这个接口时，要进行序列化的类并没有什么方法是需要实现的，直接implements Serializable就行；</li>
+<li>Externalizable有两个方法必须实现:writeExternal(ObjectOutput out)和readExternal(ObjectInput in)；<blockquote>
+<p>如果没有在这两个方法中定义序列化实现细节，序列化之后对象内容是空的。并且实现Externalizable接口的类一定要提供一个public的无参构造函数。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li>序列化范围：<ul>
+<li>Serializable：默认机制，对象所有可访问的字段（包括private字段）都会被序列化，除非用transient修饰，阻止部分字段的序列化；</li>
+<li>Externalizable：实现writeExternal和readExternal来控制哪些部分进行序列化，以及如何序列化，或者是在序列化、反序列化时执行一些额外的操作（加密）等。提供了更细粒度的序列化控制。</li>
+</ul>
+</li>
+<li>性能：<ul>
+<li>Serializable在序列化时，涉及到了反射调用，反射调用的效率是比较低的。</li>
+<li>Externalizable允许只序列化必要的字段，可以避免反射调用，提升效率。</li>
+</ul>
+</li>
+<li>使用场景不同：<ul>
+<li>如果不需要特殊的处理，或者是没有性能优化的需求，可以用Serializable来实现序列化与反序列化；</li>
+<li>如果想要实现更细粒度的序列化，或者是提升序列化的效率，用Externalizable比较合适。</li>
+</ul>
+</li>
+</ol>
+<p>例如：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//利用Serializable实现序列化</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">User</span> <span class="keyword">implements</span> <span class="title class_">Serializable</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> <span class="type">int</span> transientId;<span class="comment">//这个字段不会被序列化</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Long onlyId=XXXXXXL;<span class="comment">//静态变量也不会被序列化</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//用Externalizable实现序列化</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Order</span> <span class="keyword">implements</span> <span class="title class_">Externalizable</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> Long field;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Order</span><span class="params">()</span>&#123;&#125;<span class="comment">//实现Externalizable接口必须提供无参构造器</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">writeExternal</span><span class="params">(ObjectOutput out)</span> <span class="keyword">throws</span> IOException&#123;</span><br><span class="line">        out.writeInt(field);<span class="comment">//只序列化field字段</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">readExternal</span><span class="params">(ObjectInput in)</span> <span class="keyword">throws</span> IOException&#123;</span><br><span class="line">        field=in.readInt();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="四、serialVersionUID的用途"><a href="#四、serialVersionUID的用途" class="headerlink" title="四、serialVersionUID的用途"></a>四、serialVersionUID的用途</h1><p>在反序列化时，虚拟机是否允许某个反序列化操作执行，不仅取决于类路径和功能代码是否一致，还有一点就是代码中的类与序列化后的类，两者之间的serialVersionUID是一致的。</p>
+<blockquote>
+<p>类路径和功能代码一致，我理解的意思就是class类的文件路径和类的实际逻辑代码。这是为了保证序列化时的类定义和反序列化时加载的类定义是一致的。</p>
+</blockquote>
+<p>在反序列化的时候，会对比类代码中定义的serialVersionUID和字节流中的serialVersionUID是不是相同，相同则可以序列化，否则抛出InvalidCastException，这样是为了避免字节流的内容被修改。<br>如果定义类的时候，没有显式定义serialVersionUID，那么在序列化的时候会根据编译的Class自动生成一个serialVersionUID，如果Class文件没有发生变化，serialVersionUID也不会发生变化，但是如果Class修改了，那这个Class文件对应的UID也会改变，这样反序列化的时候，就找到不到原来的类了。</p>
+<blockquote>
+<p>在实际开发中，建议显式定义serialVersionUID。如果不显式定义，系统会自动生成UID，一旦类实现代码有修改，对应的UID也会修改，修改之前序列化的类就再也没办法反序列化回来了。<br>但是，如果显式定义了serialVersionUID，尽管我们修改了类实现代码，比如新增了属性字段，但是serialVersionUID是不变的，所以依然能够反序列化，这就实现了序列化机制的向后兼容。</p>
+<ul>
+<li>新增属性段：反序列化时这些新字段设置为默认值；<br>删除属性字段：反序列化时会忽略掉那些多余的字段，并不会报错。</li>
+</ul>
+</blockquote>
+<p>在实际开发中，有一些序列化框架，比如kryo、hessian、gson、fastjson等。</p>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+      </categories>
+  </entry>
 </search>
