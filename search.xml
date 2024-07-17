@@ -1479,4 +1479,48 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java基础</category>
       </categories>
   </entry>
+  <entry>
+    <title>String intern方法</title>
+    <url>/2024/07/17/Java-intern/</url>
+    <content><![CDATA[<h1 id="一、String-str-new-String-“daisybby”-创建了几个对象？"><a href="#一、String-str-new-String-“daisybby”-创建了几个对象？" class="headerlink" title="一、String str&#x3D;new String(“daisybby”)创建了几个对象？"></a>一、String str&#x3D;new String(“daisybby”)创建了几个对象？</h1><span id="more"></span>
+<p><strong>1个：</strong>在字符串常量池中存在字面量为”daisybby”的字符串，那么因为new String，所以只在堆中创建一个值为”daisybby”的String对象。<br><strong>2个：</strong>字符串常量池中，没有字面量为”daisybby”的字符串，那么先在堆中创建这个字符串对象，这个对象的引用存留在字符串常量池中；然后在堆中创建一个字面量相同的新String字符串对象。</p>
+<blockquote>
+<p>只要是new String来创建字符串，尽管字符串常量池中已经有相同的字面量了，还是会在堆中新建一个String对象。</p>
+</blockquote>
+<h1 id="二、String中intern的作用"><a href="#二、String中intern的作用" class="headerlink" title="二、String中intern的作用"></a>二、String中intern的作用</h1><p>当字符串对象调用intern方法时，判断该字符串内容是否在字符串常量池中首次出现：</p>
+<ul>
+<li>首次出现：在堆中新建一个此字符串内容的实例，并将该实例的引用驻留在字符串常量池中，并返回该引用。</li>
+<li>不是首次出现：直接返回字符串常量池中这个实例的引用。通过这种方法可以避免new String新建一个字面量相同的字符串对象。</li>
+</ul>
+<p>为了深入理解这部分的内容，以下有几个例子：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">        String a=<span class="string">&quot;abc&quot;</span>;</span><br><span class="line">        String b=<span class="string">&quot;abc&quot;</span>;</span><br><span class="line">        System.out.println(a==b);<span class="comment">//输出是true</span></span><br><span class="line"></span><br><span class="line">        String one=<span class="keyword">new</span> <span class="title class_">String</span>(<span class="string">&quot;hhh&quot;</span>);</span><br><span class="line">        String two=<span class="keyword">new</span> <span class="title class_">String</span>(<span class="string">&quot;hhh&quot;</span>);</span><br><span class="line">        String three=<span class="string">&quot;hhh&quot;</span>;</span><br><span class="line">        System.out.println(three==one.intern());<span class="comment">//true</span></span><br><span class="line">        System.out.println(one==two);<span class="comment">//false</span></span><br><span class="line">        System.out.println(one==one.intern());<span class="comment">//false</span></span><br><span class="line">        System.out.println(one.intern()==two);<span class="comment">//false</span></span><br><span class="line">        System.out.println(one==two.intern());<span class="comment">//false</span></span><br><span class="line">        System.out.println(one.intern()==two.intern());<span class="comment">//true</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>第一个true：</strong><br>这里牵扯到一个知识点：</p>
+<ul>
+<li>直接用字面量创建String字符串对象，如果字符串常量池中已经有这个字面量的实例引用，那不会创建新的对象，变量获得的是字符串常量池中的引用。</li>
+<li>上面提到过，new String创建字符串是一定会在堆里创建新对象的。<br>所以a和b都是字符串常量池中”abc”这个字面量对应实例的引用。</li>
+</ul>
+<img src="/2024/07/17/Java-intern/img1.jpg" class="" title="img1">
+<p><strong>第二部分：</strong><br>one和two都是用new String的方式创建的，所以是两个不同的对象，one&#x3D;&#x3D;two的结果是false。<br>创建one的过程如下：</p>
+<ol>
+<li>检查字符串常量池，发现没有字面量为”hhh”的对象引用；</li>
+<li>在堆中创建String对象，将这个对象的引用驻留到字符串常量池中；</li>
+<li>在堆中创建String对象，并将这个对象的引用返回给one。</li>
+</ol>
+<p>因为字符串常量池中的引用和one引用的并不是同一个对象，所以one&#x3D;&#x3D;one.intern()的结果是false。</p>
+<p>创建two的过程如下：</p>
+<ol>
+<li>检查字符串常量池，发现已经有字面量为”hhh”的引用了，所以不需要新加入内容到字符串常量池；</li>
+<li>因为是new String，所以在堆中创建一个字面量为”hhh”的对象，并将这个对象的引用返回给two；这个时候堆中有三个字面量都是”hhh”的对象。</li>
+<li>two.intern()是去字符串常量池中检查，有没有字面量为”hhh”的引用，是有的，所以two.intern()返回的就是字符串常量池中的引用。<br>因此one!&#x3D;two，这是两个对象；one.intern()和two.intern()都是字符串常量池中的引用，所以是相等的。</li>
+</ol>
+<p>创建three的过程如下：</p>
+<ol>
+<li>在字符串常量池中检查是否有字面量为”hhh”的引用，有，所以直接将字符串常量池中的引用返回给three；</li>
+<li>所以three&#x3D;&#x3D;one.intern()是true，和two.intern()也是true。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+      </categories>
+  </entry>
 </search>
