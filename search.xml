@@ -1370,7 +1370,8 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
   <entry>
     <title>Java IO方式</title>
     <url>/2024/07/17/Java-IO/</url>
-    <content><![CDATA[<h1 id="一、BIO、NIO和AIO"><a href="#一、BIO、NIO和AIO" class="headerlink" title="一、BIO、NIO和AIO"></a>一、BIO、NIO和AIO</h1><p><strong>BIO(Blocking I&#x2F;O)：同步阻塞I&#x2F;O</strong>JDK1.4之前的传统I&#x2F;O模型，线程发起IO请求后一直阻塞，直到缓冲区数据准备好。<br><strong>NIO(Non-Blocking I&#x2F;O)：同步非阻塞I&#x2F;O</strong>线程发起IO请求后，不需要等待，立即返回。之后定时轮询检查IO缓冲区数据有没有准备好。<br><strong>AIO（Synchronous I&#x2F;O)：异步非阻塞I&#x2F;O</strong>线程发起IO请求后，立即返回，不需要等待也不需要轮询检查，数据缓冲区准备好之后会通知线程。<br><strong>适用场景：</strong><br><strong>BIO：</strong>适合连接比较少且固定的结构，这种方式对服务器资源要求比较高，尽量保证线程不要阻塞太长时间。<br><strong>NIO：</strong>适合连接数量比较多但连接比较短（轻操作）的架构，比如聊天服务器，从JDK1.4开始支持。<br><strong>AIO：</strong>适合连接数量比较多且连接比较长（重操作）的架构，比如相册服务器，从JDK7开始支持。</p>
+    <content><![CDATA[<h1 id="一、BIO、NIO和AIO"><a href="#一、BIO、NIO和AIO" class="headerlink" title="一、BIO、NIO和AIO"></a>一、BIO、NIO和AIO</h1><span id="more"></span>
+<p><strong>BIO(Blocking I&#x2F;O)：同步阻塞I&#x2F;O</strong>JDK1.4之前的传统I&#x2F;O模型，线程发起IO请求后一直阻塞，直到缓冲区数据准备好。<br><strong>NIO(Non-Blocking I&#x2F;O)：同步非阻塞I&#x2F;O</strong>线程发起IO请求后，不需要等待，立即返回。之后定时轮询检查IO缓冲区数据有没有准备好。<br><strong>AIO（Synchronous I&#x2F;O)：异步非阻塞I&#x2F;O</strong>线程发起IO请求后，立即返回，不需要等待也不需要轮询检查，数据缓冲区准备好之后会通知线程。<br><strong>适用场景：</strong><br><strong>BIO：</strong>适合连接比较少且固定的结构，这种方式对服务器资源要求比较高，尽量保证线程不要阻塞太长时间。<br><strong>NIO：</strong>适合连接数量比较多但连接比较短（轻操作）的架构，比如聊天服务器，从JDK1.4开始支持。<br><strong>AIO：</strong>适合连接数量比较多且连接比较长（重操作）的架构，比如相册服务器，从JDK7开始支持。</p>
 <h1 id="二、同步-异步，阻塞-非阻塞"><a href="#二、同步-异步，阻塞-非阻塞" class="headerlink" title="二、同步&#x2F;异步，阻塞&#x2F;非阻塞"></a>二、同步&#x2F;异步，阻塞&#x2F;非阻塞</h1><p><strong>同步&#x2F;异步是相对于被调用者而言：</strong><br>A调用B。</p>
 <ul>
 <li>同步：B收到A的调用后立即就去处理，A此次调用能够获得结果。</li>
@@ -1384,6 +1385,16 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
 <li>A等着，但是B要排队处理。（异步阻塞）</li>
 <li>A不等，B也排队处理。（异步非阻塞）</li>
 </ol>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Java值传递还是引用传递？</title>
+    <url>/2024/07/17/Java-value-or-incite-pass/</url>
+    <content><![CDATA[<h1 id="Java中是值传递还是引用传递？"><a href="#Java中是值传递还是引用传递？" class="headerlink" title="Java中是值传递还是引用传递？"></a>Java中是值传递还是引用传递？</h1><span id="more"></span>
+<p>值传递是在传递过程中复制一个副本，传递到方法中，对方法的参数值进行修改，并不会影响到传递之前的变量本身。<br>引用传递，用C++中的地址传递比较好理解，把变量在内存空间中的地址传递过去，把地址中保存的数据修改了，当然所有用到这个变量的值会发生变化。<br>Java的对象传递，本质还是值传递，但是传递过去的是对象的引用，所以如果在方法中修改了对象内部的信息，这个修改是永久的，方法外部也是可见的。<br><strong>但是需要注意的是，对象的传递本质上其实还是值传递，只不过传递的是对象地址的拷贝（对象的引用），尽管和方法外的引用不是同一个，但是指向的还是同一个对象。方法内部借用引用修改对象内容，这就是永久修改。如果我们是把这个引用修改掉了，指向别的对象，那么这对方法外的对象是没有影响的。</strong></p>
 ]]></content>
       <categories>
         <category>Java基础</category>
