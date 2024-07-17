@@ -1441,4 +1441,31 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java基础</category>
       </categories>
   </entry>
+  <entry>
+    <title>ClassNotFoundException和NoClassDefFoundError的区别</title>
+    <url>/2024/07/17/Difference-of-ClassNotFoundException-and-NoClassDefFoundError/</url>
+    <content><![CDATA[<p><strong>ClassNotFoundException</strong>是一个受检异常。通常在类加载阶段尝试加载类时，给定的类路径找不到类定义来触发，比如Class.forName()或者类加载器loadClass或者findSystemClass时，类路径写错了、缺少依赖导致。</p>
+<span id="more"></span>
+<p><strong>NoClassDefFoundError</strong>是一个Error，在加载类的时候，虽然找到了类文件，但是因为文件损坏等问题导致加载不了。这说明这个类在编译时存在，但是运行时丢失了，就会导致这个问题。</p>
+<blockquote>
+<p>类似的还有NoSuchMethodError，都是在编译时存在，但是运行时找不到了。通常出现这个Error时，大概率是发生了jar包冲突。<br><a href="">Maven如何解决jar包冲突</a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Maven怎么解决jar包冲突</title>
+    <url>/2024/07/17/Maven-and-jar-compulsion/</url>
+    <content><![CDATA[<h1 id="一、什么是jar包冲突？"><a href="#一、什么是jar包冲突？" class="headerlink" title="一、什么是jar包冲突？"></a>一、什么是jar包冲突？</h1><span id="more"></span>
+<p>在应用中，我们同时依赖了A和B两个jar包，而A、B又都依赖了C，但是两者依赖的C版本不同，那么就可能发生jar包冲突。<br>在程序运行期间发生了NoSuchMethodError或者ClassNotFoundException等异常或者错误，需要考虑是不是发生了jar包冲突。<br>当发生jar包冲突的时候，需要手动仲裁究竟使用哪个版本。</p>
+<h1 id="二、依赖传递"><a href="#二、依赖传递" class="headerlink" title="二、依赖传递"></a>二、依赖传递</h1><p>几乎所有的jar包冲突都和Maven的依赖传递有关。主要有以下两个主要原则：<br><strong>最短路径优先原则：</strong><br>A-&gt;X-&gt;Y-&gt;Z(2.5)<br>B-&gt;X-&gt;Z(2.0)<br>最终生效的是2.0版本，因为B的依赖路径是最短的。<br><strong>最先声明优先原则：</strong><br>如果依赖路径长度一样，这个时候谁先声明就用谁的版本。<br><strong>依赖树：</strong><br>我们可以通过<code>mvn dependency: tree</code>来查看依赖树，不过idea中有插件maven helper来查看。</p>
+<h1 id="三、依赖仲裁"><a href="#三、依赖仲裁" class="headerlink" title="三、依赖仲裁"></a>三、依赖仲裁</h1><p>当发生了jar包冲突的时候，我们需要手动仲裁使用哪个版本。解决方案如下：<br><strong>排除依赖：</strong><br>比如A和B都依赖Z包，我们想只用A依赖的Z包版本，那么就可以通过exclusion排除掉B包的依赖。<br><strong>版本锁定：</strong><br>直接在项目的父级pom中，写死version。</p>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+        <category>Maven</category>
+      </categories>
+  </entry>
 </search>
