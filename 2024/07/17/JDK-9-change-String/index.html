@@ -19,23 +19,27 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"daisybby.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta property="og:type" content="website">
-<meta property="og:title" content="daisybby">
-<meta property="og:url" content="https://daisybby.github.io/categories/Java%E5%9F%BA%E7%A1%80/page/2/index.html">
+    <meta name="description" content="在JDK 9之前，String内部是用char[]来保存字符串的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JDK 9对String的优化">
+<meta property="og:url" content="https://daisybby.github.io/2024/07/17/JDK-9-change-String/index.html">
 <meta property="og:site_name" content="daisybby">
+<meta property="og:description" content="在JDK 9之前，String内部是用char[]来保存字符串的。">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-07-17T11:22:19.000Z">
+<meta property="article:modified_time" content="2024-07-17T11:29:25.515Z">
 <meta property="article:author" content="Daisybby">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://daisybby.github.io/categories/Java%E5%9F%BA%E7%A1%80/page/2/">
+<link rel="canonical" href="https://daisybby.github.io/2024/07/17/JDK-9-change-String/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"categories/Java基础/page/2/index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/07/17/JDK-9-change-String/","path":"2024/07/17/JDK-9-change-String/","title":"JDK 9对String的优化"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>分类: Java基础 | daisybby</title>
+<title>JDK 9对String的优化 | daisybby</title>
   
 
 
@@ -179,153 +183,143 @@
 
     </div>
 
-    <div class="main-inner category posts-collapse">
+    <div class="main-inner post posts-expand">
 
 
   
+
+
+<div class="post-block">
   
   
-  <div class="post-block">
-    <div class="post-content">
-      <div class="collection-title">
-        <h1 class="collection-header">Java基础
-          <small>分类</small>
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/07/17/JDK-9-change-String/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="Daisybby">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="daisybby">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="JDK 9对String的优化 | daisybby">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JDK 9对String的优化
         </h1>
-      </div>
 
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
       
-    <div class="collection-year">
-      <span class="collection-header">2024</span>
+
+      <time title="创建时间：2024-07-17 19:22:19 / 修改时间：19:29:25" itemprop="dateCreated datePublished" datetime="2024-07-17T19:22:19+08:00">2024-07-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>327</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>在JDK 9之前，String内部是用char[]来保存字符串的。</p>
+<span id="more"></span>
+<p>Java内部使用UTF-16，每个char字符16位，占据两个字节，即使有些字符可以用一个字节表示，但依然会占用两个字节。那么JDK 9对这部分做了改进。<br><strong>Latin1：</strong>又称为ISO8859-1，是一种字符编码格式，使用单字节编码方案。<br><strong>Compact String：</strong><br>如果一个字符串<strong>所有字符</strong>都可以用Latin-1来表示，那么String内部就使用byte数组来保存字符串，只要有一个字符需要16位表示，String内部就继续使用char[]来表示。<br>那么在操作String的时候，怎么知道是用byte数组还是char数组呢？<br>答：设置一个byte位，用0来表示Latin-1，用1来表示16位char。</p>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-16T14:42:15+08:00"
-              content="2024-07-16">
-          07-16
-        </time>
-      </div>
+    
+    
+    
+    <div>
+    
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/16/Java-Meta-Annotation/" itemprop="url">
-            <span itemprop="name">Java注解</span>
-          </a>
-      </div>
+          
 
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-15T16:37:35+08:00"
-              content="2024-07-15">
-          07-15
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/15/Java-Dynamic-proxy/" itemprop="url">
-            <span itemprop="name">Java代理模式</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-15T15:23:34+08:00"
-              content="2024-07-15">
-          07-15
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/15/all-appoaches-to-create-object/" itemprop="url">
-            <span itemprop="name">Java中创建对象有哪些方式？</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-13T22:58:16+08:00"
-              content="2024-07-13">
-          07-13
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/13/Java-Reflection/" itemprop="url">
-            <span itemprop="name">Java反射机制</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-13T18:24:20+08:00"
-              content="2024-07-13">
-          07-13
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/13/Java-Generics/" itemprop="url">
-            <span itemprop="name">Java泛型</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-12T14:31:51+08:00"
-              content="2024-07-12">
-          07-12
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/12/String-StringBuilder-and-StringBuffer/" itemprop="url">
-            <span itemprop="name">String、StringBuilder和StringBuffer的区别</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
+    
     </div>
-  </div>
-  
-  
-  
-  <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/categories/Java%E5%9F%BA%E7%A1%80/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/categories/Java%E5%9F%BA%E7%A1%80/">1</a><span class="page-number current">2</span>
-  </nav>
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Daisybby
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://daisybby.github.io/2024/07/17/JDK-9-change-String/" title="JDK 9对String的优化">https://daisybby.github.io/2024/07/17/JDK-9-change-String/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/07/17/Maven-and-jar-compulsion/" rel="prev" title="Maven怎么解决jar包冲突">
+                  <i class="fa fa-angle-left"></i> Maven怎么解决jar包冲突
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
 
 </div>
   </main>
