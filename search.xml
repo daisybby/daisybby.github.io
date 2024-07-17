@@ -1367,4 +1367,26 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java基础</category>
       </categories>
   </entry>
+  <entry>
+    <title>Java IO方式</title>
+    <url>/2024/07/17/Java-IO/</url>
+    <content><![CDATA[<h1 id="一、BIO、NIO和AIO"><a href="#一、BIO、NIO和AIO" class="headerlink" title="一、BIO、NIO和AIO"></a>一、BIO、NIO和AIO</h1><p><strong>BIO(Blocking I&#x2F;O)：同步阻塞I&#x2F;O</strong>JDK1.4之前的传统I&#x2F;O模型，线程发起IO请求后一直阻塞，直到缓冲区数据准备好。<br><strong>NIO(Non-Blocking I&#x2F;O)：同步非阻塞I&#x2F;O</strong>线程发起IO请求后，不需要等待，立即返回。之后定时轮询检查IO缓冲区数据有没有准备好。<br><strong>AIO（Synchronous I&#x2F;O)：异步非阻塞I&#x2F;O</strong>线程发起IO请求后，立即返回，不需要等待也不需要轮询检查，数据缓冲区准备好之后会通知线程。<br><strong>适用场景：</strong><br><strong>BIO：</strong>适合连接比较少且固定的结构，这种方式对服务器资源要求比较高，尽量保证线程不要阻塞太长时间。<br><strong>NIO：</strong>适合连接数量比较多但连接比较短（轻操作）的架构，比如聊天服务器，从JDK1.4开始支持。<br><strong>AIO：</strong>适合连接数量比较多且连接比较长（重操作）的架构，比如相册服务器，从JDK7开始支持。</p>
+<h1 id="二、同步-异步，阻塞-非阻塞"><a href="#二、同步-异步，阻塞-非阻塞" class="headerlink" title="二、同步&#x2F;异步，阻塞&#x2F;非阻塞"></a>二、同步&#x2F;异步，阻塞&#x2F;非阻塞</h1><p><strong>同步&#x2F;异步是相对于被调用者而言：</strong><br>A调用B。</p>
+<ul>
+<li>同步：B收到A的调用后立即就去处理，A此次调用能够获得结果。</li>
+<li>异步：B收到A的调用后会记下来，不一定立马就去做，但是一定会去做，执行完之后通知A。在项目中，利用消息队列优化秒杀功能就用到了异步的思想，将秒杀订单保存起来，另开一个线程慢慢保存数据到数据库。<br><strong>阻塞与非阻塞是相对于调用者而言：</strong><br>A调用B。</li>
+<li>阻塞：A在发出调用后，一直等待，直到B返回结果。</li>
+<li>非阻塞：A发出调用后，返回去做其他的操作，不需要等待。<br>同步不一定阻塞，尽管B立马就去处理，A还是可以利用这个空挡去做别的操作；异步也不一定是非阻塞的，A想等就等，B自己就是没办法立即处理。<br>举个例子：A调用B</li>
+</ul>
+<ol>
+<li>A一直等着，B也立马就去做了。（同步阻塞）</li>
+<li>A不等，时不时回来看看好了没，B立马就去做。（同步非阻塞）</li>
+<li>A等着，但是B要排队处理。（异步阻塞）</li>
+<li>A不等，B也排队处理。（异步非阻塞）</li>
+</ol>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+      </categories>
+  </entry>
 </search>
