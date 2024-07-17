@@ -1420,4 +1420,25 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java基础</category>
       </categories>
   </entry>
+  <entry>
+    <title>Java新版本特性</title>
+    <url>/2024/07/17/Java-new-character/</url>
+    <content><![CDATA[<h1 id="一、新版本特性总结"><a href="#一、新版本特性总结" class="headerlink" title="一、新版本特性总结"></a>一、新版本特性总结</h1><span id="more"></span>
+<p>等待后续补充……</p>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>char能存储中文吗？</title>
+    <url>/2024/07/17/char-and-chinese/</url>
+    <content><![CDATA[<p>在Java中，char用来保存16位（2 Byte)的Unicode字符，可以存储任何Unicode字符集中的字符，当然是也包括中文字符。</p>
+<span id="more"></span>
+<p>因为Unicode字符集的目标就是涵盖所有的字符，所以常见字、生僻字、罕见字以及其他语言的字符，用char都是可以存储的。<br>但是需要注意的是，要确保Java源代码文件本身以及编译器和运行时环境都支持Unicode字符集。也需要注意编码和字符串长度问题。<br>不过Unicode字符集在不断迭代更新，所以十分罕见的字符，可能是暂时、或版本问题，没有保存在Unicode字符集中。</p>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+      </categories>
+  </entry>
 </search>
