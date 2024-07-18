@@ -1646,4 +1646,45 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java基础</category>
       </categories>
   </entry>
+  <entry>
+    <title>Java中static的作用</title>
+    <url>/2024/07/18/Java-static/</url>
+    <content><![CDATA[<p>Java的static可以用于修饰类、方法、变量和代码块。</p>
+<span id="more"></span>
+<p><strong>修饰变量：</strong><br>在Java中使用static定义静态变量，静态变量属于类。具有以下特性：</p>
+<ul>
+<li>不需要实例化类，可以通过类名.静态变量名的形式来访问；</li>
+<li>所有的实例共享这一个静态变量；</li>
+<li>在类加载到内存中的时候就被初始化，而不是创建类实例的时候。</li>
+</ul>
+<p>例如：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">count</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">int</span> count=<span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>修饰方法：</strong><br>static修饰的方法属于静态方法，静态方法也是属于类的，可以通过类名.方法名的方式调用。<br>静态方法的特性：</p>
+<ul>
+<li>静态方法属于类，而不是属于类的实例。</li>
+<li>静态方法只能访问类的静态属性，而不能访问类的实例对象的属性。<br>例如main方法就是一个静态方法。</li>
+</ul>
+<p><strong>修饰代码块：</strong><br>static修饰用来初始化静态变量的代码块。static修饰的代码块有以下特性：</p>
+<ul>
+<li>当类被JVM加载并初始化的时候执行</li>
+<li>通常被用来做静态变量的复杂初始化</li>
+</ul>
+<p>例如：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DatabaseConfig</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">int</span> timeout;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String url;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Initializing database setting&quot;</span>);</span><br><span class="line">        timeout=<span class="number">30</span>;</span><br><span class="line">        url=<span class="string">&quot;......&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>定义静态内部类：</strong><br>在类内部定义一个静态类。<br>静态内部类具有以下特性：</p>
+<ul>
+<li>只能访问外部类的静态成员</li>
+<li>不依赖于外部类的实例而独立存在。</li>
+<li>常用于内部类行为独立于外部类的实例时。</li>
+</ul>
+<blockquote>
+<p>使用static来定义静态变量、静态方法、静态代码块和静态内部类，主要目的是为了将这些内容和类的实例对象独立开，提供一个类的所有实例都能方便访问的全局访问点，或者是无需实例化类就能调用类的变量和方法。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+      </categories>
+  </entry>
 </search>
