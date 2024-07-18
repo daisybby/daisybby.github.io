@@ -1600,4 +1600,22 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java基础</category>
       </categories>
   </entry>
+  <entry>
+    <title>为什么不建议使用异常控制业务流程</title>
+    <url>/2024/07/18/Java-NOT-use-Exception-to-control/</url>
+    <content><![CDATA[<p><strong>什么是异常控制业务流程？</strong></p>
+<span id="more"></span>
+<p>说直白点，就是catch里面有业务流程代码。<br><strong>为什么不建议这么做？</strong></p>
+<ol>
+<li><strong>性能问题：</strong>在Java中，异常的生成和处理，涉及到了填充栈和跟踪信息，频繁地抛出和捕获异常会影响系统的性能。</li>
+<li><strong>异常的职责：</strong>异常就是用来要求程序员处理异常情况的，把业务逻辑代码和异常绑定，会导致代码逻辑混乱，增加代码维护的难度。</li>
+<li><strong>异常的捕获会影响事务的回滚：</strong>既然要异常控制业务逻辑，那么就要catch捕获异常，但是有些情况下，异常的捕获会导致事务失效，无法回滚，造成数据不一致等。</li>
+<li><strong>过度依赖底层数据库异常：</strong>如果哪天异常改变了，或者是版本升级了，不会再抛出这个异常，那么这段业务逻辑就失效了。</li>
+</ol>
+<p>异常本身就不应该和业务逻辑牵扯起来，这违反了我们开发的常规思想。</p>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+      </categories>
+  </entry>
 </search>
