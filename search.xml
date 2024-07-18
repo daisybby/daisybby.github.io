@@ -1687,4 +1687,33 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java基础</category>
       </categories>
   </entry>
+  <entry>
+    <title>Long和BigDecimal表示金额哪个更合适？</title>
+    <url>/2024/07/18/Long-and-BigDecimal/</url>
+    <content><![CDATA[<p>在表示金额的时候，是不能用float和double，会丢失精度。</p>
+<span id="more"></span>
+<p>行业内表示金额的两种做法：</p>
+<ul>
+<li>单位为分，数据库内用bitint，代码中用Long；</li>
+<li>单位为元，数据库内用decimal，代码中用BigDecimal。</li>
+</ul>
+<p>Long和BigDecimal各有优缺点以及适用的场景。</p>
+<p><strong>BigDecimal：</strong><br>适合用于小数，需要高精度数值计算的场景，例如金融、计算和工程等领域。BigDecimal的特点如下：</p>
+<ul>
+<li><strong>精确度高：</strong>BigDecimal可以表示非常大或者非常精确的小数，不会出现浮点数的舍入误差。</li>
+<li><strong>灵活的数学运算：</strong>BigDecimal支持加减乘除和四舍五入等灵活的数学运算。</li>
+<li><strong>控制舍入：</strong>BigDecimal允许我们自己控制舍入模式。</li>
+</ul>
+<p><strong>Long：</strong><br>Long用于整数，是Java基本数据类型中的一种。<br>Long的特点如下：</p>
+<ul>
+<li><strong>性能高：</strong>作为Java的基本数据类型，Long的处理性能是很高的。</li>
+<li><strong>容量限制：</strong>Long的表示范围是2^63-1到-2^63。如果数据非常大，可能会超过表示范围。</li>
+</ul>
+<p>Long适合用于不涉及到小数，且数值可能非常大的场景。</p>
+<p>在实际业务开发时，大部分金融、计算应用，还是用BigDecimal，支持小数运算；但是如果不涉及小数，那可以用Long，处理效率更高。</p>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+      </categories>
+  </entry>
 </search>
