@@ -1523,8 +1523,28 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
       </categories>
   </entry>
   <entry>
-    <title>Java Timer</title>
+    <title>Java Timer实现定时调度</title>
     <url>/2024/07/18/Java-Timer/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<p><strong>是什么？</strong></p>
+<span id="more"></span>
+<p>Java中的Timer是一个定时调度器，用于在指定的时间点执行任务。<br>Timer最重要的两个成员变量：</p>
+<ol>
+<li>TaskQueue：任务队列，用来存储已计划的定时任务。任务队列按照任务的执行时间排序，最早执行的队伍排在队列前面。</li>
+<li>TimerThread：Timer内部的后台线程，负责扫描任务队列中的任务，检查执行时间，在任务的执行时间到达时，执行任务的run方法。TimerThread是一个守护线程。</li>
+</ol>
+<p><strong>TimerThread执行逻辑：</strong><br>TimerThread内部运行mainLoop()方法，在一个循环中不断检查任务队列，是否已经有任务的执行时间exeTime&lt;&#x3D;currentTime，有则执行。<br>任务队列中的任务可能是一次性的，也可能是重复的，一次性任务执行完就从任务队列中删除；重复性任务需要重新计算下一次的执行时间。</p>
+<p><strong>Timer的优缺点：</strong><br>优点：<br>Timer实现十分简单，是Java内置的，十分轻量级，只需要简单的调用就行。<br>缺点：</p>
+<ul>
+<li>Timer内部是单线程执行的，如果某个任务执行的时间比较长，会影响后面的任务执行；导致很多任务的实际执行时间比预设时间晚。</li>
+<li>如果某个任务执行过程中抛出了异常，将会导致整个Timer线程终止，所有的任务都没办法执行。</li>
+<li>Timer无法提供高精度的定时任务，因为是串行执行任务，无法预估每个任务具体的执行时间，有些任务执行时间长，后面的任务会“晚点”。</li>
+<li>在取消任务时，Timer虽然提供了cancel方法，但并不是真正地将任务从任务队列删除，而是做标记，这部分的空间还是会被消耗，无法释放资源，可能会导致内存泄漏。</li>
+<li>Timer每次扫描任务队列都会进行时间比较，当任务队列中有大量任务时，Timer的性能会下降。</li>
+<li>Timer是完全基于JVM内存的，一旦应用重启，任务队列中的任务就都没有了。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+      </categories>
   </entry>
 </search>
