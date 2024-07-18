@@ -1618,4 +1618,32 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java基础</category>
       </categories>
   </entry>
+  <entry>
+    <title>解析Java的main方法</title>
+    <url>/2024/07/18/main-method/</url>
+    <content><![CDATA[<p>main方法是Java应用程序的入口。</p>
+<span id="more"></span>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>基本main函数都长这样，接下来就对每个细节展开讲讲。<br><strong>为什么main方法是public的？</strong><br>java的四种访问控制修饰符：</p>
+<ul>
+<li>default：默认的，啥也不写，是同一个包内可见。</li>
+<li>private：私有的。同一个类内部可见。</li>
+<li>public：公开的，对所有类可见。</li>
+<li>protected：保护的，同一个包内的类和子类可见，但是不能用来修饰外部类。</li>
+</ul>
+<p>因为main方法是JVM直接调用的，所以需要是public的，不然没办法调用。</p>
+<p><strong>为什么main方法是static的？</strong><br>静态方法属于类，不需要实例化这个类就能调用，只要类被夹在，就能找到这个方法。<br>main方法写成静态方法，可以很方便地被JVM调用，不需要实例化对象。</p>
+<p><strong>为什么main方法是void？</strong><br>像C和C++，main方法最后会返回一个int类型的0，因为这个0是程序退出时的exit code，命令解释器或者是其他外部程序调用已确定的流程是否完成。</p>
+<p>但是在Java中，程序的推出是JVM控制的，在发生以下两种情况发生时，程序会终止并退出：</p>
+<ul>
+<li>所有不是后台守护线程的线程都结束了。</li>
+<li>某个线程调用了Runtime类或者System类的exit方法，并且安全管理器不限制exit方法执行时。</li>
+</ul>
+<p>也就是说JVM终止程序是不依赖于main方法的返回值的，所以不需要返回了。</p>
+<p><strong>为什么main的参数类型是String数组？</strong><br>因为java程序接受命令行传入参数，这个时候传入的参数是字符串类型，而且有可能有多个参数，所以使用String数组。</p>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+      </categories>
+  </entry>
 </search>
