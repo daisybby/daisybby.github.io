@@ -1716,4 +1716,19 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java基础</category>
       </categories>
   </entry>
+  <entry>
+    <title>怎么修改一个private的String参数值</title>
+    <url>/2024/07/18/change-a-private-String/</url>
+    <content><![CDATA[<p>一个挖坑的问题。</p>
+<span id="more"></span>
+<p>首先需要明确的是，String是不可变的，如果说要修改，只能修改这个变量（引用）所指向的对象，如果说指向另一个String对象视为改变，那这个是可以的。</p>
+<ol>
+<li>常规修改方法<br>我们都知道，setter是常用的修改私有属性方法。</li>
+<li>通过反射机制<br>私有成员变量对反射机制是可见的，但是并不能调用。想要调用私有成员变量，需要先修改访问控制规则，然后再修改。这种方式破坏了封装性，增加了代码的复杂性和出错的可能性，而且反射的性能并不好。<br>以下是一个通过反射修改的例子：<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Dog</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name=<span class="string">&quot;a dog&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> age;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Dog dog=<span class="keyword">new</span> <span class="title class_">Dog</span>();</span><br><span class="line"><span class="keyword">try</span>&#123;</span><br><span class="line">    Field field=Dog.class.getDeclaredField(<span class="string">&quot;name&quot;</span>);</span><br><span class="line">    field.setAccessible(<span class="literal">true</span>);</span><br><span class="line">    field.set(dog,<span class="string">&quot;a cute dog&quot;</span>);</span><br><span class="line">&#125; <span class="keyword">catch</span> (NoSuchFieldException | IllegalAccessException e)&#123;</span><br><span class="line">    e.pringStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+      </categories>
+  </entry>
 </search>

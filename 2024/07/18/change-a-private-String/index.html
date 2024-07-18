@@ -19,23 +19,27 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"daisybby.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta property="og:type" content="website">
-<meta property="og:title" content="daisybby">
-<meta property="og:url" content="https://daisybby.github.io/categories/Java%E5%9F%BA%E7%A1%80/page/2/index.html">
+    <meta name="description" content="一个挖坑的问题。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="怎么修改一个private的String参数值">
+<meta property="og:url" content="https://daisybby.github.io/2024/07/18/change-a-private-String/index.html">
 <meta property="og:site_name" content="daisybby">
+<meta property="og:description" content="一个挖坑的问题。">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-07-18T11:19:55.000Z">
+<meta property="article:modified_time" content="2024-07-18T11:26:32.838Z">
 <meta property="article:author" content="Daisybby">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://daisybby.github.io/categories/Java%E5%9F%BA%E7%A1%80/page/2/">
+<link rel="canonical" href="https://daisybby.github.io/2024/07/18/change-a-private-String/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"categories/Java基础/page/2/index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/07/18/change-a-private-String/","path":"2024/07/18/change-a-private-String/","title":"怎么修改一个private的String参数值"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>分类: Java基础 | daisybby</title>
+<title>怎么修改一个private的String参数值 | daisybby</title>
   
 
 
@@ -179,233 +183,147 @@
 
     </div>
 
-    <div class="main-inner category posts-collapse">
+    <div class="main-inner post posts-expand">
 
 
   
+
+
+<div class="post-block">
   
   
-  <div class="post-block">
-    <div class="post-content">
-      <div class="collection-title">
-        <h1 class="collection-header">Java基础
-          <small>分类</small>
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/07/18/change-a-private-String/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="Daisybby">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="daisybby">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="怎么修改一个private的String参数值 | daisybby">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          怎么修改一个private的String参数值
         </h1>
-      </div>
 
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
       
-    <div class="collection-year">
-      <span class="collection-header">2024</span>
+
+      <time title="创建时间：2024-07-18 19:19:55 / 修改时间：19:26:32" itemprop="dateCreated datePublished" datetime="2024-07-18T19:19:55+08:00">2024-07-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>552</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>一个挖坑的问题。</p>
+<span id="more"></span>
+<p>首先需要明确的是，String是不可变的，如果说要修改，只能修改这个变量（引用）所指向的对象，如果说指向另一个String对象视为改变，那这个是可以的。</p>
+<ol>
+<li>常规修改方法<br>我们都知道，setter是常用的修改私有属性方法。</li>
+<li>通过反射机制<br>私有成员变量对反射机制是可见的，但是并不能调用。想要调用私有成员变量，需要先修改访问控制规则，然后再修改。这种方式破坏了封装性，增加了代码的复杂性和出错的可能性，而且反射的性能并不好。<br>以下是一个通过反射修改的例子：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Dog</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name=<span class="string">&quot;a dog&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> age;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Dog dog=<span class="keyword">new</span> <span class="title class_">Dog</span>();</span><br><span class="line"><span class="keyword">try</span>&#123;</span><br><span class="line">    Field field=Dog.class.getDeclaredField(<span class="string">&quot;name&quot;</span>);</span><br><span class="line">    field.setAccessible(<span class="literal">true</span>);</span><br><span class="line">    field.set(dog,<span class="string">&quot;a cute dog&quot;</span>);</span><br><span class="line">&#125; <span class="keyword">catch</span> (NoSuchFieldException | IllegalAccessException e)&#123;</span><br><span class="line">    e.pringStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-17T17:46:23+08:00"
-              content="2024-07-17">
-          07-17
-        </time>
-      </div>
+    
+    
+    
+    <div>
+    
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/17/Maven-and-jar-compulsion/" itemprop="url">
-            <span itemprop="name">Maven怎么解决jar包冲突</span>
-          </a>
-      </div>
+          
 
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-17T17:35:15+08:00"
-              content="2024-07-17">
-          07-17
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/17/Difference-of-ClassNotFoundException-and-NoClassDefFoundError/" itemprop="url">
-            <span itemprop="name">ClassNotFoundException和NoClassDefFoundError的区别</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-17T17:05:41+08:00"
-              content="2024-07-17">
-          07-17
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/17/char-and-chinese/" itemprop="url">
-            <span itemprop="name">char能存储中文吗？</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-17T16:24:58+08:00"
-              content="2024-07-17">
-          07-17
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/17/Java-new-character/" itemprop="url">
-            <span itemprop="name">Java新版本特性</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-17T15:04:14+08:00"
-              content="2024-07-17">
-          07-17
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/17/Shallow-copy-and-deep-copy/" itemprop="url">
-            <span itemprop="name">深拷贝和浅拷贝</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-17T14:36:44+08:00"
-              content="2024-07-17">
-          07-17
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/17/Java-value-or-incite-pass/" itemprop="url">
-            <span itemprop="name">Java值传递还是引用传递？</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-17T13:55:59+08:00"
-              content="2024-07-17">
-          07-17
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/17/Java-IO/" itemprop="url">
-            <span itemprop="name">Java IO方式</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-16T18:46:48+08:00"
-              content="2024-07-16">
-          07-16
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/16/Java-Exception/" itemprop="url">
-            <span itemprop="name">Java异常</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-16T16:39:06+08:00"
-              content="2024-07-16">
-          07-16
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/16/Java-Serialization/" itemprop="url">
-            <span itemprop="name">Java 序列化</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-16T14:42:15+08:00"
-              content="2024-07-16">
-          07-16
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/16/Java-Meta-Annotation/" itemprop="url">
-            <span itemprop="name">Java注解</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
+    
     </div>
-  </div>
-  
-  
-  
-  <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/categories/Java%E5%9F%BA%E7%A1%80/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/categories/Java%E5%9F%BA%E7%A1%80/">1</a><span class="page-number current">2</span><a class="page-number" href="/categories/Java%E5%9F%BA%E7%A1%80/page/3/">3</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/categories/Java%E5%9F%BA%E7%A1%80/page/3/"><i class="fa fa-angle-right"></i></a>
-  </nav>
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Daisybby
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://daisybby.github.io/2024/07/18/change-a-private-String/" title="怎么修改一个private的String参数值">https://daisybby.github.io/2024/07/18/change-a-private-String/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/07/18/Long-and-BigDecimal/" rel="prev" title="Long和BigDecimal表示金额哪个更合适？">
+                  <i class="fa fa-angle-left"></i> Long和BigDecimal表示金额哪个更合适？
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
 
 </div>
   </main>
