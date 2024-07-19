@@ -84,7 +84,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">11</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">7</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">42</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">12</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">7</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">43</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -149,13 +149,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-count">43</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -180,6 +180,128 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/07/19/fail-fast-and-fail-safe/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="Daisybby">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="daisybby">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | daisybby">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/07/19/fail-fast-and-fail-safe/" class="post-title-link" itemprop="url">什么是fail-fast？什么是fail-safe</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-07-19 15:53:35 / 修改时间：16:57:26" itemprop="dateCreated datePublished" datetime="2024-07-19T15:53:35+08:00">2024-07-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%9B%86%E5%90%88/" itemprop="url" rel="index"><span itemprop="name">集合</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="一、fail-fast"><a href="#一、fail-fast" class="headerlink" title="一、fail-fast"></a>一、fail-fast</h1><p>在系统设计中，fail-fase快速失效系统，就是在做系统设计的时候先考虑异常情况，一旦发生异常，就立即停止。<br>有点抽象，个人理解的就是先做异常处理，然后再继续做业务逻辑，而不是把业务逻辑放到前面吧。</p>
+<p><strong>集合类中的fail-fast：</strong><br>在集合类中，为了避免并发修改，会维护一个expectedModCount属性，记录迭代器预期的修改次数，以及集合类自己具有的modCount属性，记录集合实际被修改的次数。在集合被修改的时候，会对比expectedModCount和modCount是否一致，不一致就会抛出ConcurrentModificationException。</p>
+<p><strong>集合类中的fail-safe：</strong><br>fail-fast是不允许并发修改的，但是有些集合是线程安全的，就是需要并发使用的，不做任何处理的话不断抛出异常就没办法正常工作了。</p>
+<h1 id="二、集合类的fail-fast"><a href="#二、集合类的fail-fast" class="headerlink" title="二、集合类的fail-fast"></a>二、集合类的fail-fast</h1><p>如下增强for循环遍历集合的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">List&lt;String&gt; userNames=<span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;String&gt;()&#123;&#123;</span><br><span class="line">    add(<span class="string">&quot;daisybby&quot;</span>);</span><br><span class="line">    add(<span class="string">&quot;daisy&quot;</span>);</span><br><span class="line">    add(<span class="string">&quot;yyy&quot;</span>);</span><br><span class="line">    add(<span class="string">&quot;yuan&quot;</span>);</span><br><span class="line">&#125;&#125;;</span><br><span class="line"><span class="keyword">for</span>(String userName:userNames)&#123;</span><br><span class="line">    <span class="keyword">if</span>(userName.equals(<span class="string">&quot;daisybby&quot;</span>))&#123;</span><br><span class="line">        userNames.remove(userName);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>会抛出ConcurrentModificationException异常，这就是触发了集合类的fail-fast机制。不仅仅是remove，如果是add，也一样会抛出异常。</p>
+<p><strong>异常原理</strong><br>以上代码其实是语法糖，在底层解语法糖之后，代码转换成：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">mian</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">    List&lt;String&gt; userNames=<span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;String&gt;()&#123;&#123;</span><br><span class="line">        add(<span class="string">&quot;daisybby&quot;</span>);</span><br><span class="line">        add(<span class="string">&quot;daisy&quot;</span>);</span><br><span class="line">        add(<span class="string">&quot;yyy&quot;</span>);</span><br><span class="line">        add(<span class="string">&quot;yuan&quot;</span>);</span><br><span class="line">    &#125;&#125;;</span><br><span class="line">    Iterator iterator=userNames.iterator();</span><br><span class="line">    <span class="keyword">do</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(!iterator.hasNext())&#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        String userName=(String)iterator.next();</span><br><span class="line">        <span class="keyword">if</span>(userName.equals(<span class="string">&quot;daisybby&quot;</span>))&#123;</span><br><span class="line">            userNames.remove(userName);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;<span class="keyword">while</span>(<span class="literal">true</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>foreach语法糖是依赖迭代器iterator来实现的，异常是在iterator.next()处抛出，这个方法里面调用了checkForComodification方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title function_">checkForComodification</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(modCount!=expectedModCount)&#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">ConcurrentModificationException</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>modCount是ArrayList的一个成员变量，在初始化ArrayList之后就有了这个变量，初值为0.<br>expectedModCount是ArrayList的内部类Itr中的成员变量，在<code>Iterator iterator=userNames.iterator();</code>代码，会得到一个Itr类，这个类实现了iterator接口。expectedModCount随着Itr的创建被初始化，通过<strong>迭代器对集合操作</strong>的时候，expectedModCount才会发生变化。<br>上面的remove并不是通过迭代器对集合进行的删除，而是通过集合类自己的方法操作的，所以expectedModCount并不会发生变化，但是remove操作会修改modCount的值，最终导致两个变量值不一致，抛出异常。<br>两个变量的变化过程如下：</p>
+<ol>
+<li>List<String> userNames&#x3D;….：初始化集合类，modCount&#x3D;0</li>
+<li>userName.iterator();初始化expectedModCount&#x3D;0；</li>
+<li>userNames.remove()，删除元素，modeCount++,modeCount&#x3D;1</li>
+<li>iterator.next()，在这里判断expectedModCount&#x3D;&#x3D;modCount？</li>
+</ol>
+<h1 id="三、fail-safe"><a href="#三、fail-safe" class="headerlink" title="三、fail-safe"></a>三、fail-safe</h1><p>为了避免触发fail-fast机制，我们可以使用Java提供的一些采用了fail-safe机制的集合类。<br>这样的集合类在遍历的时候，恢复至一份原来的集合内容，在复制出来的副本上遍历。<br>java.util.concurrent提供的容器都是fail-safe的，可以在多线程下并发使用，并发修改，也可以在使用了iterator的foreach中add&#x2F;remove。<br>不过这些add&#x2F;remove操作都是通过加锁来控制并发的。</p>
+<p>需要注意的是，因为遍历是在副本集合上面进行的，所以在获取到集合副本之后，原集合如果发生了变化，迭代器也是不知道的。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">        List&lt;String&gt; userNames=<span class="keyword">new</span> <span class="title class_">CopyOnWriteArrayList</span>&lt;String&gt;()&#123;&#123;</span><br><span class="line">            add(<span class="string">&quot;daisybby&quot;</span>);</span><br><span class="line">            add(<span class="string">&quot;daisy&quot;</span>);</span><br><span class="line">            add(<span class="string">&quot;yyy&quot;</span>);</span><br><span class="line">            add(<span class="string">&quot;yuan&quot;</span>);</span><br><span class="line">        &#125;&#125;;</span><br><span class="line">        Iterator iterator=userNames.iterator();</span><br><span class="line">        <span class="keyword">do</span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(!iterator.hasNext())&#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            String userName=(String)iterator.next();</span><br><span class="line">            <span class="keyword">if</span>(userName.equals(<span class="string">&quot;daisybby&quot;</span>))&#123;</span><br><span class="line">                userNames.remove(userName);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;<span class="keyword">while</span>(<span class="literal">true</span>);</span><br><span class="line">        <span class="keyword">while</span>(iterator.hasNext())&#123;</span><br><span class="line">            System.out.println(iterator.next());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最终的输出结果还是有daisybby。因为在<code>Iterator iterator=userNames.iterator()</code>之后，就获得了拷贝集合，在循环里面remove调用集合本身的方法进行删除，原来的集合被修改了，但是拷贝集合还是最初的那个状态。</p>
+<p><strong>什么是Copy-on-Write？</strong><br>Copy-On-Write简称COW，是一种程序设计的优化策略，最初的数据内容是大家共享的，如果有线程想要修改，那就自己复制一份出去修改，这是一种延时懒惰策略。修改完之后再把原容器的引用指向修改后的新容器。<br>对于CopyOnWriteArrayList的add&#x2F;remove方法是需要加锁来保证并发安全的。但是读操作不需要。</p>
+
+      
+    </div>
+
+    
+    
+    
+    <div>
+    
+    </div>
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1117,116 +1239,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/07/17/Java-intern/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/header.jpg">
-      <meta itemprop="name" content="Daisybby">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="daisybby">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | daisybby">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2024/07/17/Java-intern/" class="post-title-link" itemprop="url">String intern方法</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2024-07-17 21:05:55" itemprop="dateCreated datePublished" datetime="2024-07-17T21:05:55+08:00">2024-07-17</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-07-18 10:48:08" itemprop="dateModified" datetime="2024-07-18T10:48:08+08:00">2024-07-18</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>1.8k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>2 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="一、String-str-new-String-“daisybby”-创建了几个对象？"><a href="#一、String-str-new-String-“daisybby”-创建了几个对象？" class="headerlink" title="一、String str&#x3D;new String(“daisybby”)创建了几个对象？"></a>一、String str&#x3D;new String(“daisybby”)创建了几个对象？</h1>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/07/17/Java-intern/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-    <div>
-    
-    </div>
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1250,13 +1262,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">70k</span>
+    <span title="站点总字数">74k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:04</span>
+    <span title="站点阅读时长">1:07</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
