@@ -19,29 +19,27 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"daisybby.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="1.对象序列化后保存到Redis保存的是序列化后的对象，这种方式在Redis中很难看出来对象的含义。">
+    <meta name="description" content="Set中的元素是不重复的，根据Set底层实现方式不同，可以分为两类Set：HashSet和TreeSet。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Redis保存对象为String还是hash？">
-<meta property="og:url" content="https://daisybby.github.io/2024/06/23/save-object-as-string-or-hash/index.html">
+<meta property="og:title" content="Set是如何保证元素不重复的？">
+<meta property="og:url" content="https://daisybby.github.io/2024/07/19/Java-set-unrepeat/index.html">
 <meta property="og:site_name" content="daisybby">
-<meta property="og:description" content="1.对象序列化后保存到Redis保存的是序列化后的对象，这种方式在Redis中很难看出来对象的含义。">
+<meta property="og:description" content="Set中的元素是不重复的，根据Set底层实现方式不同，可以分为两类Set：HashSet和TreeSet。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-06-23T05:54:38.000Z">
-<meta property="article:modified_time" content="2024-06-23T07:04:55.241Z">
+<meta property="article:published_time" content="2024-07-19T09:28:03.000Z">
+<meta property="article:modified_time" content="2024-07-19T10:29:40.663Z">
 <meta property="article:author" content="Daisybby">
-<meta property="article:tag" content="Redis">
-<meta property="article:tag" content="数据库">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://daisybby.github.io/2024/06/23/save-object-as-string-or-hash/">
+<link rel="canonical" href="https://daisybby.github.io/2024/07/19/Java-set-unrepeat/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/06/23/save-object-as-string-or-hash/","path":"2024/06/23/save-object-as-string-or-hash/","title":"Redis保存对象为String还是hash？"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/07/19/Java-set-unrepeat/","path":"2024/07/19/Java-set-unrepeat/","title":"Set是如何保证元素不重复的？"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Redis保存对象为String还是hash？ | daisybby</title>
+<title>Set是如何保证元素不重复的？ | daisybby</title>
   
 
 
@@ -141,7 +139,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E5%AF%B9%E8%B1%A1%E5%BA%8F%E5%88%97%E5%8C%96%E5%90%8E%E4%BF%9D%E5%AD%98%E5%88%B0Redis"><span class="nav-text">1.对象序列化后保存到Redis</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E5%B0%86%E5%AF%B9%E8%B1%A1%E8%BD%AC%E6%8D%A2%E6%88%90Json%E6%A0%BC%E5%BC%8F"><span class="nav-text">2.将对象转换成Json格式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E7%94%A8hash%E5%AD%98%E5%82%A8%E5%AF%B9%E8%B1%A1"><span class="nav-text">3.用hash存储对象</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E6%80%8E%E4%B9%88%E9%80%89%E5%8F%96%E5%91%A2%EF%BC%9F"><span class="nav-text">4.怎么选取呢？</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81HashSet%E5%AE%9E%E7%8E%B0%E4%B8%8D%E9%87%8D%E5%A4%8D%E7%9A%84%E5%8E%9F%E7%90%86"><span class="nav-text">一、HashSet实现不重复的原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81TreeSet%E5%AE%9E%E7%8E%B0%E4%B8%8D%E9%87%8D%E5%A4%8D"><span class="nav-text">二、TreeSet实现不重复</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81HashSet%E3%80%81TreeSet%E3%80%81LinkedHashSet%E3%80%81BitSet%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-text">三、HashSet、TreeSet、LinkedHashSet、BitSet的区别</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -197,7 +195,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/06/23/save-object-as-string-or-hash/">
+    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/07/19/Java-set-unrepeat/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/header.jpg">
@@ -210,12 +208,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Redis保存对象为String还是hash？ | daisybby">
+      <meta itemprop="name" content="Set是如何保证元素不重复的？ | daisybby">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Redis保存对象为String还是hash？
+          Set是如何保证元素不重复的？
         </h1>
 
         <div class="post-meta-container">
@@ -227,7 +225,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2024-06-23 13:54:38 / 修改时间：15:04:55" itemprop="dateCreated datePublished" datetime="2024-06-23T13:54:38+08:00">2024-06-23</time>
+      <time title="创建时间：2024-07-19 17:28:03 / 修改时间：18:29:40" itemprop="dateCreated datePublished" datetime="2024-07-19T17:28:03+08:00">2024-07-19</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -235,7 +233,11 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E5%92%8C%E5%8E%9F%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">基础概念和原理</span></a>
+          <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%9B%86%E5%90%88%E7%B1%BB/" itemprop="url" rel="index"><span itemprop="name">集合类</span></a>
         </span>
     </span>
 
@@ -246,7 +248,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>606</span>
+      <span>1.1k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -263,42 +265,34 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="1-对象序列化后保存到Redis"><a href="#1-对象序列化后保存到Redis" class="headerlink" title="1.对象序列化后保存到Redis"></a>1.对象序列化后保存到Redis</h1><p>保存的是序列化后的对象，这种方式在Redis中很难看出来对象的含义。</p>
+    <div class="post-body" itemprop="articleBody"><p>Set中的元素是不重复的，根据Set底层实现方式不同，可以分为两类Set：HashSet和TreeSet。</p>
 <span id="more"></span>
-<p><strong>优点：</strong></p>
-<ul>
-<li><strong>简洁性：</strong> 直接序列化整个对象，不需要考虑字段的单独存储。</li>
-<li><strong>原子性：</strong> 对整个对象进行存取。</li>
+<h1 id="一、HashSet实现不重复的原理"><a href="#一、HashSet实现不重复的原理" class="headerlink" title="一、HashSet实现不重复的原理"></a>一、HashSet实现不重复的原理</h1><p>HashSet底层是通过hashMap来实现的，内部的元素是无序的，可以放入null，但是只能放入一个。<br>当向hashSet中添加元素时：</p>
+<ol>
+<li>计算元素的hashCode，通过扰动计算和按位与，计算元素的存储位置</li>
+<li>元素的存储位置是空的，那么就加入元素</li>
+<li>存储位置不是空的，判断元素是不是相等，是就重复了，加入失败。</li>
+<li>如果元素不相等，那就发生hash冲突了，按照解决策略去解决就行。</li>
+</ol>
+<h1 id="二、TreeSet实现不重复"><a href="#二、TreeSet实现不重复" class="headerlink" title="二、TreeSet实现不重复"></a>二、TreeSet实现不重复</h1><p>TreeSet底层的实现方式是TreeMap，而TreeMap又是基于红黑树实现的，元素是有序的。<br>TreeMap按照key排序，在插入元素的时候，要调用compareTo()方法来比较，判断元素的插入位置，所以TreeSet保存的元素一定要实现Comparable接口。TreeSet内部也是通过compareTo方法来判断重复元素的。</p>
+<h1 id="三、HashSet、TreeSet、LinkedHashSet、BitSet的区别"><a href="#三、HashSet、TreeSet、LinkedHashSet、BitSet的区别" class="headerlink" title="三、HashSet、TreeSet、LinkedHashSet、BitSet的区别"></a>三、HashSet、TreeSet、LinkedHashSet、BitSet的区别</h1><p>这里有个新的概念：BitSet<br>BitSet是一个位集合，和Redis的BitMap思想很像，一串二进制字符串，第10位为1，表示10在这个BitSet里面。<br>Java内部是不知道bit的，所以本质上是一个long数组，long有64位，一次就可以读取64位进行检查。如果需要保存所有int型数据，需要4B*(2^32-1)，但是用BitSet就只需要2^32-1个bit位。<br>BitSet用来表达大数比较方便，但是可能会存在内存的严重浪费，比如就保存一个很大的数，空间还是需要这么多，因为BitSet是和数值有关的，而不是和数据个数有关的。</p>
+<ol>
+<li><strong>功能不同：</strong><ul>
+<li>HashSet是最基本的Set，只提供了去重的功能。</li>
+<li>TreeSet是基于红黑树实现，不仅去重，元素更是有序的。</li>
+<li>LinkedHashSet是链式存储，通过输入元素的插入顺序。</li>
+<li>BitSet不仅能提供去重的功能，通常还能节省内存空间。</li>
 </ul>
-<p><strong>缺点：</strong></p>
-<ul>
-<li><strong>序列化依赖：</strong> 依赖于特定的序列化库，可能影响性能和跨语言使用。</li>
-<li><strong>可读性：</strong> 二进制格式的字符串不易于阅读和调试。</li>
-<li><strong>灵活性差：</strong> 如果对象结构发生变化，需要重新序列化。</li>
+</li>
+<li><strong>实现方式不同：</strong><ul>
+<li>HashSet是基于HashMap实现的，去重是根据hashCode和equals来实现的。</li>
+<li>LinkedHashMap是利用双向链表来记录插入顺序。</li>
+<li>TreeSet是基于TreeMap的，去重是根据compareTo方法。</li>
+<li>BitSet基于位数组，一般只用于数字的存储和去重。</li>
 </ul>
-<h1 id="2-将对象转换成Json格式"><a href="#2-将对象转换成Json格式" class="headerlink" title="2.将对象转换成Json格式"></a>2.将对象转换成Json格式</h1><p>Redis中保存的是JSON格式的字符串，可以清晰阅读对象的内容。<br><strong>优点：</strong> </p>
-<ul>
-<li><strong>跨语言性：</strong> JSON是一种跨语言的格式，易于在不同语言和系统之间交换数据。</li>
-<li><strong>可读性：</strong> JSON格式的数据易于阅读。</li>
-</ul>
-<p><strong>缺点：</strong></p>
-<ul>
-<li><strong>灵活性：</strong>不支持对象单个属性的存取，如果要修改对象属性只能整个对象读取修改重建。</li>
-<li><strong>复杂结构存储：</strong>不适合存储复杂的对象结构，比如对象存在嵌套。</li>
-</ul>
-<h1 id="3-用hash存储对象"><a href="#3-用hash存储对象" class="headerlink" title="3.用hash存储对象"></a>3.用hash存储对象</h1><p>Redis的key作为整个hash结构在Redis中的索引；<br>fieldName是对象的属性名称；<br>fieldValue就是属性值。<br><strong>优点：</strong></p>
-<ul>
-<li><strong>可读性：</strong>hash保存对象结构清晰；</li>
-<li><strong>灵活性：</strong>支持对单个属性的操作，只需要根据对应的fieldName来设置fieldValue即可。</li>
-</ul>
-<p><strong>缺点：</strong></p>
-<ul>
-<li>处理嵌套的对象比较麻烦。</li>
-</ul>
-<h1 id="4-怎么选取呢？"><a href="#4-怎么选取呢？" class="headerlink" title="4.怎么选取呢？"></a>4.怎么选取呢？</h1><p><strong>更新频繁的数据：</strong> 可以通过hash结构存储对象。<br><strong>读频繁的数据：</strong> 对于更新频率比较低，但是读取比较频繁的数据，选择string是比较好的方案。</p>
-<blockquote>
-<p>实际业务开发中，可以结合string和hash。</p>
-</blockquote>
+</li>
+<li><strong>BitSet</strong>只是名字里面有Set，但是没有实现Collection接口，也和Iterable接口没什么关系。</li>
+</ol>
 
     </div>
 
@@ -328,7 +322,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://daisybby.github.io/2024/06/23/save-object-as-string-or-hash/" title="Redis保存对象为String还是hash？">https://daisybby.github.io/2024/06/23/save-object-as-string-or-hash/</a>
+      <a href="https://daisybby.github.io/2024/07/19/Java-set-unrepeat/" title="Set是如何保证元素不重复的？">https://daisybby.github.io/2024/07/19/Java-set-unrepeat/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -336,23 +330,16 @@
 </ul>
 </div>
 
-          <div class="post-tags">
-              <a href="/tags/Redis/" rel="tag"># Redis</a>
-              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 数据库</a>
-          </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2024/06/22/Bloom-Filter/" rel="prev" title="布隆过滤器">
-                  <i class="fa fa-angle-left"></i> 布隆过滤器
+                <a href="/2024/07/19/change-List-during-loop/" rel="prev" title="怎么在遍历的同时修改List?">
+                  <i class="fa fa-angle-left"></i> 怎么在遍历的同时修改List?
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2024/06/23/redis-project-note2/" rel="next" title="Redis实战项目笔记二：查询缓存">
-                  Redis实战项目笔记二：查询缓存 <i class="fa fa-angle-right"></i>
-                </a>
             </div>
           </div>
     </footer>

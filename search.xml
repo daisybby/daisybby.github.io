@@ -1825,4 +1825,41 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>集合类</category>
       </categories>
   </entry>
+  <entry>
+    <title>Set是如何保证元素不重复的？</title>
+    <url>/2024/07/19/Java-set-unrepeat/</url>
+    <content><![CDATA[<p>Set中的元素是不重复的，根据Set底层实现方式不同，可以分为两类Set：HashSet和TreeSet。</p>
+<span id="more"></span>
+<h1 id="一、HashSet实现不重复的原理"><a href="#一、HashSet实现不重复的原理" class="headerlink" title="一、HashSet实现不重复的原理"></a>一、HashSet实现不重复的原理</h1><p>HashSet底层是通过hashMap来实现的，内部的元素是无序的，可以放入null，但是只能放入一个。<br>当向hashSet中添加元素时：</p>
+<ol>
+<li>计算元素的hashCode，通过扰动计算和按位与，计算元素的存储位置</li>
+<li>元素的存储位置是空的，那么就加入元素</li>
+<li>存储位置不是空的，判断元素是不是相等，是就重复了，加入失败。</li>
+<li>如果元素不相等，那就发生hash冲突了，按照解决策略去解决就行。</li>
+</ol>
+<h1 id="二、TreeSet实现不重复"><a href="#二、TreeSet实现不重复" class="headerlink" title="二、TreeSet实现不重复"></a>二、TreeSet实现不重复</h1><p>TreeSet底层的实现方式是TreeMap，而TreeMap又是基于红黑树实现的，元素是有序的。<br>TreeMap按照key排序，在插入元素的时候，要调用compareTo()方法来比较，判断元素的插入位置，所以TreeSet保存的元素一定要实现Comparable接口。TreeSet内部也是通过compareTo方法来判断重复元素的。</p>
+<h1 id="三、HashSet、TreeSet、LinkedHashSet、BitSet的区别"><a href="#三、HashSet、TreeSet、LinkedHashSet、BitSet的区别" class="headerlink" title="三、HashSet、TreeSet、LinkedHashSet、BitSet的区别"></a>三、HashSet、TreeSet、LinkedHashSet、BitSet的区别</h1><p>这里有个新的概念：BitSet<br>BitSet是一个位集合，和Redis的BitMap思想很像，一串二进制字符串，第10位为1，表示10在这个BitSet里面。<br>Java内部是不知道bit的，所以本质上是一个long数组，long有64位，一次就可以读取64位进行检查。如果需要保存所有int型数据，需要4B*(2^32-1)，但是用BitSet就只需要2^32-1个bit位。<br>BitSet用来表达大数比较方便，但是可能会存在内存的严重浪费，比如就保存一个很大的数，空间还是需要这么多，因为BitSet是和数值有关的，而不是和数据个数有关的。</p>
+<ol>
+<li><strong>功能不同：</strong><ul>
+<li>HashSet是最基本的Set，只提供了去重的功能。</li>
+<li>TreeSet是基于红黑树实现，不仅去重，元素更是有序的。</li>
+<li>LinkedHashSet是链式存储，通过输入元素的插入顺序。</li>
+<li>BitSet不仅能提供去重的功能，通常还能节省内存空间。</li>
+</ul>
+</li>
+<li><strong>实现方式不同：</strong><ul>
+<li>HashSet是基于HashMap实现的，去重是根据hashCode和equals来实现的。</li>
+<li>LinkedHashMap是利用双向链表来记录插入顺序。</li>
+<li>TreeSet是基于TreeMap的，去重是根据compareTo方法。</li>
+<li>BitSet基于位数组，一般只用于数字的存储和去重。</li>
+</ul>
+</li>
+<li><strong>BitSet</strong>只是名字里面有Set，但是没有实现Collection接口，也和Iterable接口没什么关系。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+        <category>集合类</category>
+      </categories>
+  </entry>
 </search>
