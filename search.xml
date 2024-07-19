@@ -1776,7 +1776,8 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
   <entry>
     <title>什么是fail-fast？什么是fail-safe</title>
     <url>/2024/07/19/fail-fast-and-fail-safe/</url>
-    <content><![CDATA[<h1 id="一、fail-fast"><a href="#一、fail-fast" class="headerlink" title="一、fail-fast"></a>一、fail-fast</h1><p>在系统设计中，fail-fase快速失效系统，就是在做系统设计的时候先考虑异常情况，一旦发生异常，就立即停止。<br>有点抽象，个人理解的就是先做异常处理，然后再继续做业务逻辑，而不是把业务逻辑放到前面吧。</p>
+    <content><![CDATA[<h1 id="一、fail-fast"><a href="#一、fail-fast" class="headerlink" title="一、fail-fast"></a>一、fail-fast</h1><span id="more"></span>
+<p>在系统设计中，fail-fase快速失效系统，就是在做系统设计的时候先考虑异常情况，一旦发生异常，就立即停止。<br>有点抽象，个人理解的就是先做异常处理，然后再继续做业务逻辑，而不是把业务逻辑放到前面吧。</p>
 <p><strong>集合类中的fail-fast：</strong><br>在集合类中，为了避免并发修改，会维护一个expectedModCount属性，记录迭代器预期的修改次数，以及集合类自己具有的modCount属性，记录集合实际被修改的次数。在集合被修改的时候，会对比expectedModCount和modCount是否一致，不一致就会抛出ConcurrentModificationException。</p>
 <p><strong>集合类中的fail-safe：</strong><br>fail-fast是不允许并发修改的，但是有些集合是线程安全的，就是需要并发使用的，不做任何处理的话不断抛出异常就没办法正常工作了。</p>
 <h1 id="二、集合类的fail-fast"><a href="#二、集合类的fail-fast" class="headerlink" title="二、集合类的fail-fast"></a>二、集合类的fail-fast</h1><p>如下增强for循环遍历集合的代码：</p>
@@ -1802,6 +1803,26 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
       <categories>
         <category>Java基础</category>
         <category>集合</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>怎么在遍历的同时修改List?</title>
+    <url>/2024/07/19/change-List-during-loop/</url>
+    <content><![CDATA[<p>在foreach的同时修改集合，会触发fail-fast机制，抛出异常。但是有时候又确实需要遍历的同时修改List，该怎么实现？</p>
+<span id="more"></span>
+<ol>
+<li>通过普通的for循环来实现。(不推荐，自己实现可能会出错，漏删)<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List&lt;Student&gt; students=<span class="built_in">this</span>.getStudents();</span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;students.size();i++)&#123;</span><br><span class="line">    <span class="keyword">if</span>(students.get(i).getName.equals(<span class="string">&quot;daisybby&quot;</span>))&#123;</span><br><span class="line">        Student student=students.get(i);</span><br><span class="line">        students.remove(student);</span><br><span class="line">        i--;<span class="comment">//删除之后，i指向的已经是下一个元素了，所以一定要i-1</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>倒序遍历<br>倒序遍历主要是避免了i-1的操作。</li>
+<li>使用迭代器的修改方法<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List&lt;Student&gt; students=<span class="built_in">this</span>.getStudents();</span><br><span class="line">Iterator&lt;Student&gt; it=students.iterator();</span><br><span class="line"><span class="keyword">while</span>(it.hasNext())&#123;</span><br><span class="line">    Student student=(Student)it.next();</span><br><span class="line">    <span class="keyword">if</span>(student.getName().equals(<span class="string">&quot;daisybby&quot;</span>))&#123;</span><br><span class="line">        it.remove(student);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>仿照fail-safe的思想，先复制一份，然后遍历原来的集合，但是在副本对应的位置修改。（不推荐，比较麻烦）</li>
+<li>使用并发安全的集合类。（可以用，但是有些场景下没必要）</li>
+<li>使用Steam提供的过滤方法filter。（推荐，简单高效）<br>public List<String> streamRemove(){<br> List<String> userNames&#x3D;this.getUserNames();<br> return userNames.stream().filter(this::notNeedDel).collect(Collectors.toList());<br>}</li>
+<li>通过内置的removeIf方法，实现元素的过滤删除从Java8开始，List提供了removeIf方法，来删除满足条件的元素。（推荐）<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">arrayList.removeIf(<span class="built_in">this</span>::needDel)；</span><br></pre></td></tr></table></figure></li>
+</ol>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+        <category>集合类</category>
       </categories>
   </entry>
 </search>
