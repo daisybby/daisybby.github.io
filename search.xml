@@ -1862,4 +1862,24 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>集合类</category>
       </categories>
   </entry>
+  <entry>
+    <title>ArrayList和LinkedList</title>
+    <url>/2024/07/19/ArrayList-and-LinkedList/</url>
+    <content><![CDATA[<h1 id="一、ArrayList和LinkedList的区别是什么？"><a href="#一、ArrayList和LinkedList的区别是什么？" class="headerlink" title="一、ArrayList和LinkedList的区别是什么？"></a>一、ArrayList和LinkedList的区别是什么？</h1><span id="more"></span>
+<p>两者都实现了List接口，使用方式也很相似，但是因为实现方式不同，所以在不同的场景、对于不同的操作有不同的性能。<br><strong>ArrayList：</strong>本质上是一个可以改变大小的数组。当ArrayList空间不够的时候，会扩容。需要注意的是ArrayList的频繁扩容也是一个比较耗时的操作。</p>
+<p><strong>LinkedList：</strong>是一个双向链表，在添加和删除元素的时候，性能比数组更好，但是get和set这类按照下标的操作，性能是比不上ArrayList的。<br>此外，LinkedList还实现了Queue和Deque接口，提供了比List更多的方法，比如peek()、poll()和offer().</p>
+<blockquote>
+<p>在使用ArrayList的时候，如果事先清楚了数据量，创建ArrayList的时候直接分配差不多的容量比较好，属于最佳实践。</p>
+</blockquote>
+<h1 id="二、ArrayList的扩容机制"><a href="#二、ArrayList的扩容机制" class="headerlink" title="二、ArrayList的扩容机制"></a>二、ArrayList的扩容机制</h1><ol>
+<li>检查新增元素后，是否会超过数组的容量，如果超过，则进行下一步扩容。</li>
+<li>创建一个新数组，容量是原来的1.5倍，最多不超过2^32-1,但是Java 8中容量最大是Integer.MAX_VALUE-8，所以是2^32-9，这个8是ArrayList内部做数组复制优化的开销。</li>
+<li>将旧数组中的内容复制到新数组中。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+        <category>集合类</category>
+      </categories>
+  </entry>
 </search>
