@@ -1882,4 +1882,26 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>集合类</category>
       </categories>
   </entry>
+  <entry>
+    <title>ArrayList的subList方法</title>
+    <url>/2024/07/19/subList-of-ArrayList/</url>
+    <content><![CDATA[<p>SubList看似返回了List的子数组，其实并不是新的List，而是使用原List的视图，返回了ArrayList的一段。这个视图用ArrayList的内部类SubList表示。</p>
+<span id="more"></span>
+<p>因为不是真正的List，所以subList是不能强制类型转换的。</p>
+<p>因为返回的是一段，内存中还是同样的存储位置，所以subList和原来的List是相互影响的。</p>
+<ol>
+<li>对两者做的<strong>非结构性修改</strong>，都会影响到彼此。</li>
+<li>subList做的<strong>结构性修改</strong>，在原来的List是可见的。</li>
+<li>原来的List<strong>不能做结构性修改</strong>，会抛出异常ConcurrentModificationException。</li>
+</ol>
+<blockquote>
+<p>结构性修改：在集合中增加或者删除元素。<br>非结构性修改：在集合中修改某个元素的内容。</p>
+</blockquote>
+<p>如果想要对subList进行修改，但是又想保持父List不变，那可以创建subList的拷贝：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">subList=Lists.newArrayList(subList);</span><br><span class="line">list.stream.skip(start).limit(end).collect(Collectors.toList());</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Java基础</category>
+        <category>集合类</category>
+      </categories>
+  </entry>
 </search>
