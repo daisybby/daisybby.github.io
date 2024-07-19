@@ -19,27 +19,27 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"daisybby.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="Set中的元素是不重复的，根据Set底层实现方式不同，可以分为两类Set：HashSet和TreeSet。">
+    <meta name="description" content="一、方法概述">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Set是如何保证元素不重复的？">
-<meta property="og:url" content="https://daisybby.github.io/2024/07/19/Java-set-unrepeat/index.html">
+<meta property="og:title" content="解决hash冲突的方式">
+<meta property="og:url" content="https://daisybby.github.io/2024/07/19/hash-collision/index.html">
 <meta property="og:site_name" content="daisybby">
-<meta property="og:description" content="Set中的元素是不重复的，根据Set底层实现方式不同，可以分为两类Set：HashSet和TreeSet。">
+<meta property="og:description" content="一、方法概述">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-07-19T09:28:03.000Z">
-<meta property="article:modified_time" content="2024-07-19T10:29:40.663Z">
+<meta property="article:published_time" content="2024-07-19T12:27:06.000Z">
+<meta property="article:modified_time" content="2024-07-19T13:39:08.133Z">
 <meta property="article:author" content="Daisybby">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://daisybby.github.io/2024/07/19/Java-set-unrepeat/">
+<link rel="canonical" href="https://daisybby.github.io/2024/07/19/hash-collision/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/07/19/Java-set-unrepeat/","path":"2024/07/19/Java-set-unrepeat/","title":"Set是如何保证元素不重复的？"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/07/19/hash-collision/","path":"2024/07/19/hash-collision/","title":"解决hash冲突的方式"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Set是如何保证元素不重复的？ | daisybby</title>
+<title>解决hash冲突的方式 | daisybby</title>
   
 
 
@@ -139,7 +139,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81HashSet%E5%AE%9E%E7%8E%B0%E4%B8%8D%E9%87%8D%E5%A4%8D%E7%9A%84%E5%8E%9F%E7%90%86"><span class="nav-text">一、HashSet实现不重复的原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81TreeSet%E5%AE%9E%E7%8E%B0%E4%B8%8D%E9%87%8D%E5%A4%8D"><span class="nav-text">二、TreeSet实现不重复</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81HashSet%E3%80%81TreeSet%E3%80%81LinkedHashSet%E3%80%81BitSet%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-text">三、HashSet、TreeSet、LinkedHashSet、BitSet的区别</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E6%96%B9%E6%B3%95%E6%A6%82%E8%BF%B0"><span class="nav-text">一、方法概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E9%93%BE%E5%9C%B0%E5%9D%80%E6%B3%95"><span class="nav-text">二、链地址法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%BA%E7%82%B9%EF%BC%9A-%E5%BD%93%E5%86%B2%E7%AA%81%E7%9A%84%E5%85%83%E7%B4%A0%E5%BE%88%E5%A4%9A%E7%9A%84%E6%97%B6%E5%80%99%EF%BC%8C%E6%9F%A5%E8%AF%A2%E6%95%88%E7%8E%87%E6%AF%94%E8%BE%83%E4%BD%8E%EF%BC%8C%E6%8E%A5%E8%BF%91O-n-%E3%80%82"><span class="nav-text">缺点：- 当冲突的元素很多的时候，查询效率比较低，接近O(n)。</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E5%BC%80%E6%94%BE%E5%AE%9A%E5%9D%80%E6%B3%95"><span class="nav-text">三、开放定址法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-%E7%BA%BF%E6%80%A7%E6%8E%A2%E6%B5%8B%E6%B3%95"><span class="nav-text">3.1.线性探测法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-%E4%BA%8C%E6%AC%A1%E6%8E%A2%E6%B5%8B%E6%B3%95"><span class="nav-text">3.2.二次探测法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-%E5%8F%8C%E9%87%8D%E6%95%A3%E5%88%97"><span class="nav-text">3.3.双重散列</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E5%86%8D%E5%93%88%E5%B8%8C%E6%B3%95"><span class="nav-text">四、再哈希法</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -195,7 +195,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/07/19/Java-set-unrepeat/">
+    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/07/19/hash-collision/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/header.jpg">
@@ -208,12 +208,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Set是如何保证元素不重复的？ | daisybby">
+      <meta itemprop="name" content="解决hash冲突的方式 | daisybby">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Set是如何保证元素不重复的？
+          解决hash冲突的方式
         </h1>
 
         <div class="post-meta-container">
@@ -225,7 +225,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2024-07-19 17:28:03 / 修改时间：18:29:40" itemprop="dateCreated datePublished" datetime="2024-07-19T17:28:03+08:00">2024-07-19</time>
+      <time title="创建时间：2024-07-19 20:27:06 / 修改时间：21:39:08" itemprop="dateCreated datePublished" datetime="2024-07-19T20:27:06+08:00">2024-07-19</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -248,7 +248,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.1k</span>
+      <span>1.2k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -265,34 +265,56 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><p>Set中的元素是不重复的，根据Set底层实现方式不同，可以分为两类Set：HashSet和TreeSet。</p>
-<span id="more"></span>
-<h1 id="一、HashSet实现不重复的原理"><a href="#一、HashSet实现不重复的原理" class="headerlink" title="一、HashSet实现不重复的原理"></a>一、HashSet实现不重复的原理</h1><p>HashSet底层是通过hashMap来实现的，内部的元素是无序的，可以放入null，但是只能放入一个。<br>当向hashSet中添加元素时：</p>
+    <div class="post-body" itemprop="articleBody"><h1 id="一、方法概述"><a href="#一、方法概述" class="headerlink" title="一、方法概述"></a>一、方法概述</h1><span id="more"></span>
+<p>常见的5种方法：</p>
 <ol>
-<li>计算元素的hashCode，通过扰动计算和按位与，计算元素的存储位置</li>
-<li>元素的存储位置是空的，那么就加入元素</li>
-<li>存储位置不是空的，判断元素是不是相等，是就重复了，加入失败。</li>
-<li>如果元素不相等，那就发生hash冲突了，按照解决策略去解决就行。</li>
-</ol>
-<h1 id="二、TreeSet实现不重复"><a href="#二、TreeSet实现不重复" class="headerlink" title="二、TreeSet实现不重复"></a>二、TreeSet实现不重复</h1><p>TreeSet底层的实现方式是TreeMap，而TreeMap又是基于红黑树实现的，元素是有序的。<br>TreeMap按照key排序，在插入元素的时候，要调用compareTo()方法来比较，判断元素的插入位置，所以TreeSet保存的元素一定要实现Comparable接口。TreeSet内部也是通过compareTo方法来判断重复元素的。</p>
-<h1 id="三、HashSet、TreeSet、LinkedHashSet、BitSet的区别"><a href="#三、HashSet、TreeSet、LinkedHashSet、BitSet的区别" class="headerlink" title="三、HashSet、TreeSet、LinkedHashSet、BitSet的区别"></a>三、HashSet、TreeSet、LinkedHashSet、BitSet的区别</h1><p>这里有个新的概念：BitSet<br>BitSet是一个位集合，和Redis的BitMap思想很像，一串二进制字符串，第10位为1，表示10在这个BitSet里面。<br>Java内部是不知道bit的，所以本质上是一个long数组，long有64位，一次就可以读取64位进行检查。如果需要保存所有int型数据，需要4B*(2^32-1)，但是用BitSet就只需要2^32-1个bit位。<br>BitSet用来表达大数比较方便，但是可能会存在内存的严重浪费，比如就保存一个很大的数，空间还是需要这么多，因为BitSet是和数值有关的，而不是和数据个数有关的。</p>
-<ol>
-<li><strong>功能不同：</strong><ul>
-<li>HashSet是最基本的Set，只提供了去重的功能。</li>
-<li>TreeSet是基于红黑树实现，不仅去重，元素更是有序的。</li>
-<li>LinkedHashSet是链式存储，通过输入元素的插入顺序。</li>
-<li>BitSet不仅能提供去重的功能，通常还能节省内存空间。</li>
+<li>开放定址法。<ul>
+<li>开放定址法就是一旦发生冲突，就重新在数组中找下一个空的散列地址，只要散列表够大，空的地址总能找到。</li>
+<li>常见的开放定址法：线性探测法、二次探测法和双重散列。</li>
+<li>缺点是可能会导致元素聚集，降低哈希表的性能。</li>
 </ul>
 </li>
-<li><strong>实现方式不同：</strong><ul>
-<li>HashSet是基于HashMap实现的，去重是根据hashCode和equals来实现的。</li>
-<li>LinkedHashMap是利用双向链表来记录插入顺序。</li>
-<li>TreeSet是基于TreeMap的，去重是根据compareTo方法。</li>
-<li>BitSet基于位数组，一般只用于数字的存储和去重。</li>
+<li>链地址法。<ul>
+<li>链地址法是最常用的解决hash冲突的方法之一。</li>
+<li>在这个哈希表的位置挂一个链表，遇到了冲突，就把元素插入到链表的尾端。</li>
+<li>Java 中，HashMap就是用链地址法来解决hash冲突。在Java 8之前，只用链表，当冲突的元素很多的时候，查询效率很低，接近O(n)。Java 8之后，当链表中的元素超过8之后，链表转换为红黑树；当红黑树中的元素个数少于6之后，红黑树退化成链表。</li>
 </ul>
 </li>
-<li><strong>BitSet</strong>只是名字里面有Set，但是没有实现Collection接口，也和Iterable接口没什么关系。</li>
+<li>再哈希法。<ul>
+<li>当hash冲突发生的时候，使用其他的散列函数计算，直到冲突不再产生为止。</li>
+<li>再哈希需要额外的计算，但是能有效降低冲突的概率。</li>
+</ul>
+</li>
+<li>建立公共溢出区。<ul>
+<li>所谓建立公共溢出区，就是哈希表和冲突的部分分开了，冲突的元素都放到溢出表中。</li>
+</ul>
+</li>
+<li>一致性hash。<ul>
+<li>一致性哈希主要用在分布式系统中。通过将数据均匀分布到多个节点上来减少冲突。</li>
+</ul>
+</li>
 </ol>
+<h1 id="二、链地址法"><a href="#二、链地址法" class="headerlink" title="二、链地址法"></a>二、链地址法</h1><p>结构比较简单，就是一个数组，出现冲突的时候会在对应的位置挂链表。<br>查询的时候，先通过哈希函数确定位置，然后再遍历链表。<br>优点：</p>
+<ul>
+<li>处理冲突简单</li>
+<li>适合经常插入删除的场景</li>
+<li>适合无法预算空间的情况</li>
+</ul>
+<h2 id="缺点：-当冲突的元素很多的时候，查询效率比较低，接近O-n-。"><a href="#缺点：-当冲突的元素很多的时候，查询效率比较低，接近O-n-。" class="headerlink" title="缺点：- 当冲突的元素很多的时候，查询效率比较低，接近O(n)。"></a>缺点：<br>- 当冲突的元素很多的时候，查询效率比较低，接近O(n)。</h2><h1 id="三、开放定址法"><a href="#三、开放定址法" class="headerlink" title="三、开放定址法"></a>三、开放定址法</h1><p>开放定址法不会再创建新的存储空间了，核心思想就是在那一个数组里面找空的位置填上。</p>
+<h2 id="3-1-线性探测法"><a href="#3-1-线性探测法" class="headerlink" title="3.1.线性探测法"></a>3.1.线性探测法</h2><p>一句话概括，发生冲突了，下标就不断+1+1+1向后检查有没有空的。有就填上。<br>这个方法的主要问题就是容易发生元素的聚集，影响后续插入和查找的效率。</p>
+<h2 id="3-2-二次探测法"><a href="#3-2-二次探测法" class="headerlink" title="3.2.二次探测法"></a>3.2.二次探测法</h2><p>相比于线性探测法，每步都是1，二次探测法每一步是1，4，9，……这样的二次方。比如第一次走1个，还是冲突，那就走4个，还是冲突，那就走9个。其实是(index+9)%len。<br>这种方法可以减少元素聚集的问题，但还是可能存在小范围的聚集。</p>
+<h2 id="3-3-双重散列"><a href="#3-3-双重散列" class="headerlink" title="3.3.双重散列"></a>3.3.双重散列</h2><p>有两个不同的哈希函数，如果第一个发生了冲突，那么就用第二个哈希函数来确定探测序列，注意，这里并不是直接用第二个哈希函数来确定下一个位置的下标，而是在第一个哈希计算的位置再走多少的位置。</p>
+<p>总结以上三种开放定址法，其优缺点如下：<br><strong>优点：</strong></p>
+<ul>
+<li>空间效率：不需要额外的数据结构，比链地址法使用更少的存储空间。</li>
+<li>缓存友好型：数据存储在连续的内存空间，所以在寻址的时候有更好的缓存性能。</li>
+</ul>
+<p><strong>缺点：</strong></p>
+<ul>
+<li>负载因子比较高（已经占据的槽位比较多）的时候，查询空槽位的时间会显著增加。</li>
+<li>删除操作比较复杂，直接删除可能会影响其他元素的查找。</li>
+</ul>
+<h1 id="四、再哈希法"><a href="#四、再哈希法" class="headerlink" title="四、再哈希法"></a>四、再哈希法</h1><p>所谓再哈希，也是第一个计算冲突，那就第二个，第二个还冲突，那就第三个。不断更换哈希函数直到不冲突为止。<br>注意，这里新的哈希函数计算的就是直接的地址，一步到位。和双重散列计算的是“步数”并不一样。</p>
 
     </div>
 
@@ -322,7 +344,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://daisybby.github.io/2024/07/19/Java-set-unrepeat/" title="Set是如何保证元素不重复的？">https://daisybby.github.io/2024/07/19/Java-set-unrepeat/</a>
+      <a href="https://daisybby.github.io/2024/07/19/hash-collision/" title="解决hash冲突的方式">https://daisybby.github.io/2024/07/19/hash-collision/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -335,14 +357,11 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2024/07/19/change-List-during-loop/" rel="prev" title="怎么在遍历的同时修改List?">
-                  <i class="fa fa-angle-left"></i> 怎么在遍历的同时修改List?
+                <a href="/2024/07/19/subList-of-ArrayList/" rel="prev" title="ArrayList的subList方法">
+                  <i class="fa fa-angle-left"></i> ArrayList的subList方法
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2024/07/19/ArrayList-and-LinkedList/" rel="next" title="ArrayList和LinkedList">
-                  ArrayList和LinkedList <i class="fa fa-angle-right"></i>
-                </a>
             </div>
           </div>
     </footer>
