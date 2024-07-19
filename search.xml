@@ -1731,4 +1731,46 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java基础</category>
       </categories>
   </entry>
+  <entry>
+    <title>Java集合类和排序方式</title>
+    <url>/2024/07/19/Java-collection/</url>
+    <content><![CDATA[<h1 id="一、Java集合类"><a href="#一、Java集合类" class="headerlink" title="一、Java集合类"></a>一、Java集合类</h1><span id="more"></span>
+<p>常用的集合数据结构：Set、List、Queue、Stack和Map。<br>Set、List和Queue都继承自Collections接口。继承了Map接口的有：hashMap、hashTable和TreeMap。<br><strong>Collection和Collections的联系与区别：</strong></p>
+<ul>
+<li><strong>Collection：</strong>是集合类接口，提供了对集合类进行基本操作的通用接口。</li>
+<li><strong>Collections：</strong>是一个包含各种集合操作的静态方法的类，这个类并不能实例化，毕竟静态方法用类名.方法名就能调用。包装一个工具包。</li>
+</ul>
+<p><strong>Collection如何迭代？</strong></p>
+<ul>
+<li><strong>基于计数器的for循环：</strong>最简单的for(int i)循环。</li>
+<li><strong>迭代器iterator：</strong>可以定义一个迭代器，基于顺序存储集合的迭代器可以按照位置直接访问，基于链式存储集合的迭代器需要保存当前遍历的位置，然后向前或者向后访问。</li>
+<li><strong>foreach循环：</strong>内部本质上也还是用迭代器iterator实现的。</li>
+<li><strong>迭代器Enumeration：</strong>是iterator的古老版本。</li>
+<li><strong>Stream：</strong>JDK 1.8提供的Stream API也可以实现遍历。</li>
+</ul>
+<p><strong>List、Set、Queue和Map的区别？</strong></p>
+<ul>
+<li><strong>List：</strong>存储的元素是有序的，可重复的。</li>
+<li><strong>Set：</strong>内部的元素是无序的，不可重复的。</li>
+<li><strong>Queue：</strong>保持先进先出的顺序，内部存储的元素是有序的，可重复的。</li>
+<li><strong>Map：</strong>存储的元素是KV键值对，key是唯一的，value是任意的。</li>
+</ul>
+<h1 id="二、集合的排序方式"><a href="#二、集合的排序方式" class="headerlink" title="二、集合的排序方式"></a>二、集合的排序方式</h1><p>说是集合排序，不如说是保存到集合内部的对象排序。有两种方式：<strong>实体类实现comparable接口</strong>和<strong>借助comparator</strong>。<br><strong>实现comparable接口：</strong><br>比如学生类，先按照姓名排序，然后再按照年龄排序。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Student</span> <span class="keyword">implements</span> <span class="title class_">Comparable</span>&lt;Student&gt;&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> age;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">compareTo</span><span class="params">(Student stu)</span>&#123;</span><br><span class="line">        <span class="type">int</span> flag=<span class="built_in">this</span>.name.compareTo(stu.getName());</span><br><span class="line">        <span class="keyword">if</span>(flag==<span class="number">0</span>)&#123;</span><br><span class="line">            flag=<span class="built_in">this</span>.age-stu.getAge();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> flag;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>借助Comparator：</strong><br>如果有一些类不是我们定义的，且没有实现Comparable接口，那只能借助Comparator来排序。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Student</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> age;</span><br><span class="line">&#125;</span><br><span class="line">Collections.sort(students,(o1,o2)-&gt;&#123;</span><br><span class="line">    <span class="type">int</span> flag=o1.getName().compareTo(o2.getName());</span><br><span class="line">    <span class="keyword">if</span>(flag==<span class="number">0</span>)&#123;</span><br><span class="line">        flag=o1.getAge()-o2.getAge();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> flag;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p><strong>Stream API排序</strong><br>底层还是通过Comparable实现的。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Student</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> age;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//如果Student实现了Comparable接口</span></span><br><span class="line">students.stream().sorted().collect(Collectors.toList());</span><br><span class="line"></span><br><span class="line"><span class="comment">//如果没有实现Comparable接口，需要借助Comparator</span></span><br><span class="line">students.stream().sorted((o1,o2)-&gt;&#123;</span><br><span class="line">    <span class="type">int</span> flag=o1.getName().compareTo(o2.getName());</span><br><span class="line">    <span class="keyword">if</span>(flag==<span class="number">0</span>)&#123;</span><br><span class="line">        flag=o1.getAge()-o2.getAge();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> flag;</span><br><span class="line">&#125;).collect(Collectors.toList());</span><br></pre></td></tr></table></figure>
+
+<h1 id="三、扩展"><a href="#三、扩展" class="headerlink" title="三、扩展"></a>三、扩展</h1><p><strong>compareTo和equals的使用场景有什么区别？</strong></p>
+<ul>
+<li><strong>compareTo</strong>通常用于对象的排序，以及BigDecimal数值的比较；</li>
+<li><strong>equals</strong>通常用来比较两个对象是否相等。</li>
+</ul>
+<p><strong>Set是无序的，可以排序吗？</strong><br>Set的无序并不是说必须维持无序的状态，而是说set中的插入顺序是无序的，但是还是可以通过以上方式对内部元素进行排序。</p>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+      </categories>
+  </entry>
 </search>
