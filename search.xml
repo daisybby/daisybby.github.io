@@ -2067,4 +2067,25 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>集合类</category>
       </categories>
   </entry>
+  <entry>
+    <title>为什么JDK8中HashMap要链表转红黑树</title>
+    <url>/2024/07/28/why-red-black-tree/</url>
+    <content><![CDATA[<p><strong>为什么不继续使用链表？</strong></p>
+<span id="more"></span>
+<p>当冲突发生过多的时候，桶指向的链表就会过长，之后的put和get操作，复杂度就会无限接近O(N)。</p>
+<p><strong>为什么是红黑树？</strong><br>当链表过长的时候，可以用二叉查找树来代替链表，但是二叉查找树在元素基本有序的时候，会退化成链表。<br>那进一步改进，AVL树，二叉平衡树对平衡的要求十分严格，每次插入删除都要做平衡操作，极大的消耗了插入的时间。<br>对于插入和删除比较频繁的场景，AVL树是不合适的，为了保证查询和插入的时间复杂度维持在一个均衡的水平，可以选择红黑树。</p>
+<p>红黑树的相邻节点不能是红色，红色节点要被黑色节点分隔开。叶子节点不存在数据，都是黑色节点。每个节点到达其可达的叶子节点的所有路径，都包含相同的黑色节点。</p>
+<p>红黑树不像AVL树一样追求绝对的平衡，插入最多两次旋转，删除最多三次旋转，在频繁的插入删除场景中，红黑树的复杂度是优于AVL树的。</p>
+<p><strong>双向链表</strong><br>HashMap的红黑树数据结构中，不仅有parent，left和right节点，还有一个next和prev节点，这是便于退化成链表，而且删除链表中间结点的时候，prev便于前后重新衔接。</p>
+<p><strong>HashMap的元素没有比较能力的时候，怎么进行红黑树的比较?</strong></p>
+<ol>
+<li>如果元素实现了Comparable接口，则直接比较；</li>
+<li>如果元素无法比较，则使用默认的仲裁方法。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+        <category>集合类</category>
+      </categories>
+  </entry>
 </search>
