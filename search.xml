@@ -2008,4 +2008,27 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>集合类</category>
       </categories>
   </entry>
+  <entry>
+    <title>HashMap的hash方法是如何实现的</title>
+    <url>/2024/07/28/hash-method-of-HashMap/</url>
+    <content><![CDATA[<p>hash方法的功能是计算key值应该保存到数组哪个位置。</p>
+<span id="more"></span>
+<p>方法的输入：Object类型的key<br>方法的输出：int类型的数组下标</p>
+<p>在JDK1.7中，包含hash方法和indexFor方法：</p>
+<ul>
+<li>hash方法：将Object类型的key转换成int类型</li>
+<li>indexFor方法：将hash方法的输出转换成数组中的下标<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="type">int</span> <span class="title function_">hash</span><span class="params">(Object k)</span>&#123;</span><br><span class="line">    <span class="type">int</span> h=hashSeed;</span><br><span class="line">    <span class="keyword">if</span>(<span class="number">0</span>==h &amp;&amp;k <span class="keyword">instanceof</span> String)&#123;</span><br><span class="line">        <span class="keyword">return</span> sun.misc.Hashing.stringHash32((String) k);</span><br><span class="line">    &#125;</span><br><span class="line">    h ^=k.hashCode();</span><br><span class="line">    h ^=(h&gt;&gt;&gt;<span class="number">20</span>)^(h&gt;&gt;&gt;<span class="number">12</span>);</span><br><span class="line">    <span class="keyword">return</span> h^(h&gt;&gt;&gt;<span class="number">7</span>)^(h&gt;&gt;&gt;<span class="number">4</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="type">int</span> <span class="title function_">indexFor</span><span class="params">(<span class="type">int</span> h,<span class="type">int</span> length)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> h&amp;(length-<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+在JDK1.8中，优化掉了indexFor方法。下标的计算转移到了putVal方法中。<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="title function_">hash</span><span class="params">(Object key)</span>&#123;</span><br><span class="line">    <span class="type">int</span> h;</span><br><span class="line">    <span class="keyword">return</span> (key==<span class="literal">null</span>)?<span class="number">0</span>:(h=key.hashCode())^(h&gt;&gt;&gt;<span class="number">16</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>hash方法为了提升效率，有两个主要技术手段：</p>
+<ol>
+<li>使用位运算替换取模运算：位运算可以直接对内存数据进行操作，不需要转成十进制，因此处理速度非常快。</li>
+<li>对hashCode进行扰动计算，尽量做到hashCode的高位和低位，任何一位的变化都能对最终结果产生影响。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+        <category>集合类</category>
+      </categories>
+  </entry>
 </search>
