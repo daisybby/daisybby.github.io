@@ -2102,4 +2102,24 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>集合类</category>
       </categories>
   </entry>
+  <entry>
+    <title>HashMap在并发场景中的问题</title>
+    <url>/2024/07/28/HashMap-problem-concurrent/</url>
+    <content><![CDATA[<p>需要注意的是，这里的问题只会出现在JDK1.7以及之前的版本，JDK1.8之后被修复。</p>
+<span id="more"></span>
+<p><strong>扩容过程导致的循环引用：</strong><br>HashMap在扩容的时候，会将元素插入到链表的头部，这是因为开发者认为后插入的数据被使用的概率更高，放到链表头部，可以使得查询效率更高。<br>但是两个线程执行扩容操作，导致循环引用，下次get数据的时候发生死循环。</p>
+<p><strong>JDK1.8如何解决循环引用的问题？</strong><br>因为头插法产生的问题，所以改成尾插法，绷不住了。</p>
+<p><strong>HashMap并发场景下的其他问题：</strong></p>
+<ol>
+<li>多线程put的时候，size设置的和真正的个数不一样；</li>
+<li>多线程put的时候，把上一个put的值覆盖掉。</li>
+<li>HashMap支持的fail-fast操作，多个线程put和get的时候，会抛出并发异常。</li>
+<li>既有get又有扩容的时候，可能要get的元素刚好扩容换了桶，导致get不到数据。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+        <category>集合类</category>
+      </categories>
+  </entry>
 </search>
