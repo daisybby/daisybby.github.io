@@ -2161,4 +2161,23 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>集合类</category>
       </categories>
   </entry>
+  <entry>
+    <title>JDK1.8中HashMap做了哪些改变？</title>
+    <url>/2024/07/28/JDK1-8-HashMap-change/</url>
+    <content><![CDATA[<p><strong>红黑树</strong></p>
+<span id="more"></span>
+<p>JDK1.8之前都是用链表，在JDK1.8引入了红黑树机制，链表进化阈值是8，红黑树退化阈值是6。</p>
+<p><strong>节点定义</strong><br>JDK1.7之前用的是Entry，在JDK1.8之后用的是Node，两者的定义区别在于int型的hash在Node中被定义成final，一旦初始化就不能再修改了。<br>JDK1.7中的Entry：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Entry</span>&lt;K,V&gt; <span class="keyword">implements</span> <span class="title class_">Map</span>.Entry&lt;K,V&gt;()&#123;</span><br><span class="line">    <span class="type">int</span> hash;</span><br><span class="line">    <span class="keyword">final</span> K key;</span><br><span class="line">    V value;</span><br><span class="line">    Entry&lt;K,V&gt; next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>JDK1.8的Node定义：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Node</span>&lt;K,V&gt; <span class="keyword">implements</span> <span class="title class_">Map</span>.Entry&lt;K,V&gt;&#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">int</span> hash;</span><br><span class="line">    <span class="keyword">final</span> K key;</span><br><span class="line">    V value;</span><br><span class="line">    Node&lt;K,V&gt; next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>为了支持红黑树，还引入了TreeNode节点。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">TreeNode</span>&lt;K,V&gt; <span class="keyword">extends</span> <span class="title class_">LinkedHashMap</span>.Entry&lt;K,V&gt;&#123;</span><br><span class="line">    TreeNode&lt;K,V&gt; parent;</span><br><span class="line">    TreeNode&lt;K,V&gt; left;</span><br><span class="line">    TreeNode&lt;K,V&gt; right;</span><br><span class="line">    TreeNode&lt;K,V&gt; prev;</span><br><span class="line">    <span class="type">boolean</span> red;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>尾插法</strong><br>因为头插法在并发场景下可能会发生死循环，JDK1.8中把头插法改成了尾插法。<br><strong>hash方法</strong><br>JDK1.8中hash方法做了改进，我觉得是扰动计算优化了一些，位运算和异或操作更少了。毕竟引入了红黑树，即使冲突发生，也可以有效地解决冲突，而不需要整一大堆扰动计算。<br><strong>扩容机制</strong><br>首先是JDK1.7中扩容是通过resize和transfer两个方法互相配合完成的。在JDK1.8中，transfer的逻辑直接放到了resize里，而且考虑了红黑树相关的操作。<br>其次在JDK1.7中，每个元素都是重新计算位置，而JDK1.8则不一定，要看原来的hash值新增的那个bit位是0还是1，是0则位置不变，是1则重新计算。（这里和之前讲到的，hash(k)%(2^n)&#x3D;0保持原来的位置，是一个意思）</p>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+        <category>集合类</category>
+      </categories>
+  </entry>
 </search>
