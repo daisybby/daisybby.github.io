@@ -2031,4 +2031,22 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>集合类</category>
       </categories>
   </entry>
+  <entry>
+    <title>为什么HashMap的容量是2^n？该怎么保证？</title>
+    <url>/2024/07/28/HashMap-cap/</url>
+    <content><![CDATA[<h1 id="HashMap的容量"><a href="#HashMap的容量" class="headerlink" title="HashMap的容量"></a>HashMap的容量</h1><p>HashMap的容量必然是2^n。</p>
+<span id="more"></span>
+<p>在之前分析hashCode计算方法中提到，Java用位运算替换取模运算，来提高计算速度。但是只有数组的长度是2^n才能用位运算。</p>
+<p><strong>如何保证HashMap的容量始终是2^n？</strong><br>两个阶段确保：初始化阶段和扩容阶段。</p>
+<p><strong>初始化阶段</strong>HashMap默认的长度是16，但是我们也可以自己给出一个初始化长度，可以是任意的正整数。<br>即使我们给出的初始化长度len不是2^n，Java内部也会计算大于len的第一个2^n，然后作为HashMap的初始化长度。</p>
+<p><strong>扩容阶段</strong>，扩容的长度是2倍，在初始化长度位2^n的前提下，扩容后的容量依然是2^n。</p>
+<h1 id="怎么设置HashMap的初始容量？"><a href="#怎么设置HashMap的初始容量？" class="headerlink" title="怎么设置HashMap的初始容量？"></a>怎么设置HashMap的初始容量？</h1><p>如果我们不设置初始容量，那么Java就会使用默认的初始容量16。当我们的元素不断增加的时候，HashMap可能会发生多次扩容，每次扩容都要重建hash表，非常影响性能。</p>
+<p>实际开发中，比较推荐自己初始化容量。那初始容量设置成多少比较合适呢？<br>在设置的时候，不仅要考虑存储多少个元素，还要考虑负载因子。例如：<br>要保存7个元素，直接new HashMap(7)是不行的，首先创建出来的HashMap不可能是7，而是大于7的第一个2^n，即8.这还没结束，另一个问题是，HashMap的负载因子是0.75，当元素数量大于6的时候，就会发生扩容。</p>
+<p>在明确知道HashMap中元素个数的时候，把默认容量设置成：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">以上算法guava中有实现，开发的时候可以直接通过Maps类创建一个HashMap：</span><br><span class="line">```java</span><br><span class="line">Map&lt;String,String&gt; map=Maps.newHashMapWithExpectedSize(7);</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Java基础</category>
+        <category>集合类</category>
+      </categories>
+  </entry>
 </search>
