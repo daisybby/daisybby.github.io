@@ -2088,4 +2088,18 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>集合类</category>
       </categories>
   </entry>
+  <entry>
+    <title>Java Stream的并行流是如何实现的？</title>
+    <url>/2024/07/28/Java-Stream/</url>
+    <content><![CDATA[<p><strong>什么是并行流？</strong></p>
+<span id="more"></span>
+<p>Stream API提供了有效的处理数据工具，特别是处理大型数据集时。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List&lt;String&gt; list=Array.list(<span class="string">&quot;Wurt&quot;</span>,<span class="string">&quot;Wilson&quot;</span>,<span class="string">&quot;Willow&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建一个串行流</span></span><br><span class="line">Stream&lt;String&gt; stream=list.stream();</span><br><span class="line"><span class="comment">//创建一个并行流</span></span><br><span class="line">Stream&lt;String&gt; parallelStream=list.parallelStream();</span><br></pre></td></tr></table></figure>
+<p>并行流底层使用了Java7引入的Fork&#x2F;Join框架。这个框架旨在帮助开发者利用多核处理器的并行处理能力。<br>一个大任务被分割(Fork)成多个小任务，这些小任务可以并行执行，然后小任务执行的结果被合并(join)成最终结果。</p>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+        <category>集合类</category>
+      </categories>
+  </entry>
 </search>
