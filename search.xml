@@ -1963,4 +1963,49 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>集合类</category>
       </categories>
   </entry>
+  <entry>
+    <title>hashMap、Hashtable和ConcurrentHashMap的区别</title>
+    <url>/2024/07/27/hashMap-Hashtable-ConcurrentHashMap/</url>
+    <content><![CDATA[<p><strong>线程安全：</strong></p>
+<span id="more"></span>
+<p>HashMap是非线程安全的。<br>Hashtable中的方法是同步的，是线程安全的。<br>ConcurrentHashMap是线程安全的，但是在JDK1.8前后是不一样的实现方式：</p>
+<ul>
+<li>JDK1.8之前：使用分段锁，分成16个桶（分片），每个分片单独加锁，和整个hash表加锁相比，锁的粒度更细，性能更好。</li>
+<li>JDK1.8之后：优化为CAS+synchronized，分段锁的变种，也被称为“锁分离”。相比于JDK1.8之前，锁粒度更细，性能进一步优化。</li>
+</ul>
+<p><a href="">ConcurrentHashMap是怎么实现线程安全的？</a><br><strong>继承关系：</strong><br>HashTable基于陈旧的Dictionary类继承来的。<br>HashMap继承自AbstractMap抽象类，实现了Map接口。<br>CocurrentHashMap也继承了AbstractMap，并实现了CocurrentMap接口。<br><strong>是否允许Null值：</strong><br>HashTable和ConcurrentHashMap都不允许null值，key和value都不允许，否则会抛出NullPointerException异常。<br>hashMap中，null作为key或者value都可以。<br><a href="">为什么ConcurrentHashMap不允许Null</a></p>
+<p><strong>默认初始容量和扩容机制：</strong><br>HashTable默认初始容量为11，默认加载因子为0.75，扩容容量：2倍+1<br>HashMap默认初始容量16，默认加载因子0.75，扩容容量：2倍<br>ConcurrentHashMap默认初始容量16，默认加载因子0.75，扩容容量：2倍。需要注意的是，扩容的时候采用分段锁机制，每个段单独扩容。</p>
+<p>总结：三者的默认负载因子都是0.75。HashMap和ConcurrentHashMap的基本设置是相同的。</p>
+<p><strong>遍历方式的实现：</strong><br>HashTable使用Enumeration遍历，即获取所有的key，然后对key集合进行遍历。遍历过程中支持fail-fast，会检查是否发生并发修改。<br>HashMap使用EntrySet遍历，即先获取所有的key-value键值对，然后遍历Entry集合，遍历过程支持fail-fast，也就是遍历过程中如果发生了结构性修改，会抛出异常。如果只需要遍历key，就用keySet遍历，如果只需要遍历value，可以用Values遍历。<br>ConcurrentHashMap采用分段机制，所以在遍历的过程中，某个段的改变不会影响其他段的遍历。和HashMap相同，可以用EntrySet、KeySet和Values进行遍历，在遍历的时候如果发生了结构性改变，也不会抛出异常，遍历的时候可能会出现数据不一致的情况。</p>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+        <category>集合类</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>ConcurrentHashMap是如何保证线程安全的？</title>
+    <url>/2024/07/28/ConcurrentHashMap-thread-safe/</url>
+    <content><![CDATA[<p><strong>JDK1.7中，采用分段锁技术</strong></p>
+<span id="more"></span>
+<p>哈希表被分为多个段，每个段的锁是独立的。在并发场景下，多个线程访问哈希表的时候，只需要锁住对应的段就行，别的没有上锁的段还是可以被别的线程所使用的。分段锁提高了ConcurrentHashMap的并发性能。<br>虽然分段锁并发性能有所提升，但是分段是有限的，在高并发场景下，还是会出现同一段的锁竞争，降低系统性能。</p>
+<p><strong>在JDK1.8，分段锁被优化为节点锁的思想，即使用CAS+Synchronized机制</strong><br>在插入新节点的时候，如果段为空，就通过CAS操作来添加新节点，如果某个段的hash值为MOVED，就说明这个段正在扩容，那么就调用helpTransfer来协助扩容，否则使用Synchronized锁住当前节点，然后进行节点的添加操作。</p>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+        <category>集合类</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>为什么ConcurrentHashMap不允许Null</title>
+    <url>/2024/07/28/ConcurrentHashMap-not-null/</url>
+    <content><![CDATA[<p>本质是并发HashMap不允许二义性，但是非并发HashMap可以。</p>
+<span id="more"></span>
+<p>如果查询到了一个null，比如map.get(key)，这个时候不知道是没查到返回的Null，还是有key为null。<br>如果是非并发hashMap，可以用map.contains(key)来检查有没有null这个key，但是对于并发的ConcurrentHashMap，无法查询，因为并发检测过程中，可能会被其他线程修改，检查结果是不可靠的。</p>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+        <category>集合类</category>
+      </categories>
+  </entry>
 </search>
