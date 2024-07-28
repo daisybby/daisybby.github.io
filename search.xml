@@ -2122,4 +2122,43 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>集合类</category>
       </categories>
   </entry>
+  <entry>
+    <title>Java Stream能做什么？</title>
+    <url>/2024/07/28/Java-Stream-1/</url>
+    <content><![CDATA[<h1 id="一、基本概念和特点"><a href="#一、基本概念和特点" class="headerlink" title="一、基本概念和特点"></a>一、基本概念和特点</h1><span id="more"></span>
+<p>Stream将要处理的元素集合看作一种流，流在管道上传输，每个节点可以进行处理，比如筛选、排序和聚合等。</p>
+<p>Stream的特点：</p>
+<ul>
+<li>无存储。Stream并不是存储结构，而是数据的一种视图。</li>
+<li>不会修改数据源。对Stream进行过滤操作，并不会删除被过滤的元素，只是会产生一个不包含被过滤元素的新Stream。</li>
+<li>惰式执行。Stream的操作并不是立即执行，而是用户需要结果的时候才会执行。</li>
+<li>可消费性。Stream只能被消费一次，一旦遍历过后就会失效。</li>
+</ul>
+<h1 id="二、Stream的关键操作"><a href="#二、Stream的关键操作" class="headerlink" title="二、Stream的关键操作"></a>二、Stream的关键操作</h1><h2 id="2-1-Stream的创建"><a href="#2-1-Stream的创建" class="headerlink" title="2.1.Stream的创建"></a>2.1.Stream的创建</h2><ol>
+<li>根据已有的集合创建</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Stream&lt;String&gt; stream=list.stream();</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>通过Stream创建流<br>可以使用Stream类提供的方法，直接返回一个由指定元素组成的流。<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Stream&lt;String&gt; stream=Stream.of(<span class="string">&quot;daisybby&quot;</span>,<span class="string">&quot;Java&quot;</span>);</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="2-2-Stream中间操作"><a href="#2-2-Stream中间操作" class="headerlink" title="2.2.Stream中间操作"></a>2.2.Stream中间操作</h2><h3 id="2-2-1-filter"><a href="#2-2-1-filter" class="headerlink" title="2.2.1. filter"></a>2.2.1. filter</h3><p>按照设置的条件过滤元素。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List&lt;String&gt; list=Arrays.asList(<span class="string">&quot;daisybby&quot;</span>,<span class="string">&quot;hello&quot;</span>,<span class="string">&quot;Java&quot;</span>);</span><br><span class="line">list.stream().filter(string -&gt; !string.isEmpty()); <span class="comment">//过滤空字符串</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-2-2-map"><a href="#2-2-2-map" class="headerlink" title="2.2.2.map"></a>2.2.2.map</h3><p>用于映射每一个元素到对应的结果，以下代码片段用于输出对应元素的的平方数：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List&lt;Integer&gt; nums=Arrays.asList(<span class="number">3</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">7</span>,<span class="number">3</span>,<span class="number">5</span>);</span><br><span class="line">nums.stream().map(num-&gt;num*num).forEach(System.out.println);</span><br></pre></td></tr></table></figure>
+<h3 id="2-2-3-limit-skip"><a href="#2-2-3-limit-skip" class="headerlink" title="2.2.3.limit&#x2F;skip"></a>2.2.3.limit&#x2F;skip</h3><p>limit返回Stream前n个元素，skip则是扔掉前n个元素。以下代码片段使用limit方法保留前3个元素：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List&lt;Integer&gt; nums=Arrays.asList(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>);</span><br><span class="line">nums.stream().limit(<span class="number">3</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="2-2-4-sorted"><a href="#2-2-4-sorted" class="headerlink" title="2.2.4.sorted"></a>2.2.4.sorted</h3><p>用于对流排序。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List&lt;Integer&gt; nums=Arrays.asList(<span class="number">3</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">4</span>);</span><br><span class="line">nums.stream().sorted();<span class="comment">//升序排序</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-2-5-distinct"><a href="#2-2-5-distinct" class="headerlink" title="2.2.5.distinct"></a>2.2.5.distinct</h3><p>用来去重。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List&lt;Integer&gt; nums=Arrays.asList(<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>);</span><br><span class="line">nusm.stream().distinct();<span class="comment">//(2,3,4,5)</span></span><br></pre></td></tr></table></figure>
+<h2 id="2-3-Stream最终操作"><a href="#2-3-Stream最终操作" class="headerlink" title="2.3.Stream最终操作"></a>2.3.Stream最终操作</h2><p>Stream中间结果得到的结果还是一个stream，最终需要转换成我们需要的类型，这就是最终操作。<br>最终操作消耗流，执行最终操作后不能再使用这个流。</p>
+<h3 id="2-3-1-forEach"><a href="#2-3-1-forEach" class="headerlink" title="2.3.1.forEach"></a>2.3.1.forEach</h3><p>迭代流中的每个数据。</p>
+<h3 id="2-3-2-count"><a href="#2-3-2-count" class="headerlink" title="2.3.2.count"></a>2.3.2.count</h3><p>用来统计流中的元素个数。</p>
+<h3 id="2-3-3-collect"><a href="#2-3-3-collect" class="headerlink" title="2.3.3.collect"></a>2.3.3.collect</h3><p>将流中的元素积累成一个汇总结果。 </p>
+]]></content>
+      <categories>
+        <category>Java基础</category>
+        <category>集合类</category>
+      </categories>
+  </entry>
 </search>

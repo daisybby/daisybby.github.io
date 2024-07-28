@@ -19,27 +19,27 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"daisybby.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="一、ArrayList和LinkedList的区别是什么？">
+    <meta name="description" content="一、基本概念和特点">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ArrayList和LinkedList">
-<meta property="og:url" content="https://daisybby.github.io/2024/07/19/ArrayList-and-LinkedList/index.html">
+<meta property="og:title" content="Java Stream能做什么？">
+<meta property="og:url" content="https://daisybby.github.io/2024/07/28/Java-Stream-1/index.html">
 <meta property="og:site_name" content="daisybby">
-<meta property="og:description" content="一、ArrayList和LinkedList的区别是什么？">
+<meta property="og:description" content="一、基本概念和特点">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-07-19T10:41:19.000Z">
-<meta property="article:modified_time" content="2024-07-19T10:57:17.057Z">
+<meta property="article:published_time" content="2024-07-28T12:22:28.000Z">
+<meta property="article:modified_time" content="2024-07-28T13:08:14.295Z">
 <meta property="article:author" content="Daisybby">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://daisybby.github.io/2024/07/19/ArrayList-and-LinkedList/">
+<link rel="canonical" href="https://daisybby.github.io/2024/07/28/Java-Stream-1/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/07/19/ArrayList-and-LinkedList/","path":"2024/07/19/ArrayList-and-LinkedList/","title":"ArrayList和LinkedList"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/07/28/Java-Stream-1/","path":"2024/07/28/Java-Stream-1/","title":"Java Stream能做什么？"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>ArrayList和LinkedList | daisybby</title>
+<title>Java Stream能做什么？ | daisybby</title>
   
 
 
@@ -139,7 +139,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81ArrayList%E5%92%8CLinkedList%E7%9A%84%E5%8C%BA%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-text">一、ArrayList和LinkedList的区别是什么？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81ArrayList%E7%9A%84%E6%89%A9%E5%AE%B9%E6%9C%BA%E5%88%B6"><span class="nav-text">二、ArrayList的扩容机制</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%92%8C%E7%89%B9%E7%82%B9"><span class="nav-text">一、基本概念和特点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81Stream%E7%9A%84%E5%85%B3%E9%94%AE%E6%93%8D%E4%BD%9C"><span class="nav-text">二、Stream的关键操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-Stream%E7%9A%84%E5%88%9B%E5%BB%BA"><span class="nav-text">2.1.Stream的创建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-Stream%E4%B8%AD%E9%97%B4%E6%93%8D%E4%BD%9C"><span class="nav-text">2.2.Stream中间操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-1-filter"><span class="nav-text">2.2.1. filter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-2-map"><span class="nav-text">2.2.2.map</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-3-limit-skip"><span class="nav-text">2.2.3.limit&#x2F;skip</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-4-sorted"><span class="nav-text">2.2.4.sorted</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-5-distinct"><span class="nav-text">2.2.5.distinct</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-Stream%E6%9C%80%E7%BB%88%E6%93%8D%E4%BD%9C"><span class="nav-text">2.3.Stream最终操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-1-forEach"><span class="nav-text">2.3.1.forEach</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-2-count"><span class="nav-text">2.3.2.count</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-3-collect"><span class="nav-text">2.3.3.collect</span></a></li></ol></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -195,7 +195,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/07/19/ArrayList-and-LinkedList/">
+    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/07/28/Java-Stream-1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/header.jpg">
@@ -208,12 +208,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="ArrayList和LinkedList | daisybby">
+      <meta itemprop="name" content="Java Stream能做什么？ | daisybby">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          ArrayList和LinkedList
+          Java Stream能做什么？
         </h1>
 
         <div class="post-meta-container">
@@ -225,7 +225,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2024-07-19 18:41:19 / 修改时间：18:57:17" itemprop="dateCreated datePublished" datetime="2024-07-19T18:41:19+08:00">2024-07-19</time>
+      <time title="创建时间：2024-07-28 20:22:28 / 修改时间：21:08:14" itemprop="dateCreated datePublished" datetime="2024-07-28T20:22:28+08:00">2024-07-28</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -248,7 +248,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>536</span>
+      <span>1.3k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -265,17 +265,36 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="一、ArrayList和LinkedList的区别是什么？"><a href="#一、ArrayList和LinkedList的区别是什么？" class="headerlink" title="一、ArrayList和LinkedList的区别是什么？"></a>一、ArrayList和LinkedList的区别是什么？</h1><span id="more"></span>
-<p>两者都实现了List接口，使用方式也很相似，但是因为实现方式不同，所以在不同的场景、对于不同的操作有不同的性能。<br><strong>ArrayList：</strong>本质上是一个可以改变大小的数组。当ArrayList空间不够的时候，会扩容。需要注意的是ArrayList的频繁扩容也是一个比较耗时的操作。</p>
-<p><strong>LinkedList：</strong>是一个双向链表，在添加和删除元素的时候，性能比数组更好，但是get和set这类按照下标的操作，性能是比不上ArrayList的。<br>此外，LinkedList还实现了Queue和Deque接口，提供了比List更多的方法，比如peek()、poll()和offer().</p>
-<blockquote>
-<p>在使用ArrayList的时候，如果事先清楚了数据量，创建ArrayList的时候直接分配差不多的容量比较好，属于最佳实践。</p>
-</blockquote>
-<h1 id="二、ArrayList的扩容机制"><a href="#二、ArrayList的扩容机制" class="headerlink" title="二、ArrayList的扩容机制"></a>二、ArrayList的扩容机制</h1><ol>
-<li>检查新增元素后，是否会超过数组的容量，如果超过，则进行下一步扩容。</li>
-<li>创建一个新数组，容量是原来的1.5倍，最多不超过2^32-1,但是Java 8中容量最大是Integer.MAX_VALUE-8，所以是2^32-9，这个8是ArrayList内部做数组复制优化的开销。</li>
-<li>将旧数组中的内容复制到新数组中。</li>
+    <div class="post-body" itemprop="articleBody"><h1 id="一、基本概念和特点"><a href="#一、基本概念和特点" class="headerlink" title="一、基本概念和特点"></a>一、基本概念和特点</h1><span id="more"></span>
+<p>Stream将要处理的元素集合看作一种流，流在管道上传输，每个节点可以进行处理，比如筛选、排序和聚合等。</p>
+<p>Stream的特点：</p>
+<ul>
+<li>无存储。Stream并不是存储结构，而是数据的一种视图。</li>
+<li>不会修改数据源。对Stream进行过滤操作，并不会删除被过滤的元素，只是会产生一个不包含被过滤元素的新Stream。</li>
+<li>惰式执行。Stream的操作并不是立即执行，而是用户需要结果的时候才会执行。</li>
+<li>可消费性。Stream只能被消费一次，一旦遍历过后就会失效。</li>
+</ul>
+<h1 id="二、Stream的关键操作"><a href="#二、Stream的关键操作" class="headerlink" title="二、Stream的关键操作"></a>二、Stream的关键操作</h1><h2 id="2-1-Stream的创建"><a href="#2-1-Stream的创建" class="headerlink" title="2.1.Stream的创建"></a>2.1.Stream的创建</h2><ol>
+<li>根据已有的集合创建</li>
 </ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Stream&lt;String&gt; stream=list.stream();</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>通过Stream创建流<br>可以使用Stream类提供的方法，直接返回一个由指定元素组成的流。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Stream&lt;String&gt; stream=Stream.of(<span class="string">&quot;daisybby&quot;</span>,<span class="string">&quot;Java&quot;</span>);</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="2-2-Stream中间操作"><a href="#2-2-Stream中间操作" class="headerlink" title="2.2.Stream中间操作"></a>2.2.Stream中间操作</h2><h3 id="2-2-1-filter"><a href="#2-2-1-filter" class="headerlink" title="2.2.1. filter"></a>2.2.1. filter</h3><p>按照设置的条件过滤元素。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">List&lt;String&gt; list=Arrays.asList(<span class="string">&quot;daisybby&quot;</span>,<span class="string">&quot;hello&quot;</span>,<span class="string">&quot;Java&quot;</span>);</span><br><span class="line">list.stream().filter(string -&gt; !string.isEmpty()); <span class="comment">//过滤空字符串</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-2-2-map"><a href="#2-2-2-map" class="headerlink" title="2.2.2.map"></a>2.2.2.map</h3><p>用于映射每一个元素到对应的结果，以下代码片段用于输出对应元素的的平方数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Integer&gt; nums=Arrays.asList(<span class="number">3</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">7</span>,<span class="number">3</span>,<span class="number">5</span>);</span><br><span class="line">nums.stream().map(num-&gt;num*num).forEach(System.out.println);</span><br></pre></td></tr></table></figure>
+<h3 id="2-2-3-limit-skip"><a href="#2-2-3-limit-skip" class="headerlink" title="2.2.3.limit&#x2F;skip"></a>2.2.3.limit&#x2F;skip</h3><p>limit返回Stream前n个元素，skip则是扔掉前n个元素。以下代码片段使用limit方法保留前3个元素：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Integer&gt; nums=Arrays.asList(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>);</span><br><span class="line">nums.stream().limit(<span class="number">3</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="2-2-4-sorted"><a href="#2-2-4-sorted" class="headerlink" title="2.2.4.sorted"></a>2.2.4.sorted</h3><p>用于对流排序。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Integer&gt; nums=Arrays.asList(<span class="number">3</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">4</span>);</span><br><span class="line">nums.stream().sorted();<span class="comment">//升序排序</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-2-5-distinct"><a href="#2-2-5-distinct" class="headerlink" title="2.2.5.distinct"></a>2.2.5.distinct</h3><p>用来去重。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Integer&gt; nums=Arrays.asList(<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>);</span><br><span class="line">nusm.stream().distinct();<span class="comment">//(2,3,4,5)</span></span><br></pre></td></tr></table></figure>
+<h2 id="2-3-Stream最终操作"><a href="#2-3-Stream最终操作" class="headerlink" title="2.3.Stream最终操作"></a>2.3.Stream最终操作</h2><p>Stream中间结果得到的结果还是一个stream，最终需要转换成我们需要的类型，这就是最终操作。<br>最终操作消耗流，执行最终操作后不能再使用这个流。</p>
+<h3 id="2-3-1-forEach"><a href="#2-3-1-forEach" class="headerlink" title="2.3.1.forEach"></a>2.3.1.forEach</h3><p>迭代流中的每个数据。</p>
+<h3 id="2-3-2-count"><a href="#2-3-2-count" class="headerlink" title="2.3.2.count"></a>2.3.2.count</h3><p>用来统计流中的元素个数。</p>
+<h3 id="2-3-3-collect"><a href="#2-3-3-collect" class="headerlink" title="2.3.3.collect"></a>2.3.3.collect</h3><p>将流中的元素积累成一个汇总结果。 </p>
 
     </div>
 
@@ -305,7 +324,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://daisybby.github.io/2024/07/19/ArrayList-and-LinkedList/" title="ArrayList和LinkedList">https://daisybby.github.io/2024/07/19/ArrayList-and-LinkedList/</a>
+      <a href="https://daisybby.github.io/2024/07/28/Java-Stream-1/" title="Java Stream能做什么？">https://daisybby.github.io/2024/07/28/Java-Stream-1/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -318,14 +337,11 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2024/07/19/Java-set-unrepeat/" rel="prev" title="Set是如何保证元素不重复的？">
-                  <i class="fa fa-angle-left"></i> Set是如何保证元素不重复的？
+                <a href="/2024/07/28/HashMap-problem-concurrent/" rel="prev" title="HashMap在并发场景中的问题">
+                  <i class="fa fa-angle-left"></i> HashMap在并发场景中的问题
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2024/07/19/subList-of-ArrayList/" rel="next" title="ArrayList的subList方法">
-                  ArrayList的subList方法 <i class="fa fa-angle-right"></i>
-                </a>
             </div>
           </div>
     </footer>
