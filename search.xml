@@ -2180,4 +2180,27 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>集合类</category>
       </categories>
   </entry>
+  <entry>
+    <title>JDK1.8 ConcurrentHashMap</title>
+    <url>/2024/07/28/JDK1-8-ConcurrentHashMap/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>什么是多线程中的上下文切换？</title>
+    <url>/2024/07/29/multi-thread-change/</url>
+    <content><![CDATA[<h1 id="一、什么是上下文切换？"><a href="#一、什么是上下文切换？" class="headerlink" title="一、什么是上下文切换？"></a>一、什么是上下文切换？</h1><span id="more"></span>
+<p>和进程切换一样，当前线程需要让出CPU给另一个线程，需要保存当前进程的运行状态，恢复另一个线程的上下文状态。</p>
+<p>在多线程中，上下文切换的开销比直接用单线程大，因为上下文切换需要保存和恢复线程信息。过多的线程切换会降低系统运行效率，所以线程数并不是越多越好，设置合理的线程数量，避免过多的线程上下文切换次数是十分重要的。</p>
+<h1 id="二、怎么减少上下文切换？"><a href="#二、怎么减少上下文切换？" class="headerlink" title="二、怎么减少上下文切换？"></a>二、怎么减少上下文切换？</h1><ol>
+<li>减少线程数量：线程越多，发生上下文切换的可能性越大，所以在设置线程数量时，要平衡业务需求和性能需求，设置合理的线程数。</li>
+<li>使用无锁并发编程：不适用锁，可以避免因为等待锁而被阻塞，阻塞就要让出CPU，进而发生上下文切换。</li>
+<li>使用CAS算法：有些业务场景需要考虑到数据一致性问题，所以可以考虑乐观锁，CAS算法，CAS算法也不会发生线程的阻塞和唤醒操作，从而减少上下文切换。</li>
+<li>使用协程（JDK21提出的虚拟线程）：协程是一种用户级线程，切换不需要操作系统的参与，避免操作系统级别的线程切换，JVM还是需要一些信息保存和恢复的操作，但是效率已经提升了很多。</li>
+<li>合理使用锁：在使用锁过程中，不能什么地方都用锁，频繁使用同步块或者是同步方法，要尽量缩小同步块或者同步方法的范围，从而减少线程的等待时间。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>Java并发</category>
+      </categories>
+  </entry>
 </search>
