@@ -2289,4 +2289,18 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java并发</category>
       </categories>
   </entry>
+  <entry>
+    <title>run/start、wait/sleep、notify/notifyAll</title>
+    <url>/2024/07/29/run-start%E5%92%8Cwait-sleep%E5%92%8Cnotify-notifyAll/</url>
+    <content><![CDATA[<h1 id="一、run-和start-方法区别"><a href="#一、run-和start-方法区别" class="headerlink" title="一、run()和start()方法区别"></a>一、run()和start()方法区别</h1><span id="more"></span>
+<p>首先，调用start方法会开启一个新的线程进入就绪态，一旦获取了CPU资源，就自动执行run方法，run方法执行完，线程终止。<br>如果在一个线程中直接调用了run方法，那么就相当于是执行一个普通的方法，并不会开启新线程。<br>默认的方法是把需要并行处理的部分写到run方法里面，通过start方法开启新线程，然后自动调用run方法来并行执行。</p>
+<p>在上一节讲到，创建线程的两种方法，一种是通过继承Thread类来实现，一种是实现Runnable接口来实现。通常通过实现Runnable接口来实现，因为Java是单继承，继承了Thread类就不能再继承其他的类了，而且Runnable只有一个run方法。</p>
+<h1 id="二、sleep和wait区别"><a href="#二、sleep和wait区别" class="headerlink" title="二、sleep和wait区别"></a>二、sleep和wait区别</h1><p>sleep方法可以在任何地方用，但是wait只能在同步方法或者同步块中使用（和锁有关）。<br>wait会释放锁，sleep并不会。<br>wait方法执行后，线程会进入WAITING状态，直至被唤醒；sleep方法执行之后，线程进入TIMED_WAITING状态，等到指定时间之后再次尝试获取CPU时间片。</p>
+<p>sleep是Thread类的方法，wait是Object类的方法。</p>
+<h1 id="三、notify和notifyAll区别"><a href="#三、notify和notifyAll区别" class="headerlink" title="三、notify和notifyAll区别"></a>三、notify和notifyAll区别</h1><p>notify和notifyAll都可以唤醒等待队列中的线程。<br>使用notifyAll可以唤醒所有处于WAITING状态的线程，这些被唤醒的线程加入到锁的竞争队列中，可以去竞争对象锁，但是最终还是只有一个线程可以获取到对象锁。<br>notify和notifyAll都和锁有关，所以是Object类的方法。</p>
+]]></content>
+      <categories>
+        <category>Java并发</category>
+      </categories>
+  </entry>
 </search>
