@@ -2303,4 +2303,35 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java并发</category>
       </categories>
   </entry>
+  <entry>
+    <title>什么是线程池？如何实现的？</title>
+    <url>/2024/07/29/%E4%BB%80%E4%B9%88%E6%98%AF%E7%BA%BF%E7%A8%8B%E6%B1%A0/</url>
+    <content><![CDATA[<h1 id="一、基本概念"><a href="#一、基本概念" class="headerlink" title="一、基本概念"></a>一、基本概念</h1><span id="more"></span>
+<p>线程池是池化技术的典型实现。所谓池化技术，就是提前准备好大量的资源，需要用的时候直接拿现成的就行。使用池化技术可以大大提高资源的利用率，不用来一个新建一个，提升系统的性能。<br>线程池就是提前创建好一批线程，当任务到来需要执行的时候，从线程池里面选出来一个线程来执行任务。<br>比较典型的池化技术：<br>线程池、连接池、内存池、对象池等。</p>
+<h1 id="二、Executors"><a href="#二、Executors" class="headerlink" title="二、Executors"></a>二、Executors</h1><p>Executors创建线程池的方法，创建出来的线程池都实现了ExecutorsService接口。常用的4个线程池如下：</p>
+<ul>
+<li>FixedThreadPool(int Threads)：线程池中的线程数量是固定的。有新的任务提交时，如果线程池中有空闲的线程，则立即执行这个任务；否则任务进入任务队列，当线程空闲时，从任务队列中取出任务执行。</li>
+<li>SingleThreadExecutor：只有一个线程的线程池，多余的任务被提交给该线程池之后，任务会被保留到一个任务队列中，等线程空闲，按先进先出的顺序执行任务。</li>
+<li>CacheThreadPool：根据实际情况调整线程数量的线程池。一个任务被提交到线程池，如果有空闲线程可用，那么就直接执行；如果没有空闲线程可用，则会创建新的线程来执行。所有的线程在执行完当前任务后，会返回线程池进行复用。</li>
+<li>ScheduledThreadPool：给定的延迟后运行任务或者定期执行任务的线程池。</li>
+</ul>
+<h1 id="三、线程池核心参数"><a href="#三、线程池核心参数" class="headerlink" title="三、线程池核心参数"></a>三、线程池核心参数</h1><p>首先是3个最重要的参数：</p>
+<ul>
+<li>corePoolSize：核心线程数，常驻线程数，任务队列没有达到容量的时候，最大可以同时运行的线程数量。</li>
+<li>maximumPoolSize：任务队列中存放任务达到最大容量的时候，线程池可以同时运行的线程数量变成最大线程数。</li>
+<li>workQueue：任务队列，新的任务到来，线程池中的线程数量已经达到了核心线程数，那么任务就会加入到任务队列中。</li>
+</ul>
+<p>其次是常见参数：</p>
+<ul>
+<li>keepAliveTime：线程池中的线程数量超过corePoolSize时，如果这个时候没有新的任务要处理，一些线程空闲下来，那这些超过核心线程数的线程，等待keepAliveTime之后被销毁。</li>
+<li>unit：keepAliveTime的单位。</li>
+<li>threadFactory：创建线程的工厂，在这个地方可以统一处理创建的线程属性。</li>
+<li>handler：线程池拒绝策略。</li>
+</ul>
+<h1 id="四、线程池处理任务的流程是什么？"><a href="#四、线程池处理任务的流程是什么？" class="headerlink" title="四、线程池处理任务的流程是什么？"></a>四、线程池处理任务的流程是什么？</h1><img src="/2024/07/29/%E4%BB%80%E4%B9%88%E6%98%AF%E7%BA%BF%E7%A8%8B%E6%B1%A0/img1.png" class="" title="img1">
+]]></content>
+      <categories>
+        <category>Java并发</category>
+      </categories>
+  </entry>
 </search>
