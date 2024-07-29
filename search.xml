@@ -2203,4 +2203,20 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java并发</category>
       </categories>
   </entry>
+  <entry>
+    <title>线程安全的理解</title>
+    <url>/2024/07/29/%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%9A%84%E7%90%86%E8%A7%A3/</url>
+    <content><![CDATA[<h1 id="一、线程安全的理解"><a href="#一、线程安全的理解" class="headerlink" title="一、线程安全的理解"></a>一、线程安全的理解</h1><span id="more"></span>
+<p>线程安全就是指在多线程并发环境下，多个线程之间的共享变量被正确处理，使得程序正确完成。<br>四个关键词：并发，多线程，共享变量，正确完成。要满足原子性、有序性和可见性。</p>
+<h1 id="二、进程和线程之间的关系"><a href="#二、进程和线程之间的关系" class="headerlink" title="二、进程和线程之间的关系"></a>二、进程和线程之间的关系</h1><p>操作系统中已经学习的基本关系：进程是资源分配的基本单位，线程是执行的基本单位，一个进程的多个线程之间共享资源。</p>
+<p>在Java中，Java的线程是运行在JVM上的，所以一个JVM就是一个进程，所有的资源分配都是基于JVM来做的。在这个JVM进程中，又可以创建很多线程，多个线程之间共享JVM资源，这些线程也可以并行执行。<br>在JDK21之前，线程在操作系统层面也是基于轻量级进程来实现的，本质上线程切换还是操作系统级别的上下文切换；JDK21之后的虚拟线程是一种用户态线程，其上下文切换不需要操作系统参与，开销比之前更小，但是JVM依然要做信息的保存和恢复，还是有开销的。</p>
+<h1 id="三、线程的特点"><a href="#三、线程的特点" class="headerlink" title="三、线程的特点"></a>三、线程的特点</h1><p><strong>轻型实体</strong><br>线程包含程序、数组和线程控制块（TCB）。<br><strong>独立调度和执行的基本单位</strong><br>线程是操作系统中能够独立运行的基本单位，也是独立调度和分派的基本单位。<br><strong>并发执行</strong><br>一个进程的多个线程之间可以并发执行，不同进程的线程也可以并发执行。<br><strong>共享进程资源</strong></p>
+<h1 id="四、共享变量"><a href="#四、共享变量" class="headerlink" title="四、共享变量"></a>四、共享变量</h1><p>共享变量是指多个线程都可以访问操作的变量。多个线程可以共享进程的一部分资源。在JVM中，Java堆和方法区是多个线程共享的区域，保存在堆和方法区的变脸就是共享变量。<br>而在Java中，有三类变量，分别是：<strong>类变量、实例变量</strong>和<strong>局部变量</strong>。<br>保存位置关系如下：<br>类变量-堆；<br>实例变量-方法区；<br>局部变量-栈内存。<br>如下例子：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyClass</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">int</span> a;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> b;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test</span><span class="params">(<span class="type">int</span> c)</span>&#123;</span><br><span class="line">        <span class="type">int</span> d=c;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+<p>其中a是类变量，保存在堆内存中；b是实例变量，保存在方法区中；c和d是局部变量，保存在栈内存中。<br>所以a和b是共享变量，在多线程背景下，需要考虑a和b的线程安全问题。</p>
+]]></content>
+      <categories>
+        <category>Java并发</category>
+      </categories>
+  </entry>
 </search>
