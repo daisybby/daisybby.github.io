@@ -19,27 +19,27 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"daisybby.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="JDK1.7中，采用分段锁技术">
+    <meta name="description" content="一、创建线程的方式">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ConcurrentHashMap是如何保证线程安全的？">
-<meta property="og:url" content="https://daisybby.github.io/2024/07/28/ConcurrentHashMap-thread-safe/index.html">
+<meta property="og:title" content="创建线程的方式">
+<meta property="og:url" content="https://daisybby.github.io/2024/07/29/%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B%E7%9A%84%E6%96%B9%E5%BC%8F/index.html">
 <meta property="og:site_name" content="daisybby">
-<meta property="og:description" content="JDK1.7中，采用分段锁技术">
+<meta property="og:description" content="一、创建线程的方式">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-07-28T04:11:04.000Z">
-<meta property="article:modified_time" content="2024-07-28T04:31:03.231Z">
+<meta property="article:published_time" content="2024-07-29T09:56:05.000Z">
+<meta property="article:modified_time" content="2024-07-29T11:18:48.051Z">
 <meta property="article:author" content="Daisybby">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://daisybby.github.io/2024/07/28/ConcurrentHashMap-thread-safe/">
+<link rel="canonical" href="https://daisybby.github.io/2024/07/29/%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B%E7%9A%84%E6%96%B9%E5%BC%8F/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/07/28/ConcurrentHashMap-thread-safe/","path":"2024/07/28/ConcurrentHashMap-thread-safe/","title":"ConcurrentHashMap是如何保证线程安全的？"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/07/29/%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B%E7%9A%84%E6%96%B9%E5%BC%8F/","path":"2024/07/29/创建线程的方式/","title":"创建线程的方式"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>ConcurrentHashMap是如何保证线程安全的？ | daisybby</title>
+<title>创建线程的方式 | daisybby</title>
   
 
 
@@ -126,7 +126,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -139,6 +139,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-text">一、创建线程的方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81Runnable%E5%92%8CCallable%E5%8C%BA%E5%88%AB"><span class="nav-text">二、Runnable和Callable区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81Future%E5%92%8CFutureTask"><span class="nav-text">三、Future和FutureTask</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -194,7 +195,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/07/28/ConcurrentHashMap-thread-safe/">
+    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/07/29/%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B%E7%9A%84%E6%96%B9%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/header.jpg">
@@ -207,12 +208,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="ConcurrentHashMap是如何保证线程安全的？ | daisybby">
+      <meta itemprop="name" content="创建线程的方式 | daisybby">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          ConcurrentHashMap是如何保证线程安全的？
+          创建线程的方式
         </h1>
 
         <div class="post-meta-container">
@@ -224,7 +225,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2024-07-28 12:11:04 / 修改时间：12:31:03" itemprop="dateCreated datePublished" datetime="2024-07-28T12:11:04+08:00">2024-07-28</time>
+      <time title="创建时间：2024-07-29 17:56:05 / 修改时间：19:18:48" itemprop="dateCreated datePublished" datetime="2024-07-29T17:56:05+08:00">2024-07-29</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -232,11 +233,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E9%9B%86%E5%90%88%E7%B1%BB/" itemprop="url" rel="index"><span itemprop="name">集合类</span></a>
+          <a href="/categories/Java%E5%B9%B6%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">Java并发</span></a>
         </span>
     </span>
 
@@ -247,7 +244,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>330</span>
+      <span>1.6k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -264,11 +261,24 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><p><strong>JDK1.7中，采用分段锁技术</strong></p>
-<span id="more"></span>
-<p>哈希表被分为多个段，每个段的锁是独立的。在并发场景下，多个线程访问哈希表的时候，只需要锁住对应的段就行，别的没有上锁的段还是可以被别的线程所使用的。分段锁提高了ConcurrentHashMap的并发性能。<br>虽然分段锁并发性能有所提升，但是分段是有限的，在高并发场景下，还是会出现同一段的锁竞争，降低系统性能。</p>
-<p><strong>在JDK1.8，分段锁被优化为节点锁的思想，即使用CAS+Synchronized机制</strong><br>在插入新节点的时候，如果段为空，就通过CAS操作来添加新节点，如果某个段的hash值为MOVED，就说明这个段正在扩容，那么就调用helpTransfer来协助扩容，否则使用Synchronized锁住当前节点，然后进行节点的添加操作。</p>
-
+    <div class="post-body" itemprop="articleBody"><h1 id="一、创建线程的方式"><a href="#一、创建线程的方式" class="headerlink" title="一、创建线程的方式"></a>一、创建线程的方式</h1><span id="more"></span>
+<p>有四种方式可以创建线程：</p>
+<ol>
+<li>继承Thread类。</li>
+<li>实现Runnable接口。</li>
+<li>通过Callable和FutureTask创建线程。</li>
+<li>线程池。</li>
+</ol>
+<blockquote>
+<p>归根到底，只有前两种方法，一种是<strong>继承Thread类</strong>，一种是实现<strong>Runnable接口</strong>。后面两种方法还是基于前两种方法实现的。</p>
+</blockquote>
+<h1 id="二、Runnable和Callable区别"><a href="#二、Runnable和Callable区别" class="headerlink" title="二、Runnable和Callable区别"></a>二、Runnable和Callable区别</h1><p>实现两个接口都可以用来创建新线程，实现Runnable接口的时候需要实现run方法；实现Callable接口的时候需要实现call方法。<br>Runnable的run方法没有返回值，Callable的call方法返回一个Object对象。<br>Runnable不能抛出checked exception，但是Callable可以。<br>两者都可以用于Executors，Thread类只支持Runnable。</p>
+<h1 id="三、Future和FutureTask"><a href="#三、Future和FutureTask" class="headerlink" title="三、Future和FutureTask"></a>三、Future和FutureTask</h1><p>Future是一个接口，用来检查执行是否完成、等待执行完成、获得执行的结果。只能通过get方法来获取结果，在结果没有准备好的时候get方法会一直阻塞，如果想要取消，需要调用cancel()方法。</p>
+<p>FutureTask是Future接口的一个实现，实现了一个可以提交给Executor执行的任务，可以检查这个任务的执行状态，也可以获取这个任务的执行结果。</p>
+<p><strong>FutureTask和Callable的示例：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FutureTaskCallable</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">        Callable&lt;String&gt; callable=()-&gt;&#123; <span class="comment">//这里的String表示结果将返回一个String类型的值</span></span><br><span class="line">            System.out.println(<span class="string">&quot;Entered callable&quot;</span>);</span><br><span class="line">            Thread.sleep(<span class="number">2000</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;return from Callable&quot;</span>;</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="comment">//定义FutureTask指定的String是：FutureTask将持有一个由Callable的call方法返回的String类型的值。</span></span><br><span class="line">        FutureTask&lt;String&gt; futureTask=<span class="keyword">new</span> <span class="title class_">FutureTask</span>&lt;&gt;(callable);</span><br><span class="line">        Thread thread=<span class="keyword">new</span> <span class="title class_">Thread</span>(futureTask);</span><br><span class="line">        thread.start();</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;main&quot;</span>);</span><br><span class="line">        System.out.println(futureTask.get());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>线程池和Callable创建线程的示例</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ExecutorCallable</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">        Callable&lt;String&gt; call=()-&gt;&#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;Entered Executor&quot;</span>);</span><br><span class="line">            Thread.sleep(<span class="number">2000</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;return from callable&quot;</span>;</span><br><span class="line">        &#125;;</span><br><span class="line">        ExecutorService executor=Executors.newSingleThreadExecutor();</span><br><span class="line">        Future&lt;String&gt; future=executor.submit(callable);<span class="comment">//注意这里，不是新建，而是任务提交到executor后获得的</span></span><br><span class="line">        </span><br><span class="line">        System.out.println(<span class="string">&quot;main&quot;</span>);</span><br><span class="line">        System.out.println(future.get());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -297,7 +307,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://daisybby.github.io/2024/07/28/ConcurrentHashMap-thread-safe/" title="ConcurrentHashMap是如何保证线程安全的？">https://daisybby.github.io/2024/07/28/ConcurrentHashMap-thread-safe/</a>
+      <a href="https://daisybby.github.io/2024/07/29/%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B%E7%9A%84%E6%96%B9%E5%BC%8F/" title="创建线程的方式">https://daisybby.github.io/2024/07/29/创建线程的方式/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -310,14 +320,11 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2024/07/27/hashMap-Hashtable-ConcurrentHashMap/" rel="prev" title="hashMap、Hashtable和ConcurrentHashMap的区别">
-                  <i class="fa fa-angle-left"></i> hashMap、Hashtable和ConcurrentHashMap的区别
+                <a href="/2024/07/29/JDK21%E4%B8%AD%E7%9A%84%E8%99%9A%E6%8B%9F%E7%BA%BF%E7%A8%8B/" rel="prev" title="JDK21中的虚拟线程">
+                  <i class="fa fa-angle-left"></i> JDK21中的虚拟线程
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2024/07/28/ConcurrentHashMap-not-null/" rel="next" title="为什么ConcurrentHashMap不允许Null">
-                  为什么ConcurrentHashMap不允许Null <i class="fa fa-angle-right"></i>
-                </a>
             </div>
           </div>
     </footer>
