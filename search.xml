@@ -2219,4 +2219,24 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java并发</category>
       </categories>
   </entry>
+  <entry>
+    <title>线程状态</title>
+    <url>/2024/07/29/%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81/</url>
+    <content><![CDATA[<h1 id="一、线程的六种状态"><a href="#一、线程的六种状态" class="headerlink" title="一、线程的六种状态"></a>一、线程的六种状态</h1><span id="more"></span>
+<ol>
+<li>初始态（NEW）：线程被创建，但是还没有执行start()方法。</li>
+<li>运行(RUNNABLE)：Java将就绪态和运行态统称为运行。<br>就绪：线程对象创建后，其他的线程调用了这个对象的start()方法，该状态的线程加入到了可运行线程池中，等待被线程调度选中并分配CPU资源。<br>运行：线程得到了CPU资源，开始执行。</li>
+<li>阻塞(BLOCKED)：线程阻塞于锁。</li>
+<li>等待（WAITING)：线程等待其他线程的通知或者中断。</li>
+<li>超时等待（TIMED_WAITING）：与等待不同的点在于，到了一定的等待事件后还没有结果，那就自行返回。</li>
+<li>终止（TIERMINATED）：表示该线程已经执行完毕。</li>
+</ol>
+<h1 id="二、WAITING和TIMED-WAITING的区别"><a href="#二、WAITING和TIMED-WAITING的区别" class="headerlink" title="二、WAITING和TIMED_WAITING的区别"></a>二、WAITING和TIMED_WAITING的区别</h1><p>调用wait方法，线程会进入WAITING状态；调用sleep方法，线程会进入TIMED_WAITING状态。</p>
+<p>锁：线程进入WAITING状态时，会释放锁；线程进入TIMED_WAITING状态时，并不会释放锁。</p>
+<p>因为锁是针对对象的，所以和WAITING状态相关的方法，wait、notify和notifyAll都是Object类的对象。而和TIMED_WAITING状态相关的sleep方法则属于Thread类。</p>
+]]></content>
+      <categories>
+        <category>Java并发</category>
+      </categories>
+  </entry>
 </search>
