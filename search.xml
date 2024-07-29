@@ -2239,4 +2239,29 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java并发</category>
       </categories>
   </entry>
+  <entry>
+    <title>JDK21中的虚拟线程</title>
+    <url>/2024/07/29/JDK21%E4%B8%AD%E7%9A%84%E8%99%9A%E6%8B%9F%E7%BA%BF%E7%A8%8B/</url>
+    <content><![CDATA[<h1 id="一、基本概念"><a href="#一、基本概念" class="headerlink" title="一、基本概念"></a>一、基本概念</h1><span id="more"></span>
+<p>先讲之前的进程和线程之间的关系。在之前的JDK版本中，线程都是基于操作系统的轻量级进程来实现的，每一个Java进程对应一个操作系统的轻量级进程。这种线程模型最终的线程创建、析构和同步等，都需要进行系统调用，而系统调用需要操作系统在内核态和用户态之间来回切换，所以系统开销比较大。</p>
+<p>JDK21引入了虚拟线程，也是协程，是一种轻量级线程，不同于之前一线程对应一轻量级进程的做法，现在是多个虚拟线程映射到少量的操作系统线程中，减少操作系统级别的上下文切换次数，来降低系统开销。</p>
+<h1 id="二、操作系统线程的实现方式"><a href="#二、操作系统线程的实现方式" class="headerlink" title="二、操作系统线程的实现方式"></a>二、操作系统线程的实现方式</h1><p>三种：</p>
+<ul>
+<li>基于内核线程实现；</li>
+<li>基于用户线程实现；</li>
+<li>用户线程加轻量级进程混合实现。</li>
+</ul>
+<h1 id="三、虚拟线程的改进和优点"><a href="#三、虚拟线程的改进和优点" class="headerlink" title="三、虚拟线程的改进和优点"></a>三、虚拟线程的改进和优点</h1><p>多个虚拟线程映射到少量操作系统线程中的做法，使得能够创建的线程数量不用局限于平台，能够创建很多虚拟线程，不用依赖于平台线程的数量。<br>而且虚拟线程是JVM来管理的，并不是操作系统的线程，所以上下文切换开销没有那么大。</p>
+<h1 id="四、虚拟线程和平台线程的区别"><a href="#四、虚拟线程和平台线程的区别" class="headerlink" title="四、虚拟线程和平台线程的区别"></a>四、虚拟线程和平台线程的区别</h1><p>虚拟线程是守护线程，JVM的终止并不会等守护线程执行完，当所有的非守护线程执行完之后，JVM就会终止。<br>虚拟线程的优先级始终是normal，且不能修改。<br>虚拟线程不支持stop()、suspend()、resume()等方法。</p>
+<h1 id="五、如何使用虚拟线程"><a href="#五、如何使用虚拟线程" class="headerlink" title="五、如何使用虚拟线程"></a>五、如何使用虚拟线程</h1><ol>
+<li>Thread.startVirtualThread()运行虚拟线程。<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Thread.startVirtualThread()-&gt;&#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;虚拟线程执行中...&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>通过Thread.Builder来创建虚拟线程。Thread类提供了ofPlatform()来创建一个平台线程，ofVirtual()来创建虚拟线程。<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Thread.Builder platformBuilder=Thread.ofPlatform().name(<span class="string">&quot;平台线程&quot;</span>);</span><br><span class="line">Thread.Builder virtualBuilder=Thread.ofVirtual().name(<span class="string">&quot;虚拟线程&quot;</span>);</span><br><span class="line"></span><br><span class="line">Thread th1=platformBuilder.start(()-&gt;&#123;...&#125;);</span><br><span class="line">Thread th2=virtualBuilder=virtualBuilder.start(()-&gt;&#123;...&#125;);</span><br></pre></td></tr></table></figure></li>
+<li>线程池创建虚拟线程。<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">try</span>(<span class="keyword">var</span> executor=Executors.newVirtualThreadTaskExecutor())&#123;</span><br><span class="line">    InStream.range(<span class="number">0</span>,<span class="number">10000</span>).forEach(i-&gt;&#123;</span><br><span class="line">        executor.submit(()-&gt;&#123;</span><br><span class="line">            Thread.sleep(Duration.ofSeconds(<span class="number">1</span>));</span><br><span class="line">            <span class="keyword">return</span> i;</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+但并不建议线程池和虚拟线程混用。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>Java并发</category>
+      </categories>
+  </entry>
 </search>
