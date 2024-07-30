@@ -2473,4 +2473,24 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java并发</category>
       </categories>
   </entry>
+  <entry>
+    <title>synchronized优化</title>
+    <url>/2024/07/30/synchronized%E4%BC%98%E5%8C%96/</url>
+    <content><![CDATA[<p>高效并发是JDK1.5到JDK1.6的一个重要改进，包括适应性自旋锁、锁消除、锁粗化、轻量级锁和偏向锁等。</p>
+<span id="more"></span>
+
+<h1 id="自旋锁"><a href="#自旋锁" class="headerlink" title="自旋锁"></a>自旋锁</h1><p>之前的synchronized是重量级锁，当线程因为获取锁而进行阻塞&#x2F;唤醒操作是需要操作系统参与的，涉及到了从用户态切换成内核态，比较耗时。<br>自旋锁的基本思想就是：如果当前线程想要申请资源，这个资源暂时申请不到，但是这个资源的锁定时间通常是比较短的，所以当前线程没必要费劲巴拉被阻塞，然后再费劲巴拉被唤醒，可以持有CPU资源等待一会，这个持有CPU等待的过程就是自旋。</p>
+<p>自旋锁和阻塞锁的区别就是：要不要放弃处理器的执行时间。阻塞锁申请不到锁就会被阻塞，放弃CPU时间，然后等待被唤醒；自旋锁是不放弃CPU时间，时刻检查共享资源是不是可以被访问了。</p>
+<p>自旋锁只是当前线程不断检查资源是否可用了，不进行线程状态的改变，所以响应时间更快。但是当线程数量明显增加的时候就不行了，性能会明显下降，一直占着CPU等待算是什么事。如果锁竞争并不激烈，而且线程持有锁的时间并不长，适合采用自旋锁。</p>
+<h1 id="锁消除"><a href="#锁消除" class="headerlink" title="锁消除"></a>锁消除</h1><p>锁消除是JIT编译器对内部锁的具体实现所作的一种优化。<br>当动态编译同步块的时候，JIT编译器借助逃逸分析来判断代码块所使用的锁对象是不是只会被一个线程访问，而不是发布给其他线程，如果是就把这里的锁优化掉。</p>
+<p>说起来比较抽象，可以通过一个例子来看，某个变量的生命周期注定了它不会被其他线程使用，那再对这个变量加锁就是没必要的。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">fun</span><span class="params">()</span>&#123;</span><br><span class="line">    Object object=<span class="keyword">new</span> <span class="title class_">Object</span>();</span><br><span class="line">    <span class="keyword">synchronized</span>(object)&#123;</span><br><span class="line">        System.out.println(object);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>代码会对object对象加锁，但是这个对象的生命周期就是这个函数当中，并不会被其他的线程所访问到，所以没必要加锁。</p>
+<h1 id="锁粗化"><a href="#锁粗化" class="headerlink" title="锁粗化"></a>锁粗化</h1><p>相比于使用同步方法，同步代码块更被开发者所青睐，因为同步方法是锁定了整个方法，但是同步代码块可以缩小锁的粒度，避免不必要的阻塞，方法中那些和同步无关的代码块可以被排除在外。</p>
+<p>但是如果锁粒度太细，一个线程重复对一个对象加锁释放锁，这样增加了资源的消耗，这个时候就可以适当放宽锁的范围，减少性能消耗。</p>
+]]></content>
+      <categories>
+        <category>Java并发</category>
+      </categories>
+  </entry>
 </search>
