@@ -2364,4 +2364,23 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java并发</category>
       </categories>
   </entry>
+  <entry>
+    <title>什么是ThreadLocal？如何实现的？</title>
+    <url>/2024/07/30/%E4%BB%80%E4%B9%88%E6%98%AFThreadLocal/</url>
+    <content><![CDATA[<h1 id="一、什么是ThreadLocal"><a href="#一、什么是ThreadLocal" class="headerlink" title="一、什么是ThreadLocal"></a>一、什么是ThreadLocal</h1><span id="more"></span>
+<p>ThreadLocal是java.lang下面的一个类，用来解决多线程并发程序中并发问题的一种途径；通过为每一个线程创建一个共享变量的副本来保证各个线程之间的变量访问和修改是独立开的。</p>
+<p>ThreadLocal存放的数据是线程内共享的，线程之间是互斥的。ThreadLocal可以避免过多的线程内部的参数传递。</p>
+<p>在Redis的项目当中，我们也用到了ThreadLocal技术，用户登录之后把用户信息保存到ThreadLocal，之后在一次请求对应的这个线程执行期间，都可以到ThreadLocal中获取用户信息。</p>
+<h1 id="二、ThreadLocal的实现原理"><a href="#二、ThreadLocal的实现原理" class="headerlink" title="二、ThreadLocal的实现原理"></a>二、ThreadLocal的实现原理</h1><p>先说结论，一个Thread对象也就是一个线程，Thread对象有一个成员变量ThreadLocalMap对象，ThreadLocalMap内部维护了一个Entry数组，和HashMap内部维护的Entry和Node是类似的，一个Entry是一个键值对，其中Key是一个ThreadLocal对象的引用，value就是数值。ThreadLocalMap是ThreadLocal类的静态内部类。</p>
+<blockquote>
+<p>感觉有点绕，既是ThreadLocal的成员，又把ThreadLocal对象作为内部存储的数据key。<br>如果有两个变量需要保存到ThreadLocal中，那么就有两个ThreadLocal对象，在ThreadLocalMap也就有两个键值对。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//Thread类的部分源码</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Thread</span> <span class="keyword">implements</span> <span class="title class_">Runnable</span>&#123;</span><br><span class="line">    ThreadLocal.ThreadLocalMap threadLocals=<span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    ThreadLocal.ThreadLocalMap inheritableThreadLocals=<span class="literal">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="三、ThreadLocal的应用场景"><a href="#三、ThreadLocal的应用场景" class="headerlink" title="三、ThreadLocal的应用场景"></a>三、ThreadLocal的应用场景</h1><p><strong>用户身份信息存储：</strong>用户身份信息在登录鉴权之后，可以保存到ThreadLocal中，在请求的后续流程里，需要用户信息的话，直接从ThreadLocal取出来即可。<br><strong>线程安全：</strong>一些需要并发安全处理的成员变量，可以放到ThreadLocal里，每个线程都有自己的变量，从而避免线程安全问题。<br><strong>日志上下文存储：</strong>使用ThreadLocal来存储与当前线程相关的日志上下文。<br><strong>数据库session：</strong>使用ThreadLocal来存储和管理数据库会话，确保每个线程都有自己的会话实例，避免多线程环境下出现线程安全问题。<br><strong>PageHelper分页：</strong>PageHelper是MyBatis中提供的分页插件，页码和页大小等参数会存储在ThreadLocal中，方便再执行分页时读取这些数据。</p>
+]]></content>
+      <categories>
+        <category>Java并发</category>
+      </categories>
+  </entry>
 </search>
