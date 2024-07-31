@@ -2573,4 +2573,28 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java并发</category>
       </categories>
   </entry>
+  <entry>
+    <title>什么是CAS，有什么问题</title>
+    <url>/2024/07/31/%E4%BB%80%E4%B9%88%E6%98%AFCAS%EF%BC%8C%E6%9C%89%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<h1 id="一、基本概念"><a href="#一、基本概念" class="headerlink" title="一、基本概念"></a>一、基本概念</h1><p>CAS是一种乐观锁技术，全程Compare And Swap，先比较再替换。</p>
+<span id="more"></span>
+<p>CAS有三个重要的参数，V要修改的变量内存位置，E预期中的原值，N要修改成的新值。如果实际的值和预期的值不同，说明可能被其他线程修改了，这个时候就不能更新。</p>
+<p>当多个线程同时尝试更新同一个变量值时，最终只有一个变量能修改成功，失败的线程并不会被挂起，而是被通知本次竞争修改失败，之后可以再次尝试。</p>
+<p>CAS主要的应用就是实现乐观锁和锁自旋。</p>
+<h1 id="二、CAS的问题"><a href="#二、CAS的问题" class="headerlink" title="二、CAS的问题"></a>二、CAS的问题</h1><h2 id="2-1-ABA问题"><a href="#2-1-ABA问题" class="headerlink" title="2.1.ABA问题"></a>2.1.ABA问题</h2><p>CAS会导致ABA问题，线程1想要修改变量var，值为A，在线程1取出数据之后，线程2也要修改，线程2先把A修改成B，然后又在线程1修改之前，修改回了A。对于线程1来说，这个变量var没有任何改变，但是这个修改的过程数据，在一些场景下，是很重要的，是需要线程1感知到的。</p>
+<p>可以增加一个<strong>版本号</strong>，来解决ABA问题。不仅仅值和期望值一样，还要版本号和自己记录的上一个版本号一致才能修改，修改成功后对版本号执行+1操作。</p>
+<p>Java的<strong>AtomicStampedReference</strong>，是Java并发编程中的一个类，用于解决ABA问题。这种方案下维护了一个时间戳，不仅仅要值没有改变，还要检查时间戳是不是变化了。</p>
+<h2 id="2-2-忙等待"><a href="#2-2-忙等待" class="headerlink" title="2.2.忙等待"></a>2.2.忙等待</h2><p>因为CAS基本都是要自旋的，也就是修改失败了不释放CPU资源，而是等一等。如果并发冲突比较大，就会导致CAS一直重复的执行，进入忙等待。持有CPU忙等待是比较浪费CPU资源的。</p>
+<h1 id="三、乐观锁和悲观锁"><a href="#三、乐观锁和悲观锁" class="headerlink" title="三、乐观锁和悲观锁"></a>三、乐观锁和悲观锁</h1><p>乐观锁是只有在修改数据的时候，才会进行冲突检测，检测到冲突之后把错误信息返回给用户，由用户决定如何应对。</p>
+<p>悲观锁则是更严格的并发控制，只要访问资源，就要加锁，比如synchronized。但是悲观锁的性能是不如乐观锁的，存在以下问题：</p>
+<ul>
+<li>在多线程竞争的情况下，频繁的加锁&#x2F;释放锁，会导致比较多的线程上下文切换和调度，引起性能问题。</li>
+<li>一个锁被某个线程申请到之后，其他想要申请这个锁的线程都会被挂起。</li>
+<li>如果一个优先级高的线程等待一个优先级低的线程释放锁，这样就导致了优先级倒置，引起性能风险。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Java并发</category>
+      </categories>
+  </entry>
 </search>
