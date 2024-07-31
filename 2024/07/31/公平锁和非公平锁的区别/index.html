@@ -19,27 +19,27 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"daisybby.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="在定义类的时候，如果没有定义任何构造函数，JDK会自动添加一个午餐构造函数，如果已经定义了构造函数，就不会再默认添加。">
+    <meta name="description" content="基本概念">
 <meta property="og:type" content="article">
-<meta property="og:title" content="为什么建议自定义一个无参构造器？">
-<meta property="og:url" content="https://daisybby.github.io/2024/07/18/Java-no-attribute-constructor/index.html">
+<meta property="og:title" content="公平锁和非公平锁的区别">
+<meta property="og:url" content="https://daisybby.github.io/2024/07/31/%E5%85%AC%E5%B9%B3%E9%94%81%E5%92%8C%E9%9D%9E%E5%85%AC%E5%B9%B3%E9%94%81%E7%9A%84%E5%8C%BA%E5%88%AB/index.html">
 <meta property="og:site_name" content="daisybby">
-<meta property="og:description" content="在定义类的时候，如果没有定义任何构造函数，JDK会自动添加一个午餐构造函数，如果已经定义了构造函数，就不会再默认添加。">
+<meta property="og:description" content="基本概念">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-07-18T08:02:45.000Z">
-<meta property="article:modified_time" content="2024-07-18T08:43:22.209Z">
+<meta property="article:published_time" content="2024-07-31T14:29:59.000Z">
+<meta property="article:modified_time" content="2024-07-31T15:08:00.960Z">
 <meta property="article:author" content="Daisybby">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://daisybby.github.io/2024/07/18/Java-no-attribute-constructor/">
+<link rel="canonical" href="https://daisybby.github.io/2024/07/31/%E5%85%AC%E5%B9%B3%E9%94%81%E5%92%8C%E9%9D%9E%E5%85%AC%E5%B9%B3%E9%94%81%E7%9A%84%E5%8C%BA%E5%88%AB/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/07/18/Java-no-attribute-constructor/","path":"2024/07/18/Java-no-attribute-constructor/","title":"为什么建议自定义一个无参构造器？"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/07/31/%E5%85%AC%E5%B9%B3%E9%94%81%E5%92%8C%E9%9D%9E%E5%85%AC%E5%B9%B3%E9%94%81%E7%9A%84%E5%8C%BA%E5%88%AB/","path":"2024/07/31/公平锁和非公平锁的区别/","title":"公平锁和非公平锁的区别"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>为什么建议自定义一个无参构造器？ | daisybby</title>
+<title>公平锁和非公平锁的区别 | daisybby</title>
   
 
 
@@ -126,7 +126,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -139,6 +139,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ReentrantLock%E9%9D%9E%E5%85%AC%E5%B9%B3%E9%94%81%E5%92%8C%E5%85%AC%E5%B9%B3%E9%94%81%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-text">ReentrantLock非公平锁和公平锁的实现</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -194,7 +195,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/07/18/Java-no-attribute-constructor/">
+    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/07/31/%E5%85%AC%E5%B9%B3%E9%94%81%E5%92%8C%E9%9D%9E%E5%85%AC%E5%B9%B3%E9%94%81%E7%9A%84%E5%8C%BA%E5%88%AB/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/header.jpg">
@@ -207,12 +208,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="为什么建议自定义一个无参构造器？ | daisybby">
+      <meta itemprop="name" content="公平锁和非公平锁的区别 | daisybby">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          为什么建议自定义一个无参构造器？
+          公平锁和非公平锁的区别
         </h1>
 
         <div class="post-meta-container">
@@ -224,7 +225,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2024-07-18 16:02:45 / 修改时间：16:43:22" itemprop="dateCreated datePublished" datetime="2024-07-18T16:02:45+08:00">2024-07-18</time>
+      <time title="创建时间：2024-07-31 22:29:59 / 修改时间：23:08:00" itemprop="dateCreated datePublished" datetime="2024-07-31T22:29:59+08:00">2024-07-31</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -232,7 +233,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
+          <a href="/categories/Java%E5%B9%B6%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">Java并发</span></a>
         </span>
     </span>
 
@@ -243,7 +244,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>416</span>
+      <span>530</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -260,15 +261,13 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><p>在定义类的时候，如果没有定义任何构造函数，JDK会自动添加一个午餐构造函数，如果已经定义了构造函数，就不会再默认添加。</p>
-<span id="more"></span>
-<p>这就出现了问题，如果我们只定义了有参构造函数，那么系统就不会添加默认的无参构造函数，类就没有午餐构造函数，创建对象的时候必须通过有参构造函数才行。<br>但是没有无参构造函数，有些场景下会出问题：</p>
-<ol>
-<li>反射以及序列化要求<br>在使用反射以及反序列化的时候，通常是调用类的无参构造函数来创建对象。</li>
-<li>兼容性和扩展性<br>在一些框架中，比如Spring、Jackson等，在进行对象的创建和初始化的时候，都是依赖于类的无参构造器，缺乏无参构造器可能会导致这些框架无法工作。</li>
-<li>JavaBean规范<br>一个标准的JavaBean是必须包含无参构造器，这使得JavaBean可以被实例化，也可以通过反射机制被外部修改。</li>
-<li>子类构造器的默认行为<br>子类构造器会默认调用父类的无参构造器，如果子类没有显式调用父类的其他构造器，父类也没有定义无参构造器，这个时候会编译出错。</li>
-</ol>
+    <div class="post-body" itemprop="articleBody"><h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><span id="more"></span>
+<p><strong>非公平锁：</strong>多个线程不按照申请锁的顺序去尝试获取锁，而是一个新的线程来了，直接尝试获取锁，获取失败了再进入到等待队列。</p>
+<p><strong>公平锁：</strong>线程按照申请锁的先后顺序来尝试获取锁，新的线程来申请锁来了，但是等待队列不是空的，那就去排队。这样能够保证总是等待队列中第一个线程获得锁。</p>
+<p><strong>两种锁的应用场景：</strong><br><strong>公平锁</strong>是能够保证所有的线程按照顺序，都能获得锁，不会饿死在等待队列里，但是系统的吞吐量会下降，队列里的第一个线程会获得锁，但是剩下的所有线程都要被阻塞，CPU阻塞线程&#x2F;唤醒线程会有很大的开销。</p>
+<p><strong>非公平锁</strong>线程来了就申请锁，有些线程来了就申请到了，不需要被阻塞，减少CPU唤醒线程的开销，整体的吞吐效率高一些。但是可能会导致等待队列中的线程一直获取不到或者长时间获取不到锁，进而直接饿死在等待队列里。</p>
+<h1 id="ReentrantLock非公平锁和公平锁的实现"><a href="#ReentrantLock非公平锁和公平锁的实现" class="headerlink" title="ReentrantLock非公平锁和公平锁的实现"></a>ReentrantLock非公平锁和公平锁的实现</h1><p><strong>非公平锁：</strong><br>lock方法执行的时候，先通过CAS来判断state是否为0，如果case成功将state从0设置为1，也就是当前线程获取到了锁，那么就会继续执行。</p>
+<p><strong>公平锁：</strong><br>线程调用lock方法的时候，会判断AQS队列中有没有线程，如果有，那直接被封装成等待队列的Node，然后放进队列排队。如果队列是空的，这个时候才会申请锁。</p>
 
     </div>
 
@@ -298,7 +297,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://daisybby.github.io/2024/07/18/Java-no-attribute-constructor/" title="为什么建议自定义一个无参构造器？">https://daisybby.github.io/2024/07/18/Java-no-attribute-constructor/</a>
+      <a href="https://daisybby.github.io/2024/07/31/%E5%85%AC%E5%B9%B3%E9%94%81%E5%92%8C%E9%9D%9E%E5%85%AC%E5%B9%B3%E9%94%81%E7%9A%84%E5%8C%BA%E5%88%AB/" title="公平锁和非公平锁的区别">https://daisybby.github.io/2024/07/31/公平锁和非公平锁的区别/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -311,14 +310,11 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2024/07/18/composition-and-inheritance/" rel="prev" title="Java中组合和继承">
-                  <i class="fa fa-angle-left"></i> Java中组合和继承
+                <a href="/2024/07/31/synchronized%E5%92%8CreentrantLock%E5%8C%BA%E5%88%AB/" rel="prev" title="synchronized和reentrantLock区别">
+                  <i class="fa fa-angle-left"></i> synchronized和reentrantLock区别
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2024/07/18/Java-NOT-use-Exception-to-control/" rel="next" title="为什么不建议使用异常控制业务流程">
-                  为什么不建议使用异常控制业务流程 <i class="fa fa-angle-right"></i>
-                </a>
             </div>
           </div>
     </footer>

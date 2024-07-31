@@ -2618,4 +2618,19 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
 <p><strong>ReentrantLock实现可重入的机制：</strong><br>ReentrantLock是通过AQS来实现的，所以内部有state这个标记，在线程尝试获取锁的时候，如果state&#x3D;1，那么检查持有锁的是不是当前线程，如果是，state自增1，获取到锁。在释放锁的时候，需要state不断减少到0，才是彻底释放锁。</p>
 ]]></content>
   </entry>
+  <entry>
+    <title>公平锁和非公平锁的区别</title>
+    <url>/2024/07/31/%E5%85%AC%E5%B9%B3%E9%94%81%E5%92%8C%E9%9D%9E%E5%85%AC%E5%B9%B3%E9%94%81%E7%9A%84%E5%8C%BA%E5%88%AB/</url>
+    <content><![CDATA[<h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><span id="more"></span>
+<p><strong>非公平锁：</strong>多个线程不按照申请锁的顺序去尝试获取锁，而是一个新的线程来了，直接尝试获取锁，获取失败了再进入到等待队列。</p>
+<p><strong>公平锁：</strong>线程按照申请锁的先后顺序来尝试获取锁，新的线程来申请锁来了，但是等待队列不是空的，那就去排队。这样能够保证总是等待队列中第一个线程获得锁。</p>
+<p><strong>两种锁的应用场景：</strong><br><strong>公平锁</strong>是能够保证所有的线程按照顺序，都能获得锁，不会饿死在等待队列里，但是系统的吞吐量会下降，队列里的第一个线程会获得锁，但是剩下的所有线程都要被阻塞，CPU阻塞线程&#x2F;唤醒线程会有很大的开销。</p>
+<p><strong>非公平锁</strong>线程来了就申请锁，有些线程来了就申请到了，不需要被阻塞，减少CPU唤醒线程的开销，整体的吞吐效率高一些。但是可能会导致等待队列中的线程一直获取不到或者长时间获取不到锁，进而直接饿死在等待队列里。</p>
+<h1 id="ReentrantLock非公平锁和公平锁的实现"><a href="#ReentrantLock非公平锁和公平锁的实现" class="headerlink" title="ReentrantLock非公平锁和公平锁的实现"></a>ReentrantLock非公平锁和公平锁的实现</h1><p><strong>非公平锁：</strong><br>lock方法执行的时候，先通过CAS来判断state是否为0，如果case成功将state从0设置为1，也就是当前线程获取到了锁，那么就会继续执行。</p>
+<p><strong>公平锁：</strong><br>线程调用lock方法的时候，会判断AQS队列中有没有线程，如果有，那直接被封装成等待队列的Node，然后放进队列排队。如果队列是空的，这个时候才会申请锁。</p>
+]]></content>
+      <categories>
+        <category>Java并发</category>
+      </categories>
+  </entry>
 </search>
