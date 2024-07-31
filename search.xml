@@ -2550,4 +2550,27 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java并发</category>
       </categories>
   </entry>
+  <entry>
+    <title>如何理解AQS</title>
+    <url>/2024/07/31/%E5%A6%82%E4%BD%95%E7%90%86%E8%A7%A3AQS/</url>
+    <content><![CDATA[<p>AQS全名AbstractQueueSynchronizer，抽象同步器，是很多同步器的基础框架，比如ReentrantLock、CountDownLatch和Semaphere。我们也可以基于AQS来定义我们自己的同步器。</p>
+<span id="more"></span>
+
+<p>AQS内部维护一个FIFO队列和一个volatile修饰的int型变量state，当state&#x3D;1的时候，证明锁已经被占用了，state通过CAS来修改。</p>
+<p>FIFO用来实现多线程排队等待锁，用来存放那些等待锁的线程。</p>
+<p>申请锁的过程如下：</p>
+<ol>
+<li>线程通过CAS尝试修改state来获取锁；</li>
+<li>获取锁失败的话，线程会被封装成FIFO队列的一个节点，然后添加到队列尾部；</li>
+<li>当一个线程释放锁的时候，队列的第一个元素试图再次通过CAS获取锁。</li>
+</ol>
+<p><strong>锁机制：</strong><br>AQS提供了两种锁机制：排它锁和共享锁。</p>
+<p>排它锁就是一个资源同一时刻只允许一个线程使用，比如synchronized和ReentrantLock，不过synchronized并不是基于AQS实现的。</p>
+<p>共享锁也成为读锁，同一时刻允许多个线程获得这个锁，比如CountDownLatch和Semaphore都用到了AQS提供的共享锁。</p>
+<p><strong>两种队列：</strong><br>AQS提供了两种队列：<strong>同步队列</strong>，用来实现锁的获取和释放；<strong>条件队列</strong>，用于在满足特定条件时管理线程的等待和唤醒。</p>
+]]></content>
+      <categories>
+        <category>Java并发</category>
+      </categories>
+  </entry>
 </search>
