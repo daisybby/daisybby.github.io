@@ -19,27 +19,27 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"daisybby.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="Java中是值传递还是引用传递？">
+    <meta name="description" content="synchronized和volatile都是针对共享变量的，都可以保证可见性和有序性，但是synchronized无法解决指令重排的问题，只能保证单线程内部的执行结果不会发生改变。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java值传递还是引用传递？">
-<meta property="og:url" content="https://daisybby.github.io/2024/07/17/Java-value-or-incite-pass/index.html">
+<meta property="og:title" content="有了synchronized为什么还需要volatile?">
+<meta property="og:url" content="https://daisybby.github.io/2024/07/31/%E6%9C%89%E4%BA%86synchronized%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%98%E9%9C%80%E8%A6%81volatile/index.html">
 <meta property="og:site_name" content="daisybby">
-<meta property="og:description" content="Java中是值传递还是引用传递？">
+<meta property="og:description" content="synchronized和volatile都是针对共享变量的，都可以保证可见性和有序性，但是synchronized无法解决指令重排的问题，只能保证单线程内部的执行结果不会发生改变。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-07-17T06:36:44.000Z">
-<meta property="article:modified_time" content="2024-07-17T06:50:59.910Z">
+<meta property="article:published_time" content="2024-07-31T07:03:13.000Z">
+<meta property="article:modified_time" content="2024-07-31T07:57:49.240Z">
 <meta property="article:author" content="Daisybby">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://daisybby.github.io/2024/07/17/Java-value-or-incite-pass/">
+<link rel="canonical" href="https://daisybby.github.io/2024/07/31/%E6%9C%89%E4%BA%86synchronized%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%98%E9%9C%80%E8%A6%81volatile/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/07/17/Java-value-or-incite-pass/","path":"2024/07/17/Java-value-or-incite-pass/","title":"Java值传递还是引用传递？"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/07/31/%E6%9C%89%E4%BA%86synchronized%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%98%E9%9C%80%E8%A6%81volatile/","path":"2024/07/31/有了synchronized为什么还需要volatile/","title":"有了synchronized为什么还需要volatile?"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Java值传递还是引用传递？ | daisybby</title>
+<title>有了synchronized为什么还需要volatile? | daisybby</title>
   
 
 
@@ -126,7 +126,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+    <div class="sidebar-inner sidebar-overview-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -139,7 +139,6 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Java%E4%B8%AD%E6%98%AF%E5%80%BC%E4%BC%A0%E9%80%92%E8%BF%98%E6%98%AF%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92%EF%BC%9F"><span class="nav-text">Java中是值传递还是引用传递？</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -195,7 +194,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/07/17/Java-value-or-incite-pass/">
+    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/07/31/%E6%9C%89%E4%BA%86synchronized%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%98%E9%9C%80%E8%A6%81volatile/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/header.jpg">
@@ -208,12 +207,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Java值传递还是引用传递？ | daisybby">
+      <meta itemprop="name" content="有了synchronized为什么还需要volatile? | daisybby">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Java值传递还是引用传递？
+          有了synchronized为什么还需要volatile?
         </h1>
 
         <div class="post-meta-container">
@@ -225,7 +224,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2024-07-17 14:36:44 / 修改时间：14:50:59" itemprop="dateCreated datePublished" datetime="2024-07-17T14:36:44+08:00">2024-07-17</time>
+      <time title="创建时间：2024-07-31 15:03:13 / 修改时间：15:57:49" itemprop="dateCreated datePublished" datetime="2024-07-31T15:03:13+08:00">2024-07-31</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -233,7 +232,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
+          <a href="/categories/Java%E5%B9%B6%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">Java并发</span></a>
         </span>
     </span>
 
@@ -244,14 +243,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>344</span>
+      <span>1.9k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
+      <span>2 分钟</span>
     </span>
 </div>
 
@@ -261,9 +260,44 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="Java中是值传递还是引用传递？"><a href="#Java中是值传递还是引用传递？" class="headerlink" title="Java中是值传递还是引用传递？"></a>Java中是值传递还是引用传递？</h1><span id="more"></span>
-<p>值传递是在传递过程中复制一个副本，传递到方法中，对方法的参数值进行修改，并不会影响到传递之前的变量本身。<br>引用传递，用C++中的地址传递比较好理解，把变量在内存空间中的地址传递过去，把地址中保存的数据修改了，当然所有用到这个变量的值会发生变化。<br>Java的对象传递，本质还是值传递，但是传递过去的是对象的引用，所以如果在方法中修改了对象内部的信息，这个修改是永久的，方法外部也是可见的。<br><strong>但是需要注意的是，对象的传递本质上其实还是值传递，只不过传递的是对象地址的拷贝（对象的引用），尽管和方法外的引用不是同一个，但是指向的还是同一个对象。方法内部借用引用修改对象内容，这就是永久修改。如果我们是把这个引用修改掉了，指向别的对象，那么这对方法外的对象是没有影响的。</strong></p>
-
+    <div class="post-body" itemprop="articleBody"><p>synchronized和volatile都是针对共享变量的，都可以保证可见性和有序性，但是synchronized无法解决指令重排的问题，只能保证单线程内部的执行结果不会发生改变。</p>
+<span id="more"></span>
+<p>synchronized尽管在JDK1.6中做了一些改进，比如自旋锁、锁粗化、锁消除等优化，但是依然改变不了加锁、释放锁的过程有性能损耗的事实。而且synchronized是一个阻塞锁。</p>
+<p>volatile是JVM提供的轻量级同步机制，并不是锁，所以不存在阻塞和性能损耗的问题。而且volatile提供了额外的功能——通过设置内存屏障来禁止指令重排序，从而保证执行的有序性。</p>
+<p><strong>指令重排序的作用实例：</strong><br>对于单例模式而言，通过双重校验模式实现一个单例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Singleton</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Singleton singleton;</span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Singleton</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title function_">getSingleton</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(singleton==<span class="literal">null</span>)&#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (Singleton.class)&#123;</span><br><span class="line">                <span class="keyword">if</span>(singleton==<span class="literal">null</span>)&#123;</span><br><span class="line">                    singleton=<span class="keyword">new</span> <span class="title class_">Singleton</span>();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> singleton;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用synchronized来对Singleton的class对象加锁，保证同一时刻只有一个线程可以执行同步代码块中的内容，也就是这个时刻，系统中只有一个Singleton的对象，实现一个单例。<br>但是再实际使用的时候，可能会发生空指针异常。</p>
+<p>理想中的执行顺序：</p>
+<ol>
+<li>thread1来了，判断singleton&#x3D;&#x3D;null通过，并顺利获得锁，通过第二次校验，来到new这一行；初始化对象，使得singleton不再为空</li>
+<li>thread2来了，执行到第一个singleton&#x3D;null，singleton是类静态成员变量，是多个线程共享的这一个；第一步中已经被thread1初始化了，所以这里判断失败；return singleton。</li>
+<li>thread2拿到了singleton这个全局唯一的对象，开始执行后续的操作，比如singleton.call()。</li>
+</ol>
+<p>为什么会抛出空指针异常？<br>先说明，并不是singleton这个引用指向的是null，而是对象还没准备好，调用对象的方法就会发生空指针异常。<br>第1步中thread1执行了创建singleton对象，创建的过程如下：</p>
+<ol>
+<li>JVM需要new指令，到常量池去定位这个类的符号引用；</li>
+<li>检查符号引用代表的类有没有被加载、解析、初始化过；</li>
+<li>JVM为对象分配堆内存；</li>
+<li>JVM初始化分配到的内存空间为0值；</li>
+<li>JVM进行必要的对象设置；</li>
+<li>执行方法，成员变量进行初始化；</li>
+<li>将对象的引用指向这个内存区域。</li>
+</ol>
+<p>以上是一个创建对象的过程，其实可以简化成三步：</p>
+<ol>
+<li>为对象分配内存空间；</li>
+<li>初始化对象</li>
+<li>将对象的引用指向这块内存空间。</li>
+</ol>
+<p>synchronized并不能防止指令重排序，对于线程thread1而言是有序的，最终返回的还是singleton这个指令，但是对于thread2而言可不是有序的。如果指令重排序成了：</p>
+<ol>
+<li>为对象分配内存空间；</li>
+<li>将对象引用指向这块内存空间；</li>
+<li>初始化对象。</li>
+</ol>
+<p>可能thread2判断singleton是否为null的时候，引用已经指向这块内存空间了，但是对象还没初始化，那么后续thread2拿着一个还没初始化、没完全创建好的对象去使用，当然会发生空指针异常。</p>
+<p>为了避免指令重排序，我们可以用volatile来修饰singleton这个变量，这样对于singleton的处理是不会被指令重排序的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Singleton</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">static</span> Singleton singleton;</span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Singleton</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">    <span class="keyword">public</span> Singleton <span class="title function_">getSingleton</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(singleton==<span class="literal">null</span>)&#123;</span><br><span class="line">            <span class="keyword">synchronized</span>(Singleton.class)&#123;</span><br><span class="line">                <span class="keyword">if</span>(singleton==<span class="literal">null</span>)&#123;</span><br><span class="line">                    singleton=<span class="keyword">new</span> <span class="title class_">Singleton</span>();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> singleton;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -292,7 +326,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://daisybby.github.io/2024/07/17/Java-value-or-incite-pass/" title="Java值传递还是引用传递？">https://daisybby.github.io/2024/07/17/Java-value-or-incite-pass/</a>
+      <a href="https://daisybby.github.io/2024/07/31/%E6%9C%89%E4%BA%86synchronized%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%98%E9%9C%80%E8%A6%81volatile/" title="有了synchronized为什么还需要volatile?">https://daisybby.github.io/2024/07/31/有了synchronized为什么还需要volatile/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -305,14 +339,11 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2024/07/17/Java-IO/" rel="prev" title="Java IO方式">
-                  <i class="fa fa-angle-left"></i> Java IO方式
+                <a href="/2024/07/30/volatile/" rel="prev" title="volatile">
+                  <i class="fa fa-angle-left"></i> volatile
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2024/07/17/Shallow-copy-and-deep-copy/" rel="next" title="深拷贝和浅拷贝">
-                  深拷贝和浅拷贝 <i class="fa fa-angle-right"></i>
-                </a>
             </div>
           </div>
     </footer>

@@ -2505,4 +2505,49 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java并发</category>
       </categories>
   </entry>
+  <entry>
+    <title>有了synchronized为什么还需要volatile?</title>
+    <url>/2024/07/31/%E6%9C%89%E4%BA%86synchronized%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%98%E9%9C%80%E8%A6%81volatile/</url>
+    <content><![CDATA[<p>synchronized和volatile都是针对共享变量的，都可以保证可见性和有序性，但是synchronized无法解决指令重排的问题，只能保证单线程内部的执行结果不会发生改变。</p>
+<span id="more"></span>
+<p>synchronized尽管在JDK1.6中做了一些改进，比如自旋锁、锁粗化、锁消除等优化，但是依然改变不了加锁、释放锁的过程有性能损耗的事实。而且synchronized是一个阻塞锁。</p>
+<p>volatile是JVM提供的轻量级同步机制，并不是锁，所以不存在阻塞和性能损耗的问题。而且volatile提供了额外的功能——通过设置内存屏障来禁止指令重排序，从而保证执行的有序性。</p>
+<p><strong>指令重排序的作用实例：</strong><br>对于单例模式而言，通过双重校验模式实现一个单例：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Singleton</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Singleton singleton;</span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Singleton</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title function_">getSingleton</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(singleton==<span class="literal">null</span>)&#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (Singleton.class)&#123;</span><br><span class="line">                <span class="keyword">if</span>(singleton==<span class="literal">null</span>)&#123;</span><br><span class="line">                    singleton=<span class="keyword">new</span> <span class="title class_">Singleton</span>();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> singleton;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用synchronized来对Singleton的class对象加锁，保证同一时刻只有一个线程可以执行同步代码块中的内容，也就是这个时刻，系统中只有一个Singleton的对象，实现一个单例。<br>但是再实际使用的时候，可能会发生空指针异常。</p>
+<p>理想中的执行顺序：</p>
+<ol>
+<li>thread1来了，判断singleton&#x3D;&#x3D;null通过，并顺利获得锁，通过第二次校验，来到new这一行；初始化对象，使得singleton不再为空</li>
+<li>thread2来了，执行到第一个singleton&#x3D;null，singleton是类静态成员变量，是多个线程共享的这一个；第一步中已经被thread1初始化了，所以这里判断失败；return singleton。</li>
+<li>thread2拿到了singleton这个全局唯一的对象，开始执行后续的操作，比如singleton.call()。</li>
+</ol>
+<p>为什么会抛出空指针异常？<br>先说明，并不是singleton这个引用指向的是null，而是对象还没准备好，调用对象的方法就会发生空指针异常。<br>第1步中thread1执行了创建singleton对象，创建的过程如下：</p>
+<ol>
+<li>JVM需要new指令，到常量池去定位这个类的符号引用；</li>
+<li>检查符号引用代表的类有没有被加载、解析、初始化过；</li>
+<li>JVM为对象分配堆内存；</li>
+<li>JVM初始化分配到的内存空间为0值；</li>
+<li>JVM进行必要的对象设置；</li>
+<li>执行方法，成员变量进行初始化；</li>
+<li>将对象的引用指向这个内存区域。</li>
+</ol>
+<p>以上是一个创建对象的过程，其实可以简化成三步：</p>
+<ol>
+<li>为对象分配内存空间；</li>
+<li>初始化对象</li>
+<li>将对象的引用指向这块内存空间。</li>
+</ol>
+<p>synchronized并不能防止指令重排序，对于线程thread1而言是有序的，最终返回的还是singleton这个指令，但是对于thread2而言可不是有序的。如果指令重排序成了：</p>
+<ol>
+<li>为对象分配内存空间；</li>
+<li>将对象引用指向这块内存空间；</li>
+<li>初始化对象。</li>
+</ol>
+<p>可能thread2判断singleton是否为null的时候，引用已经指向这块内存空间了，但是对象还没初始化，那么后续thread2拿着一个还没初始化、没完全创建好的对象去使用，当然会发生空指针异常。</p>
+<p>为了避免指令重排序，我们可以用volatile来修饰singleton这个变量，这样对于singleton的处理是不会被指令重排序的。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Singleton</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">static</span> Singleton singleton;</span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Singleton</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">    <span class="keyword">public</span> Singleton <span class="title function_">getSingleton</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(singleton==<span class="literal">null</span>)&#123;</span><br><span class="line">            <span class="keyword">synchronized</span>(Singleton.class)&#123;</span><br><span class="line">                <span class="keyword">if</span>(singleton==<span class="literal">null</span>)&#123;</span><br><span class="line">                    singleton=<span class="keyword">new</span> <span class="title class_">Singleton</span>();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> singleton;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Java并发</category>
+      </categories>
+  </entry>
 </search>
