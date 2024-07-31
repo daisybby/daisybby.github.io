@@ -2597,4 +2597,25 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java并发</category>
       </categories>
   </entry>
+  <entry>
+    <title>synchronized和reentrantLock区别</title>
+    <url>/2024/07/31/synchronized%E5%92%8CreentrantLock%E5%8C%BA%E5%88%AB/</url>
+    <content><![CDATA[<p>ReentrantLock和synchronized都用于线程的同步控制，但是ReentrantLock的功能更丰富。</p>
+<span id="more"></span>
+<p>两者都是可重入锁，但是也有很多不同：</p>
+<ul>
+<li>synchronized是Java内置特性，但是ReentrantLock是Java代码实现的。</li>
+<li>synchronized是自动获取锁&#x2F;释放锁的，也就是说不需要程序员显式getLock和unLock，但是ReentrantLock需要手动获取锁&#x2F;释放锁。</li>
+<li>ReentrantLock还具有响应中断、超时等特性。</li>
+<li>ReentrantLock可以实现公平锁和非公平锁，synchronized是非公平锁。</li>
+</ul>
+<p>在JDK21提出的虚拟线程之后，虚拟线程中不推荐使用synchronized，而是推荐使用ReentrantLock。</p>
+<p><strong>ReentrantLock的用法：</strong><br>ReentrantLock由java.util.concurrent.locks包提供，用于替代synchronized，内部基于AQS实现。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Counter</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> lock lock=<span class="keyword">new</span> <span class="title class_">ReentrantLock</span>();</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> count;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">add</span><span class="params">(<span class="type">int</span> n)</span>&#123;</span><br><span class="line">        lock.lock();</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            count+=n;</span><br><span class="line">        &#125; <span class="keyword">finally</span>&#123;</span><br><span class="line">            lock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>ReentrantLock默认是非公平锁，如果想要创建成公平锁，可以使用new ReentrantLock(true)。</p>
+<p><strong>lock和lockInterruptibly的区别：</strong><br>lock获取锁的过程中，如果所在的线程发生中断，lock会忽略异常继续等待获取锁，而lockInterruptibly则会抛出InterruptedException异常。</p>
+<p><strong>tryLock方法：</strong><br>方法使用：tryLock(5,TimeUnit.SECONDS)并不是等待5s之后再获取锁，而是在5s内不断尝试获取锁。</p>
+<p><strong>ReentrantLock实现可重入的机制：</strong><br>ReentrantLock是通过AQS来实现的，所以内部有state这个标记，在线程尝试获取锁的时候，如果state&#x3D;1，那么检查持有锁的是不是当前线程，如果是，state自增1，获取到锁。在释放锁的时候，需要state不断减少到0，才是彻底释放锁。</p>
+]]></content>
+  </entry>
 </search>
