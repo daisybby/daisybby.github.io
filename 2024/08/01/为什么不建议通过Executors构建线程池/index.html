@@ -19,27 +19,27 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"daisybby.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="一、基本概念和特点">
+    <meta name="description" content="使用Executors创建线程池存在内存溢出OOM的风险。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java Stream能做什么？">
-<meta property="og:url" content="https://daisybby.github.io/2024/07/28/Java-Stream-1/index.html">
+<meta property="og:title" content="为什么不建议通过Executors构建线程池">
+<meta property="og:url" content="https://daisybby.github.io/2024/08/01/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%BB%BA%E8%AE%AE%E9%80%9A%E8%BF%87Executors%E6%9E%84%E5%BB%BA%E7%BA%BF%E7%A8%8B%E6%B1%A0/index.html">
 <meta property="og:site_name" content="daisybby">
-<meta property="og:description" content="一、基本概念和特点">
+<meta property="og:description" content="使用Executors创建线程池存在内存溢出OOM的风险。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-07-28T12:22:28.000Z">
-<meta property="article:modified_time" content="2024-07-28T13:08:14.295Z">
+<meta property="article:published_time" content="2024-08-01T08:28:48.000Z">
+<meta property="article:modified_time" content="2024-08-01T10:10:44.580Z">
 <meta property="article:author" content="Daisybby">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://daisybby.github.io/2024/07/28/Java-Stream-1/">
+<link rel="canonical" href="https://daisybby.github.io/2024/08/01/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%BB%BA%E8%AE%AE%E9%80%9A%E8%BF%87Executors%E6%9E%84%E5%BB%BA%E7%BA%BF%E7%A8%8B%E6%B1%A0/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/07/28/Java-Stream-1/","path":"2024/07/28/Java-Stream-1/","title":"Java Stream能做什么？"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/08/01/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%BB%BA%E8%AE%AE%E9%80%9A%E8%BF%87Executors%E6%9E%84%E5%BB%BA%E7%BA%BF%E7%A8%8B%E6%B1%A0/","path":"2024/08/01/为什么不建议通过Executors构建线程池/","title":"为什么不建议通过Executors构建线程池"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Java Stream能做什么？ | daisybby</title>
+<title>为什么不建议通过Executors构建线程池 | daisybby</title>
   
 
 
@@ -139,7 +139,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%92%8C%E7%89%B9%E7%82%B9"><span class="nav-text">一、基本概念和特点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81Stream%E7%9A%84%E5%85%B3%E9%94%AE%E6%93%8D%E4%BD%9C"><span class="nav-text">二、Stream的关键操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-Stream%E7%9A%84%E5%88%9B%E5%BB%BA"><span class="nav-text">2.1.Stream的创建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-Stream%E4%B8%AD%E9%97%B4%E6%93%8D%E4%BD%9C"><span class="nav-text">2.2.Stream中间操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-1-filter"><span class="nav-text">2.2.1. filter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-2-map"><span class="nav-text">2.2.2.map</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-3-limit-skip"><span class="nav-text">2.2.3.limit&#x2F;skip</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-4-sorted"><span class="nav-text">2.2.4.sorted</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-5-distinct"><span class="nav-text">2.2.5.distinct</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-Stream%E6%9C%80%E7%BB%88%E6%93%8D%E4%BD%9C"><span class="nav-text">2.3.Stream最终操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-1-forEach"><span class="nav-text">2.3.1.forEach</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-2-count"><span class="nav-text">2.3.2.count</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-3-collect"><span class="nav-text">2.3.3.collect</span></a></li></ol></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="nav-text">存在的问题：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B%E6%B1%A0"><span class="nav-text">如何正确创建线程池</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -195,7 +195,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/07/28/Java-Stream-1/">
+    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/08/01/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%BB%BA%E8%AE%AE%E9%80%9A%E8%BF%87Executors%E6%9E%84%E5%BB%BA%E7%BA%BF%E7%A8%8B%E6%B1%A0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/header.jpg">
@@ -208,12 +208,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Java Stream能做什么？ | daisybby">
+      <meta itemprop="name" content="为什么不建议通过Executors构建线程池 | daisybby">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Java Stream能做什么？
+          为什么不建议通过Executors构建线程池
         </h1>
 
         <div class="post-meta-container">
@@ -225,7 +225,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2024-07-28 20:22:28 / 修改时间：21:08:14" itemprop="dateCreated datePublished" datetime="2024-07-28T20:22:28+08:00">2024-07-28</time>
+      <time title="创建时间：2024-08-01 16:28:48 / 修改时间：18:10:44" itemprop="dateCreated datePublished" datetime="2024-08-01T16:28:48+08:00">2024-08-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -233,11 +233,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E9%9B%86%E5%90%88%E7%B1%BB/" itemprop="url" rel="index"><span itemprop="name">集合类</span></a>
+          <a href="/categories/Java%E5%B9%B6%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">Java并发</span></a>
         </span>
     </span>
 
@@ -265,36 +261,19 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="一、基本概念和特点"><a href="#一、基本概念和特点" class="headerlink" title="一、基本概念和特点"></a>一、基本概念和特点</h1><span id="more"></span>
-<p>Stream将要处理的元素集合看作一种流，流在管道上传输，每个节点可以进行处理，比如筛选、排序和聚合等。</p>
-<p>Stream的特点：</p>
-<ul>
-<li>无存储。Stream并不是存储结构，而是数据的一种视图。</li>
-<li>不会修改数据源。对Stream进行过滤操作，并不会删除被过滤的元素，只是会产生一个不包含被过滤元素的新Stream。</li>
-<li>惰式执行。Stream的操作并不是立即执行，而是用户需要结果的时候才会执行。</li>
-<li>可消费性。Stream只能被消费一次，一旦遍历过后就会失效。</li>
+    <div class="post-body" itemprop="articleBody"><p>使用Executors创建线程池存在内存溢出OOM的风险。</p>
+<span id="more"></span>
+<h1 id="存在的问题："><a href="#存在的问题：" class="headerlink" title="存在的问题："></a>存在的问题：</h1><ul>
+<li><strong>FixedThreadPool和SingleThreadExecutor：</strong>使用的是无界的LinkedBlockingQueue作为任务队列，任务队列的最大长度为Integer.MAX_VALUE,当线程数已经达到最大时，任务会一直往等待队列里面添加，最后造成OOM。</li>
+<li><strong>CachedThreadPool：</strong>使用的是同步队列SynchronousQueue，允许创建的线程数量为Integer.MAX_VALUE，如果任务数量过多而且执行速度比较慢，可能会创建大量的线程，进而导致OOM。</li>
+<li><strong>ScheduleThreadPool和SingleThreadScheduleExecutor：</strong>使用的无界的延迟阻塞队列DelayedWorkQueue，任务队列最大长度为Integer.MAX_VALUE，可能会堆积大量的请求，进而导致OOM。</li>
 </ul>
-<h1 id="二、Stream的关键操作"><a href="#二、Stream的关键操作" class="headerlink" title="二、Stream的关键操作"></a>二、Stream的关键操作</h1><h2 id="2-1-Stream的创建"><a href="#2-1-Stream的创建" class="headerlink" title="2.1.Stream的创建"></a>2.1.Stream的创建</h2><ol>
-<li>根据已有的集合创建</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Stream&lt;String&gt; stream=list.stream();</span><br></pre></td></tr></table></figure>
-<ol start="2">
-<li>通过Stream创建流<br>可以使用Stream类提供的方法，直接返回一个由指定元素组成的流。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Stream&lt;String&gt; stream=Stream.of(<span class="string">&quot;daisybby&quot;</span>,<span class="string">&quot;Java&quot;</span>);</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h2 id="2-2-Stream中间操作"><a href="#2-2-Stream中间操作" class="headerlink" title="2.2.Stream中间操作"></a>2.2.Stream中间操作</h2><h3 id="2-2-1-filter"><a href="#2-2-1-filter" class="headerlink" title="2.2.1. filter"></a>2.2.1. filter</h3><p>按照设置的条件过滤元素。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">List&lt;String&gt; list=Arrays.asList(<span class="string">&quot;daisybby&quot;</span>,<span class="string">&quot;hello&quot;</span>,<span class="string">&quot;Java&quot;</span>);</span><br><span class="line">list.stream().filter(string -&gt; !string.isEmpty()); <span class="comment">//过滤空字符串</span></span><br></pre></td></tr></table></figure>
-<h3 id="2-2-2-map"><a href="#2-2-2-map" class="headerlink" title="2.2.2.map"></a>2.2.2.map</h3><p>用于映射每一个元素到对应的结果，以下代码片段用于输出对应元素的的平方数：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Integer&gt; nums=Arrays.asList(<span class="number">3</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">7</span>,<span class="number">3</span>,<span class="number">5</span>);</span><br><span class="line">nums.stream().map(num-&gt;num*num).forEach(System.out.println);</span><br></pre></td></tr></table></figure>
-<h3 id="2-2-3-limit-skip"><a href="#2-2-3-limit-skip" class="headerlink" title="2.2.3.limit&#x2F;skip"></a>2.2.3.limit&#x2F;skip</h3><p>limit返回Stream前n个元素，skip则是扔掉前n个元素。以下代码片段使用limit方法保留前3个元素：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Integer&gt; nums=Arrays.asList(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>);</span><br><span class="line">nums.stream().limit(<span class="number">3</span>);</span><br></pre></td></tr></table></figure>
-<h3 id="2-2-4-sorted"><a href="#2-2-4-sorted" class="headerlink" title="2.2.4.sorted"></a>2.2.4.sorted</h3><p>用于对流排序。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Integer&gt; nums=Arrays.asList(<span class="number">3</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">4</span>);</span><br><span class="line">nums.stream().sorted();<span class="comment">//升序排序</span></span><br></pre></td></tr></table></figure>
-<h3 id="2-2-5-distinct"><a href="#2-2-5-distinct" class="headerlink" title="2.2.5.distinct"></a>2.2.5.distinct</h3><p>用来去重。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Integer&gt; nums=Arrays.asList(<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>);</span><br><span class="line">nusm.stream().distinct();<span class="comment">//(2,3,4,5)</span></span><br></pre></td></tr></table></figure>
-<h2 id="2-3-Stream最终操作"><a href="#2-3-Stream最终操作" class="headerlink" title="2.3.Stream最终操作"></a>2.3.Stream最终操作</h2><p>Stream中间结果得到的结果还是一个stream，最终需要转换成我们需要的类型，这就是最终操作。<br>最终操作消耗流，执行最终操作后不能再使用这个流。</p>
-<h3 id="2-3-1-forEach"><a href="#2-3-1-forEach" class="headerlink" title="2.3.1.forEach"></a>2.3.1.forEach</h3><p>迭代流中的每个数据。</p>
-<h3 id="2-3-2-count"><a href="#2-3-2-count" class="headerlink" title="2.3.2.count"></a>2.3.2.count</h3><p>用来统计流中的元素个数。</p>
-<h3 id="2-3-3-collect"><a href="#2-3-3-collect" class="headerlink" title="2.3.3.collect"></a>2.3.3.collect</h3><p>将流中的元素积累成一个汇总结果。 </p>
+<h1 id="如何正确创建线程池"><a href="#如何正确创建线程池" class="headerlink" title="如何正确创建线程池"></a>如何正确创建线程池</h1><p>避免Executors创建线程池，主要是避免使用其中的默认实现，我们可以直接调用ThreadPoolExecutor的构造函数自己创建线程池，在创建的同时，给BlockQueue指定容量就可以。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> ExecutorService executor=<span class="keyword">new</span> <span class="title class_">ThreadPoolExecutor</span>(<span class="number">10</span>,</span><br><span class="line">    <span class="number">60L</span>,TimeUnit.SECONDS,</span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">ArrayBlockingQueue</span>(<span class="number">10</span>));</span><br></pre></td></tr></table></figure>
+<p>一旦等待队列满了无法继续添加新的请求，就会抛出异常。异常允许我们编写程序来处理，但是发生错误程序就终止了。</p>
+<p>除了自己定义ThreadPoolExecutor之外，我们还可以使用开源类库，比如apache和guava。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ExecutorDemo</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> ThreadFactory namedThreadFactory=<span class="keyword">new</span> <span class="title class_">ThreadFactoryBuilder</span>().setNameFormat(<span class="string">&quot;demo-pool-%d&quot;</span>).build();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> ExecutorService pool=<span class="keyword">new</span> <span class="title class_">ThreadPoolExecutor</span>(<span class="number">5</span>,<span class="number">0L</span>,</span><br><span class="line">        TimeUnit.MILLISECONDS,</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">LinkedBlockingQueue</span>&lt;Runnable&gt;(<span class="number">1024</span>),namedThreadFactory,<span class="keyword">new</span> <span class="title class_">ThreadPoolExecutor</span>.AbortPolicy()</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;Integer.MAX_VALUE;i++)&#123;</span><br><span class="line">            pool.execute(<span class="keyword">new</span> <span class="title class_">SubThread</span>());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过这种方式创建线程，不仅可以避免OOM的问题，还能自定义线程名称，在追踪错误的时候更容易溯源。</p>
 
     </div>
 
@@ -324,7 +303,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://daisybby.github.io/2024/07/28/Java-Stream-1/" title="Java Stream能做什么？">https://daisybby.github.io/2024/07/28/Java-Stream-1/</a>
+      <a href="https://daisybby.github.io/2024/08/01/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%BB%BA%E8%AE%AE%E9%80%9A%E8%BF%87Executors%E6%9E%84%E5%BB%BA%E7%BA%BF%E7%A8%8B%E6%B1%A0/" title="为什么不建议通过Executors构建线程池">https://daisybby.github.io/2024/08/01/为什么不建议通过Executors构建线程池/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -337,14 +316,11 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2024/07/28/HashMap-problem-concurrent/" rel="prev" title="HashMap在并发场景中的问题">
-                  <i class="fa fa-angle-left"></i> HashMap在并发场景中的问题
+                <a href="/2024/07/31/%E5%85%AC%E5%B9%B3%E9%94%81%E5%92%8C%E9%9D%9E%E5%85%AC%E5%B9%B3%E9%94%81%E7%9A%84%E5%8C%BA%E5%88%AB/" rel="prev" title="公平锁和非公平锁的区别">
+                  <i class="fa fa-angle-left"></i> 公平锁和非公平锁的区别
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2024/07/28/JDK1-8-HashMap-change/" rel="next" title="JDK1.8中HashMap做了哪些改变？">
-                  JDK1.8中HashMap做了哪些改变？ <i class="fa fa-angle-right"></i>
-                </a>
             </div>
           </div>
     </footer>

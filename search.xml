@@ -2633,4 +2633,25 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java并发</category>
       </categories>
   </entry>
+  <entry>
+    <title>为什么不建议通过Executors构建线程池</title>
+    <url>/2024/08/01/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%BB%BA%E8%AE%AE%E9%80%9A%E8%BF%87Executors%E6%9E%84%E5%BB%BA%E7%BA%BF%E7%A8%8B%E6%B1%A0/</url>
+    <content><![CDATA[<p>使用Executors创建线程池存在内存溢出OOM的风险。</p>
+<span id="more"></span>
+<h1 id="存在的问题："><a href="#存在的问题：" class="headerlink" title="存在的问题："></a>存在的问题：</h1><ul>
+<li><strong>FixedThreadPool和SingleThreadExecutor：</strong>使用的是无界的LinkedBlockingQueue作为任务队列，任务队列的最大长度为Integer.MAX_VALUE,当线程数已经达到最大时，任务会一直往等待队列里面添加，最后造成OOM。</li>
+<li><strong>CachedThreadPool：</strong>使用的是同步队列SynchronousQueue，允许创建的线程数量为Integer.MAX_VALUE，如果任务数量过多而且执行速度比较慢，可能会创建大量的线程，进而导致OOM。</li>
+<li><strong>ScheduleThreadPool和SingleThreadScheduleExecutor：</strong>使用的无界的延迟阻塞队列DelayedWorkQueue，任务队列最大长度为Integer.MAX_VALUE，可能会堆积大量的请求，进而导致OOM。</li>
+</ul>
+<h1 id="如何正确创建线程池"><a href="#如何正确创建线程池" class="headerlink" title="如何正确创建线程池"></a>如何正确创建线程池</h1><p>避免Executors创建线程池，主要是避免使用其中的默认实现，我们可以直接调用ThreadPoolExecutor的构造函数自己创建线程池，在创建的同时，给BlockQueue指定容量就可以。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> ExecutorService executor=<span class="keyword">new</span> <span class="title class_">ThreadPoolExecutor</span>(<span class="number">10</span>,</span><br><span class="line">    <span class="number">60L</span>,TimeUnit.SECONDS,</span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">ArrayBlockingQueue</span>(<span class="number">10</span>));</span><br></pre></td></tr></table></figure>
+<p>一旦等待队列满了无法继续添加新的请求，就会抛出异常。异常允许我们编写程序来处理，但是发生错误程序就终止了。</p>
+<p>除了自己定义ThreadPoolExecutor之外，我们还可以使用开源类库，比如apache和guava。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ExecutorDemo</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> ThreadFactory namedThreadFactory=<span class="keyword">new</span> <span class="title class_">ThreadFactoryBuilder</span>().setNameFormat(<span class="string">&quot;demo-pool-%d&quot;</span>).build();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> ExecutorService pool=<span class="keyword">new</span> <span class="title class_">ThreadPoolExecutor</span>(<span class="number">5</span>,<span class="number">0L</span>,</span><br><span class="line">        TimeUnit.MILLISECONDS,</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">LinkedBlockingQueue</span>&lt;Runnable&gt;(<span class="number">1024</span>),namedThreadFactory,<span class="keyword">new</span> <span class="title class_">ThreadPoolExecutor</span>.AbortPolicy()</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;Integer.MAX_VALUE;i++)&#123;</span><br><span class="line">            pool.execute(<span class="keyword">new</span> <span class="title class_">SubThread</span>());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过这种方式创建线程，不仅可以避免OOM的问题，还能自定义线程名称，在追踪错误的时候更容易溯源。</p>
+]]></content>
+      <categories>
+        <category>Java并发</category>
+      </categories>
+  </entry>
 </search>
