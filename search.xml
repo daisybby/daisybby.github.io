@@ -2654,4 +2654,25 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java并发</category>
       </categories>
   </entry>
+  <entry>
+    <title>线程池的拒绝策略有哪些</title>
+    <url>/2024/08/01/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E6%8B%92%E7%BB%9D%E7%AD%96%E7%95%A5%E6%9C%89%E5%93%AA%E4%BA%9B/</url>
+    <content><![CDATA[<p>线程池的拒绝策略决定了在任务等待队列满的时候，会怎么处理新提交的任务。</p>
+<span id="more"></span>
+<p>拒绝策略只在线程达到最大数量，等待队列也满了的时候生效。Java提供了四种内置的拒绝策略：</p>
+<ul>
+<li><strong>AbortPolicy：</strong>这是默认的拒绝策略，当线程池无法接受新任务的时候，会抛出RejectedExecutionException异常。新任务会被拒绝，不会被加入到任务队列中，程序抛出异常等待开发者处理。</li>
+<li><strong>DiscardPolicy：</strong>这种策略会丢弃新任务，而且也不会抛出异常，就当没收到。这种策略通常用于日志记录、统计等非关键性任务。</li>
+<li><strong>DiscardOldestPolicy：</strong>这个策略也会抛弃任务，不过抛弃的是等待队列中最早的任务，然后再尝试提交新任务。这种策略对于一些实时性要求比较高的场景来说比较合适。</li>
+<li><strong>CallerRunsPolicy：</strong>这个策略将任务回退给调用线程，不会抛出异常。调用线程只能尝试自己执行这个任务。这个策略可以降低任务提交速度，适用于任务提交者有能力承受业务执行的压力，但是希望有一种缓冲机制的情况。</li>
+</ul>
+<blockquote>
+<p>一般来说，默认的拒绝策略是比较常用的，因为大多数场景下我们不会让任务多到等待队列放满、线程池线程数拉满，要么我们就提升执行速度——提升线程轮转速度，要么就是提升等待队列的容量。</p>
+</blockquote>
+<p>所以发生拒绝的时候，一般都是特殊情况，实际工作中还是拒绝并抛出异常的方案比较常用。</p>
+]]></content>
+      <categories>
+        <category>Java并发</category>
+      </categories>
+  </entry>
 </search>
