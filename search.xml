@@ -2726,4 +2726,21 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java并发</category>
       </categories>
   </entry>
+  <entry>
+    <title>AQS的同步队列和条件队列原理</title>
+    <url>/2024/08/02/AQS%E7%9A%84%E5%90%8C%E6%AD%A5%E9%98%9F%E5%88%97%E5%92%8C%E6%9D%A1%E4%BB%B6%E9%98%9F%E5%88%97%E5%8E%9F%E7%90%86/</url>
+    <content><![CDATA[<p>同步队列和条件队列是AQS支持的两种不同的同步队列。</p>
+<span id="more"></span>
+<p><strong>同步队列</strong>主要用于实现锁机制，<strong>条件队列</strong>主要用于线程间的协调和通信（个人理解的就是，别的线程完成了一些操作，使得条件满足了，或者说条件就是有线程完成某某操作之后，就唤醒这个条件对应的条件队列中等待的所有线程）。</p>
+<p><strong>两者的区别：</strong></p>
+<ul>
+<li><strong>目的不同：</strong>同步队列主要用于管理锁的获取和释放，条件队列用于等待特定条件的满足。</li>
+<li><strong>使用方式不同：</strong>同步队列是AQS自动管理的，开发者通常不需要直接与之交互；但是同步队列是通过Condition接口暴露给开发者的，需要显式地调用等待和通知方法。</li>
+<li><strong>队列类型不同：</strong>虽然都是队列结构，但是同步队列也是基于所有AQS同步器共享的， 每个同步器只有一个同步队列；条件队列是一个condition对应一个，一个同步器可以有多个condition，也就有多个条件队列。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Java并发</category>
+      </categories>
+  </entry>
 </search>
