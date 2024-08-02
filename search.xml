@@ -2699,4 +2699,28 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java并发</category>
       </categories>
   </entry>
+  <entry>
+    <title>ThreadLocal内存泄露的问题</title>
+    <url>/2024/08/02/ThreadLocal%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2%E7%9A%84%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<h1 id="一、内存泄漏发生在哪里？"><a href="#一、内存泄漏发生在哪里？" class="headerlink" title="一、内存泄漏发生在哪里？"></a>一、内存泄漏发生在哪里？</h1><span id="more"></span>
+<p>在之前的分析<a href="https://daisybby.github.io/2024/07/30/%E4%BB%80%E4%B9%88%E6%98%AFThreadLocal/">ThreadLocal基本原理</a>中，提到了ThreadLocal的实现方式，其实是Thread对象内部有一个成员对象ThreadLocalMap,ThreadLocalMap内部维护一个Entry数组，Entry的key就是ThreadLocal对象，value是要保存为ThreadLocal的这个变量的值。</p>
+<img src="/2024/08/02/ThreadLocal%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2%E7%9A%84%E9%97%AE%E9%A2%98/img1.png" class="" title="img1">
+<p>分别从Key和Value来讨论。<br><strong>key：</strong><br>ThreadLocal对象有两个引用，一个是栈内存中的ThreadLocal引用，一个是Entry中的key引用。</p>
+<p>会出现的问题：<br>如果栈内存中ThreadLocal的引用不再使用了，也就是这个ThreadLocal不会再用到之后，Entry的key对ThreadLocal对象的引用还在，这个是没有清除的。这就导致ThreadLocal对象不会被垃圾回收器回收，久而久之，就会出现OOM。</p>
+<p><strong>value：</strong><br>如果说Thread线程是一直在被使用的，但是之后不会再用到ThreadLocal了，那么这个ThreadLocalMap对象的这条引用链会一直存在，这个的存在不是关键，关键是ThreadLocalMap中对value的引用，导致这个value对象还要一直存在。</p>
+<h1 id="二、怎么解决内存泄漏"><a href="#二、怎么解决内存泄漏" class="headerlink" title="二、怎么解决内存泄漏"></a>二、怎么解决内存泄漏</h1><p><strong>key:</strong><br>这里的问题主要是key对ThreadLocal对象的引用，导致ThreadLocal对象无法被回收，为了解决这个问题，ThreadLocalMap使用了<strong>弱引用</strong>。<br>也就是Entry中key对TheadLocal对象的引用是弱引用。</p>
+<blockquote>
+<p>弱引用：如果一个对象只具有弱引用，那么这个对象就会被垃圾回收器回收掉，也就是说一个只有弱引用的对象，生命周期是到发生GC之前，在发生GC的时候，无论内存空间够不够，这些对象都会被回收。</p>
+</blockquote>
+<p>如果用了弱引用，在栈内存中对ThreadLocal的强引用没了之后，entry的key引用的ThreadLocal对象就能被回收掉。</p>
+<p><strong>value：</strong><br>弱引用解决了ThreadLocal对象的问题，那么因为value的引用导致的问题还没解决。尽管key已经被回收了，成为null了，value还在占着内存空间。<br>这个问题可以通过ThreadLocalMap的底层实现机制来解决。ThreadLocalMap底层维护的是Entry数组，使用的是线性探测法来解决hash冲突；在每次调用ThreadLocal的get、set和remove等方法的时候，内部都会实际调用ThreadLocalMap的get、set和remove等方法。<strong>这些方法会自动清除那些key为Null但是value还存在的Entry</strong>。</p>
+<blockquote>
+<p>其实这些问题是线程一直存在的时候会出现的，那什么时候线程会一直存在？那就是<strong>线程池</strong>，线程池里面的线程是重复利用的。</p>
+</blockquote>
+<p>所以在我们将一个ThreadLocal用完之后，手动调用一下remove方法，就可以在下一次GC的时候，把Entry清理掉。</p>
+]]></content>
+      <categories>
+        <category>Java并发</category>
+      </categories>
+  </entry>
 </search>

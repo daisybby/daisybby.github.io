@@ -19,27 +19,29 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"daisybby.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="虽然设定线程数是有参考公式，但是实际开发过程中，还是需要考虑具体的因素。">
+    <meta name="description" content="一、内存泄漏发生在哪里？">
 <meta property="og:type" content="article">
-<meta property="og:title" content="线程数怎么设定？">
-<meta property="og:url" content="https://daisybby.github.io/2024/07/29/%E7%BA%BF%E7%A8%8B%E6%95%B0%E8%AE%BE%E7%BD%AE/index.html">
+<meta property="og:title" content="ThreadLocal内存泄露的问题">
+<meta property="og:url" content="https://daisybby.github.io/2024/08/02/ThreadLocal%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2%E7%9A%84%E9%97%AE%E9%A2%98/index.html">
 <meta property="og:site_name" content="daisybby">
-<meta property="og:description" content="虽然设定线程数是有参考公式，但是实际开发过程中，还是需要考虑具体的因素。">
+<meta property="og:description" content="一、内存泄漏发生在哪里？">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-07-29T14:37:47.000Z">
-<meta property="article:modified_time" content="2024-07-29T14:56:22.659Z">
+<meta property="og:image" content="https://daisybby.github.io/2024/08/02/ThreadLocal%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2%E7%9A%84%E9%97%AE%E9%A2%98/img1.png">
+<meta property="article:published_time" content="2024-08-02T08:40:06.000Z">
+<meta property="article:modified_time" content="2024-08-02T09:40:37.829Z">
 <meta property="article:author" content="Daisybby">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://daisybby.github.io/2024/08/02/ThreadLocal%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2%E7%9A%84%E9%97%AE%E9%A2%98/img1.png">
 
 
-<link rel="canonical" href="https://daisybby.github.io/2024/07/29/%E7%BA%BF%E7%A8%8B%E6%95%B0%E8%AE%BE%E7%BD%AE/">
+<link rel="canonical" href="https://daisybby.github.io/2024/08/02/ThreadLocal%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2%E7%9A%84%E9%97%AE%E9%A2%98/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/07/29/%E7%BA%BF%E7%A8%8B%E6%95%B0%E8%AE%BE%E7%BD%AE/","path":"2024/07/29/线程数设置/","title":"线程数怎么设定？"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/08/02/ThreadLocal%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2%E7%9A%84%E9%97%AE%E9%A2%98/","path":"2024/08/02/ThreadLocal内存泄露的问题/","title":"ThreadLocal内存泄露的问题"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>线程数怎么设定？ | daisybby</title>
+<title>ThreadLocal内存泄露的问题 | daisybby</title>
   
 
 
@@ -126,7 +128,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -139,6 +141,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E5%8F%91%E7%94%9F%E5%9C%A8%E5%93%AA%E9%87%8C%EF%BC%9F"><span class="nav-text">一、内存泄漏发生在哪里？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%80%8E%E4%B9%88%E8%A7%A3%E5%86%B3%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F"><span class="nav-text">二、怎么解决内存泄漏</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -194,7 +197,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/07/29/%E7%BA%BF%E7%A8%8B%E6%95%B0%E8%AE%BE%E7%BD%AE/">
+    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/08/02/ThreadLocal%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2%E7%9A%84%E9%97%AE%E9%A2%98/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/header.jpg">
@@ -207,12 +210,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="线程数怎么设定？ | daisybby">
+      <meta itemprop="name" content="ThreadLocal内存泄露的问题 | daisybby">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          线程数怎么设定？
+          ThreadLocal内存泄露的问题
         </h1>
 
         <div class="post-meta-container">
@@ -224,7 +227,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2024-07-29 22:37:47 / 修改时间：22:56:22" itemprop="dateCreated datePublished" datetime="2024-07-29T22:37:47+08:00">2024-07-29</time>
+      <time title="创建时间：2024-08-02 16:40:06 / 修改时间：17:40:37" itemprop="dateCreated datePublished" datetime="2024-08-02T16:40:06+08:00">2024-08-02</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -243,7 +246,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>427</span>
+      <span>1.2k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -260,28 +263,22 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><p>虽然设定线程数是有参考公式，但是实际开发过程中，还是需要考虑具体的因素。</p>
-<span id="more"></span>
-<p><strong>CPU核数：</strong></p>
-<ul>
-<li>多核处理器：理想的线程数量取决于CPU核数，理想状况下，一个核心运行一个线程是最高效的。</li>
-<li>超线程技术：所谓超线程技术也就是逻辑核数和物理内核数量不一样，逻辑核数更多，这样可以每个核心分配更多的线程，提升CPU资源的利用率。</li>
-</ul>
-<p><strong>应用类型：</strong></p>
-<ul>
-<li>CPU密集型任务：这种情况下，线程大部分时间都需要CPU资源运行，所以线程数量不能设置太多，最好设置为核心数的1到1.5倍。</li>
-<li>I&#x2F;O密集型任务：这种任务，线程执行的大部分时间都在等待I&#x2F;O操作，所以可以设置多一些线程数，比如2倍核心数，线程等待的时候可以让出CPU资源。</li>
-</ul>
-<p><strong>JVM和系统资源：</strong></p>
-<ul>
-<li>创建线程需要一定的内存开销，所以受限于内存空间，不能创建太多线程，避免发生内存溢出。</li>
-<li>操作系统限制：操作系统可能限制了每个进程能够创建的最大线程数。</li>
-</ul>
-<p><strong>通常所说的参考公式：</strong></p>
-<ul>
-<li>CPU密集型应用，设置为N+1</li>
-<li>I&#x2F;O密集型应用，设置为2N</li>
-</ul>
+    <div class="post-body" itemprop="articleBody"><h1 id="一、内存泄漏发生在哪里？"><a href="#一、内存泄漏发生在哪里？" class="headerlink" title="一、内存泄漏发生在哪里？"></a>一、内存泄漏发生在哪里？</h1><span id="more"></span>
+<p>在之前的分析<a href="https://daisybby.github.io/2024/07/30/%E4%BB%80%E4%B9%88%E6%98%AFThreadLocal/">ThreadLocal基本原理</a>中，提到了ThreadLocal的实现方式，其实是Thread对象内部有一个成员对象ThreadLocalMap,ThreadLocalMap内部维护一个Entry数组，Entry的key就是ThreadLocal对象，value是要保存为ThreadLocal的这个变量的值。</p>
+<img src="/2024/08/02/ThreadLocal%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2%E7%9A%84%E9%97%AE%E9%A2%98/img1.png" class="" title="img1">
+<p>分别从Key和Value来讨论。<br><strong>key：</strong><br>ThreadLocal对象有两个引用，一个是栈内存中的ThreadLocal引用，一个是Entry中的key引用。</p>
+<p>会出现的问题：<br>如果栈内存中ThreadLocal的引用不再使用了，也就是这个ThreadLocal不会再用到之后，Entry的key对ThreadLocal对象的引用还在，这个是没有清除的。这就导致ThreadLocal对象不会被垃圾回收器回收，久而久之，就会出现OOM。</p>
+<p><strong>value：</strong><br>如果说Thread线程是一直在被使用的，但是之后不会再用到ThreadLocal了，那么这个ThreadLocalMap对象的这条引用链会一直存在，这个的存在不是关键，关键是ThreadLocalMap中对value的引用，导致这个value对象还要一直存在。</p>
+<h1 id="二、怎么解决内存泄漏"><a href="#二、怎么解决内存泄漏" class="headerlink" title="二、怎么解决内存泄漏"></a>二、怎么解决内存泄漏</h1><p><strong>key:</strong><br>这里的问题主要是key对ThreadLocal对象的引用，导致ThreadLocal对象无法被回收，为了解决这个问题，ThreadLocalMap使用了<strong>弱引用</strong>。<br>也就是Entry中key对TheadLocal对象的引用是弱引用。</p>
+<blockquote>
+<p>弱引用：如果一个对象只具有弱引用，那么这个对象就会被垃圾回收器回收掉，也就是说一个只有弱引用的对象，生命周期是到发生GC之前，在发生GC的时候，无论内存空间够不够，这些对象都会被回收。</p>
+</blockquote>
+<p>如果用了弱引用，在栈内存中对ThreadLocal的强引用没了之后，entry的key引用的ThreadLocal对象就能被回收掉。</p>
+<p><strong>value：</strong><br>弱引用解决了ThreadLocal对象的问题，那么因为value的引用导致的问题还没解决。尽管key已经被回收了，成为null了，value还在占着内存空间。<br>这个问题可以通过ThreadLocalMap的底层实现机制来解决。ThreadLocalMap底层维护的是Entry数组，使用的是线性探测法来解决hash冲突；在每次调用ThreadLocal的get、set和remove等方法的时候，内部都会实际调用ThreadLocalMap的get、set和remove等方法。<strong>这些方法会自动清除那些key为Null但是value还存在的Entry</strong>。</p>
+<blockquote>
+<p>其实这些问题是线程一直存在的时候会出现的，那什么时候线程会一直存在？那就是<strong>线程池</strong>，线程池里面的线程是重复利用的。</p>
+</blockquote>
+<p>所以在我们将一个ThreadLocal用完之后，手动调用一下remove方法，就可以在下一次GC的时候，把Entry清理掉。</p>
 
     </div>
 
@@ -311,7 +308,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://daisybby.github.io/2024/07/29/%E7%BA%BF%E7%A8%8B%E6%95%B0%E8%AE%BE%E7%BD%AE/" title="线程数怎么设定？">https://daisybby.github.io/2024/07/29/线程数设置/</a>
+      <a href="https://daisybby.github.io/2024/08/02/ThreadLocal%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2%E7%9A%84%E9%97%AE%E9%A2%98/" title="ThreadLocal内存泄露的问题">https://daisybby.github.io/2024/08/02/ThreadLocal内存泄露的问题/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -324,14 +321,11 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2024/07/29/%E4%BB%80%E4%B9%88%E6%98%AF%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="prev" title="什么是线程池？如何实现的？">
-                  <i class="fa fa-angle-left"></i> 什么是线程池？如何实现的？
+                <a href="/2024/08/02/%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2%E5%92%8C%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E7%9A%84%E5%8C%BA%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88/" rel="prev" title="内存泄露和内存溢出的区别是什么?">
+                  <i class="fa fa-angle-left"></i> 内存泄露和内存溢出的区别是什么?
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2024/07/30/%E4%BB%80%E4%B9%88%E6%98%AFThreadLocal/" rel="next" title="什么是ThreadLocal？如何实现的？">
-                  什么是ThreadLocal？如何实现的？ <i class="fa fa-angle-right"></i>
-                </a>
             </div>
           </div>
     </footer>
