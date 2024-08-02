@@ -2743,4 +2743,22 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java并发</category>
       </categories>
   </entry>
+  <entry>
+    <title>为什么虚拟线程不能用synchronized</title>
+    <url>/2024/08/02/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%99%9A%E6%8B%9F%E7%BA%BF%E7%A8%8B%E4%B8%8D%E8%83%BD%E7%94%A8synchronized/</url>
+    <content><![CDATA[<p>虚拟线程的核心思想就是将线程的调度任务从操作系统级别转换为JVM级别，多个虚拟线程对应到底层的操作系统级别进程上，减少线程上下文切换的成本并提高系统吞吐量。</p>
+<span id="more"></span>
+<p>虚拟线程有个情况叫做PINNED，个人理解就是虚拟线程被绑定到一个特定的底层操作系统线程上了，期间这个虚拟线程不能被调度器移动到其他载体线程上执行。</p>
+<p>虚拟线程的优势就在于少量的操作系统线程对应大量的虚拟线程，虚拟线程被阻塞挂起之后，操作系统线程可以释放给其他的任务使用。但是PINNED的线程会一直占用一个操作系统线程，即使这个线程被阻塞了，也不会释放，从而导致可供给其他虚拟线程的底层线程更少了。</p>
+<p>设计虚拟线程的一个核心目标就是提高系统处理大量并发任务的能力，特别是I&#x2F;O密集型任务。固定虚拟线程绑定到底层线程意味着减少了虚拟机能够灵活调度和优化任务执行的空间，降低了资源的利用率。</p>
+<p>执行synchronized方法的时候，会发生PINNED，synchronized涉及到获取和释放内部监视器锁，这种锁机制依赖于操作系统级别的同步原语，所以需要底层线程的参与，知道锁的正确管理完成。</p>
+<blockquote>
+<p>除了synchronized之外，还有别的场景也会导致PINNED，比如调用native方法或者外部函数的时候，这些操作也是和操作系统或者是与外部资源的直接交互，必须在特定的操作系统线程上执行。</p>
+</blockquote>
+<p>为了避免PINNED，我们可以使用java.util.concurrent包提供的更加高级的同步机制，比如ReentrantLock和Semaphore等。</p>
+]]></content>
+      <categories>
+        <category>Java并发</category>
+      </categories>
+  </entry>
 </search>
