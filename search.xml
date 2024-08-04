@@ -2855,8 +2855,8 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
   <entry>
     <title>JVM有哪些垃圾回收算法</title>
     <url>/2024/08/04/JVM%E6%9C%89%E5%93%AA%E4%BA%9B%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<span id="more"></span>
-<h1 id="标记-清除"><a href="#标记-清除" class="headerlink" title="标记-清除"></a>标记-清除</h1><p>是最简单的垃圾回收算法，可以理解为存活的对象待在原地不动，但是JVM识别到的垃圾会直接被清除。<br>标记清除的优缺点：</p>
+    <content><![CDATA[<h1 id="标记-清除"><a href="#标记-清除" class="headerlink" title="标记-清除"></a>标记-清除</h1><span id="more"></span>
+<p>是最简单的垃圾回收算法，可以理解为存活的对象待在原地不动，但是JVM识别到的垃圾会直接被清除。<br>标记清除的优缺点：</p>
 <ul>
 <li>优点：<ul>
 <li>速度快，因为只涉及到了标记和清除，不需要操作存活的对象。</li>
@@ -2896,5 +2896,25 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
       <categories>
         <category>JVM</category>
       </categories>
+  </entry>
+  <entry>
+    <title>新生代和老年代的GC算法</title>
+    <url>/2024/08/04/%E6%96%B0%E7%94%9F%E4%BB%A3%E5%92%8C%E8%80%81%E5%B9%B4%E4%BB%A3%E7%9A%84GC%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<p><a href="https://daisybby.github.io/2024/08/04/JVM%E6%9C%89%E5%93%AA%E4%BA%9B%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95/">三种GC算法</a></p>
+<span id="more"></span>
+<h1 id="新生代GC"><a href="#新生代GC" class="headerlink" title="新生代GC"></a>新生代GC</h1><p>因为对象创建后都是保存在新生代，所以新生代的GC频率是比老年代高很多的，需要选择效率更高的GC算法，且最好不要有内存碎片，避免后续无法分配内存空间来保存新对象。<br>因此新生代选择了<strong>标记-复制</strong>算法来进行垃圾回收。因为标记-复制算法存在浪费一半内存空间的问题，新生代做了进一步划分，一个Eden区和两个Survivor区。同时工作的只有一个Eden区和一个Survivor区，另外一个区域只有在GC的时候作为对象的复制目标地址就行。动态调整Eden区的内存空间为新生代的80%，每个Survivor各占10%，这样就能缓解内存空间浪费的问题。</p>
+<blockquote>
+<p>这里还有个坑，为什么是两个Survivor区，而不是一个就行，毕竟标记-复制算法也是说的两个工作区域，怎么新生代还多了一个呢？<a href="">新生代只有一个Eden+一个Survivor行吗</a></p>
+</blockquote>
+<p>对于老年代来说，通常会采用<strong>标记-整理</strong>算法，虽然效率低了一些，但是可以减少内存空间的浪费，而且也不会有内存碎片。</p>
+]]></content>
+      <categories>
+        <category>JVM</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>新生代如果只有一个Eden和一个Survivor可以吗</title>
+    <url>/2024/08/04/%E6%96%B0%E7%94%9F%E4%BB%A3%E5%A6%82%E6%9E%9C%E5%8F%AA%E6%9C%89%E4%B8%80%E4%B8%AAEden%E5%92%8C%E4%B8%80%E4%B8%AASurvivor%E5%8F%AF%E4%BB%A5%E5%90%97/</url>
+    <content><![CDATA[]]></content>
   </entry>
 </search>

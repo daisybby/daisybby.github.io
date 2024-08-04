@@ -19,15 +19,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"daisybby.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="标记-清除是最简单的垃圾回收算法，可以理解为存活的对象待在原地不动，但是JVM识别到的垃圾会直接被清除。标记清除的优缺点：  优点： 速度快，因为只涉及到了标记和清除，不需要操作存活的对象。   缺点： 会产生内存碎片，造成内存空间的浪费。    标记-复制标记-复制算法需要至少两块区域，标记-清除算法一块区域就行。执行的流程就是：标记出来的存活对象复制到另一块内存区域中，复制过去之后其内存空间">
+    <meta name="description" content="标记-清除">
 <meta property="og:type" content="article">
 <meta property="og:title" content="JVM有哪些垃圾回收算法">
 <meta property="og:url" content="https://daisybby.github.io/2024/08/04/JVM%E6%9C%89%E5%93%AA%E4%BA%9B%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95/index.html">
 <meta property="og:site_name" content="daisybby">
-<meta property="og:description" content="标记-清除是最简单的垃圾回收算法，可以理解为存活的对象待在原地不动，但是JVM识别到的垃圾会直接被清除。标记清除的优缺点：  优点： 速度快，因为只涉及到了标记和清除，不需要操作存活的对象。   缺点： 会产生内存碎片，造成内存空间的浪费。    标记-复制标记-复制算法需要至少两块区域，标记-清除算法一块区域就行。执行的流程就是：标记出来的存活对象复制到另一块内存区域中，复制过去之后其内存空间">
+<meta property="og:description" content="标记-清除">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-08-04T09:16:42.000Z">
-<meta property="article:modified_time" content="2024-08-04T09:33:57.948Z">
+<meta property="article:modified_time" content="2024-08-04T09:53:52.782Z">
 <meta property="article:author" content="Daisybby">
 <meta name="twitter:card" content="summary">
 
@@ -88,7 +88,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">7</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">91</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">7</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">93</span></a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -154,7 +154,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-count">93</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -225,7 +225,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2024-08-04 17:16:42 / 修改时间：17:33:57" itemprop="dateCreated datePublished" datetime="2024-08-04T17:16:42+08:00">2024-08-04</time>
+      <time title="创建时间：2024-08-04 17:16:42 / 修改时间：17:53:52" itemprop="dateCreated datePublished" datetime="2024-08-04T17:16:42+08:00">2024-08-04</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -261,8 +261,8 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><span id="more"></span>
-<h1 id="标记-清除"><a href="#标记-清除" class="headerlink" title="标记-清除"></a>标记-清除</h1><p>是最简单的垃圾回收算法，可以理解为存活的对象待在原地不动，但是JVM识别到的垃圾会直接被清除。<br>标记清除的优缺点：</p>
+    <div class="post-body" itemprop="articleBody"><h1 id="标记-清除"><a href="#标记-清除" class="headerlink" title="标记-清除"></a>标记-清除</h1><span id="more"></span>
+<p>是最简单的垃圾回收算法，可以理解为存活的对象待在原地不动，但是JVM识别到的垃圾会直接被清除。<br>标记清除的优缺点：</p>
 <ul>
 <li>优点：<ul>
 <li>速度快，因为只涉及到了标记和清除，不需要操作存活的对象。</li>
@@ -345,6 +345,9 @@
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/2024/08/04/%E6%96%B0%E7%94%9F%E4%BB%A3%E5%92%8C%E8%80%81%E5%B9%B4%E4%BB%A3%E7%9A%84GC%E7%AE%97%E6%B3%95/" rel="next" title="新生代和老年代的GC算法">
+                  新生代和老年代的GC算法 <i class="fa fa-angle-right"></i>
+                </a>
             </div>
           </div>
     </footer>

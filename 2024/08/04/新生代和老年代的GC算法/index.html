@@ -19,27 +19,27 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"daisybby.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="线程池的拒绝策略决定了在任务等待队列满的时候，会怎么处理新提交的任务。">
+    <meta name="description" content="三种GC算法">
 <meta property="og:type" content="article">
-<meta property="og:title" content="线程池的拒绝策略有哪些">
-<meta property="og:url" content="https://daisybby.github.io/2024/08/01/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E6%8B%92%E7%BB%9D%E7%AD%96%E7%95%A5%E6%9C%89%E5%93%AA%E4%BA%9B/index.html">
+<meta property="og:title" content="新生代和老年代的GC算法">
+<meta property="og:url" content="https://daisybby.github.io/2024/08/04/%E6%96%B0%E7%94%9F%E4%BB%A3%E5%92%8C%E8%80%81%E5%B9%B4%E4%BB%A3%E7%9A%84GC%E7%AE%97%E6%B3%95/index.html">
 <meta property="og:site_name" content="daisybby">
-<meta property="og:description" content="线程池的拒绝策略决定了在任务等待队列满的时候，会怎么处理新提交的任务。">
+<meta property="og:description" content="三种GC算法">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-08-01T10:15:36.000Z">
-<meta property="article:modified_time" content="2024-08-01T10:33:10.906Z">
+<meta property="article:published_time" content="2024-08-04T09:46:59.000Z">
+<meta property="article:modified_time" content="2024-08-04T10:05:28.208Z">
 <meta property="article:author" content="Daisybby">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://daisybby.github.io/2024/08/01/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E6%8B%92%E7%BB%9D%E7%AD%96%E7%95%A5%E6%9C%89%E5%93%AA%E4%BA%9B/">
+<link rel="canonical" href="https://daisybby.github.io/2024/08/04/%E6%96%B0%E7%94%9F%E4%BB%A3%E5%92%8C%E8%80%81%E5%B9%B4%E4%BB%A3%E7%9A%84GC%E7%AE%97%E6%B3%95/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/08/01/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E6%8B%92%E7%BB%9D%E7%AD%96%E7%95%A5%E6%9C%89%E5%93%AA%E4%BA%9B/","path":"2024/08/01/线程池的拒绝策略有哪些/","title":"线程池的拒绝策略有哪些"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/08/04/%E6%96%B0%E7%94%9F%E4%BB%A3%E5%92%8C%E8%80%81%E5%B9%B4%E4%BB%A3%E7%9A%84GC%E7%AE%97%E6%B3%95/","path":"2024/08/04/新生代和老年代的GC算法/","title":"新生代和老年代的GC算法"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>线程池的拒绝策略有哪些 | daisybby</title>
+<title>新生代和老年代的GC算法 | daisybby</title>
   
 
 
@@ -126,7 +126,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -139,6 +139,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%B0%E7%94%9F%E4%BB%A3GC"><span class="nav-text">新生代GC</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -194,7 +195,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/08/01/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E6%8B%92%E7%BB%9D%E7%AD%96%E7%95%A5%E6%9C%89%E5%93%AA%E4%BA%9B/">
+    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/08/04/%E6%96%B0%E7%94%9F%E4%BB%A3%E5%92%8C%E8%80%81%E5%B9%B4%E4%BB%A3%E7%9A%84GC%E7%AE%97%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/header.jpg">
@@ -207,12 +208,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="线程池的拒绝策略有哪些 | daisybby">
+      <meta itemprop="name" content="新生代和老年代的GC算法 | daisybby">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          线程池的拒绝策略有哪些
+          新生代和老年代的GC算法
         </h1>
 
         <div class="post-meta-container">
@@ -224,7 +225,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2024-08-01 18:15:36 / 修改时间：18:33:10" itemprop="dateCreated datePublished" datetime="2024-08-01T18:15:36+08:00">2024-08-01</time>
+      <time title="创建时间：2024-08-04 17:46:59 / 修改时间：18:05:28" itemprop="dateCreated datePublished" datetime="2024-08-04T17:46:59+08:00">2024-08-04</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -232,7 +233,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Java%E5%B9%B6%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">Java并发</span></a>
+          <a href="/categories/JVM/" itemprop="url" rel="index"><span itemprop="name">JVM</span></a>
         </span>
     </span>
 
@@ -243,7 +244,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>568</span>
+      <span>420</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -260,19 +261,13 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><p>线程池的拒绝策略决定了在任务等待队列满的时候，会怎么处理新提交的任务。</p>
+    <div class="post-body" itemprop="articleBody"><p><a href="https://daisybby.github.io/2024/08/04/JVM%E6%9C%89%E5%93%AA%E4%BA%9B%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95/">三种GC算法</a></p>
 <span id="more"></span>
-<p>拒绝策略只在线程达到最大数量，等待队列也满了的时候生效。Java提供了四种内置的拒绝策略：</p>
-<ul>
-<li><strong>AbortPolicy：</strong>这是默认的拒绝策略，当线程池无法接受新任务的时候，会抛出RejectedExecutionException异常。新任务会被拒绝，不会被加入到任务队列中，程序抛出异常等待开发者处理。</li>
-<li><strong>DiscardPolicy：</strong>这种策略会丢弃新任务，而且也不会抛出异常，就当没收到。这种策略通常用于日志记录、统计等非关键性任务。</li>
-<li><strong>DiscardOldestPolicy：</strong>这个策略也会抛弃任务，不过抛弃的是等待队列中最早的任务，然后再尝试提交新任务。这种策略对于一些实时性要求比较高的场景来说比较合适。</li>
-<li><strong>CallerRunsPolicy：</strong>这个策略将任务回退给调用线程，不会抛出异常。调用线程只能尝试自己执行这个任务。这个策略可以降低任务提交速度，适用于任务提交者有能力承受业务执行的压力，但是希望有一种缓冲机制的情况。</li>
-</ul>
+<h1 id="新生代GC"><a href="#新生代GC" class="headerlink" title="新生代GC"></a>新生代GC</h1><p>因为对象创建后都是保存在新生代，所以新生代的GC频率是比老年代高很多的，需要选择效率更高的GC算法，且最好不要有内存碎片，避免后续无法分配内存空间来保存新对象。<br>因此新生代选择了<strong>标记-复制</strong>算法来进行垃圾回收。因为标记-复制算法存在浪费一半内存空间的问题，新生代做了进一步划分，一个Eden区和两个Survivor区。同时工作的只有一个Eden区和一个Survivor区，另外一个区域只有在GC的时候作为对象的复制目标地址就行。动态调整Eden区的内存空间为新生代的80%，每个Survivor各占10%，这样就能缓解内存空间浪费的问题。</p>
 <blockquote>
-<p>一般来说，默认的拒绝策略是比较常用的，因为大多数场景下我们不会让任务多到等待队列放满、线程池线程数拉满，要么我们就提升执行速度——提升线程轮转速度，要么就是提升等待队列的容量。</p>
+<p>这里还有个坑，为什么是两个Survivor区，而不是一个就行，毕竟标记-复制算法也是说的两个工作区域，怎么新生代还多了一个呢？<a href="">新生代只有一个Eden+一个Survivor行吗</a></p>
 </blockquote>
-<p>所以发生拒绝的时候，一般都是特殊情况，实际工作中还是拒绝并抛出异常的方案比较常用。</p>
+<p>对于老年代来说，通常会采用<strong>标记-整理</strong>算法，虽然效率低了一些，但是可以减少内存空间的浪费，而且也不会有内存碎片。</p>
 
     </div>
 
@@ -302,7 +297,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://daisybby.github.io/2024/08/01/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E6%8B%92%E7%BB%9D%E7%AD%96%E7%95%A5%E6%9C%89%E5%93%AA%E4%BA%9B/" title="线程池的拒绝策略有哪些">https://daisybby.github.io/2024/08/01/线程池的拒绝策略有哪些/</a>
+      <a href="https://daisybby.github.io/2024/08/04/%E6%96%B0%E7%94%9F%E4%BB%A3%E5%92%8C%E8%80%81%E5%B9%B4%E4%BB%A3%E7%9A%84GC%E7%AE%97%E6%B3%95/" title="新生代和老年代的GC算法">https://daisybby.github.io/2024/08/04/新生代和老年代的GC算法/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -315,13 +310,13 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2024/08/01/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%BB%BA%E8%AE%AE%E9%80%9A%E8%BF%87Executors%E6%9E%84%E5%BB%BA%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="prev" title="为什么不建议通过Executors构建线程池">
-                  <i class="fa fa-angle-left"></i> 为什么不建议通过Executors构建线程池
+                <a href="/2024/08/04/JVM%E6%9C%89%E5%93%AA%E4%BA%9B%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95/" rel="prev" title="JVM有哪些垃圾回收算法">
+                  <i class="fa fa-angle-left"></i> JVM有哪些垃圾回收算法
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2024/08/02/happens-before%E5%92%8Cas-if-serial/" rel="next" title="happens-before和as-if-serial">
-                  happens-before和as-if-serial <i class="fa fa-angle-right"></i>
+                <a href="/2024/08/04/%E6%96%B0%E7%94%9F%E4%BB%A3%E5%A6%82%E6%9E%9C%E5%8F%AA%E6%9C%89%E4%B8%80%E4%B8%AAEden%E5%92%8C%E4%B8%80%E4%B8%AASurvivor%E5%8F%AF%E4%BB%A5%E5%90%97/" rel="next" title="新生代如果只有一个Eden和一个Survivor可以吗">
+                  新生代如果只有一个Eden和一个Survivor可以吗 <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>
