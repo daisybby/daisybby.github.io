@@ -2830,4 +2830,26 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>JVM</category>
       </categories>
   </entry>
+  <entry>
+    <title>Java堆分代</title>
+    <url>/2024/08/04/Java%E5%A0%86%E5%88%86%E4%BB%A3/</url>
+    <content><![CDATA[<h1 id="一、基本概念以及为什么要分代"><a href="#一、基本概念以及为什么要分代" class="headerlink" title="一、基本概念以及为什么要分代"></a>一、基本概念以及为什么要分代</h1><span id="more"></span>
+<p>Java内存分代是指将不同时期的对象存储在不同的内存区域中，这里不同的内存区域被称为“代”。这种做法有利于提升GC的效率，针对不同的“代”可以设置不同的回收策略。</p>
+<p>Java的堆内存包括两个部分：<strong>新生代</strong>和<strong>老年代</strong>。<br>其中新生代又被划分为一个Eden区和两个Survivor区。默认情况下，Eden区和Survivor的空间大小比例为8：2.</p>
+<p>对象在堆中分代转移的过程：<br>新建的对象被放到Eden区，当Eden区空间用完的时候，GC发起，还存活的对象会被转移到Survivor区。<br>如果Survivor区的空间用完，还存活的对象会被转移到老年区。</p>
+<p>老年区中的对象基本都是经历了好几轮GC还存活下来的，大部分对象都存活了很久，所以老年代的GC效率是比较低的。</p>
+<h1 id="二、对象的分代晋升"><a href="#二、对象的分代晋升" class="headerlink" title="二、对象的分代晋升"></a>二、对象的分代晋升</h1><p>一般情况下，新创建的对象被放在Eden区，当Eden区满了之后，触发GC(Young GC、Minor GC)，将Eden区中还存活的对象转移到Survivor区。</p>
+<p>同样的，对象也有可能会晋升到老年代，触发条件主要由对象的年龄和大小有关。对象进入老年代的条件有三个，满足任意一个就能进入老年代：</p>
+<ol>
+<li>对象年龄超过15：也就是说对象经过了15次GC还存活着，那么就可以认为这个对象是经常使用的，可以晋升到老年代中。</li>
+<li>Survivor中，年龄小于某个阈值的对象占据空间达到了Survivor空间的一半，那剩下的年龄大的可以晋升到老年代。</li>
+<li>大对象直接进入到老年代：如果对象太大，超过某个阈值，那么直接进入老年代。</li>
+</ol>
+<h1 id="三、什么是永久代？"><a href="#三、什么是永久代？" class="headerlink" title="三、什么是永久代？"></a>三、什么是永久代？</h1><p>永久代是HotSpot虚拟机在以前版本使用的永久内存区域，用来实现方法区，存储Class类信息、常量池以及静态变量等。<br>永久代也是有可能发生GC的，而且永久代在空间不够的时候，也会发生内存溢出。</p>
+<h1 id="四、不同分代的GC方式"><a href="#四、不同分代的GC方式" class="headerlink" title="四、不同分代的GC方式"></a>四、不同分代的GC方式</h1><p>Minor GC(Young GC)：主要用于对新生代进行GC。<br>Full GC：不止新生代，老年代甚至永久代也要进行的回收，Full GC的回收频率比Minor GC更低，耗时也更长。</p>
+]]></content>
+      <categories>
+        <category>JVM</category>
+      </categories>
+  </entry>
 </search>

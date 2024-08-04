@@ -19,23 +19,27 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"daisybby.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta property="og:type" content="website">
-<meta property="og:title" content="daisybby">
-<meta property="og:url" content="https://daisybby.github.io/archives/2024/07/page/2/index.html">
+    <meta name="description" content="一、基本概念以及为什么要分代">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java堆分代">
+<meta property="og:url" content="https://daisybby.github.io/2024/08/04/Java%E5%A0%86%E5%88%86%E4%BB%A3/index.html">
 <meta property="og:site_name" content="daisybby">
+<meta property="og:description" content="一、基本概念以及为什么要分代">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-08-04T07:52:04.000Z">
+<meta property="article:modified_time" content="2024-08-04T08:49:35.186Z">
 <meta property="article:author" content="Daisybby">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://daisybby.github.io/archives/2024/07/page/2/">
+<link rel="canonical" href="https://daisybby.github.io/2024/08/04/Java%E5%A0%86%E5%88%86%E4%BB%A3/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"archives/2024/07/page/2/index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/08/04/Java%E5%A0%86%E5%88%86%E4%BB%A3/","path":"2024/08/04/Java堆分代/","title":"Java堆分代"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>归档 | daisybby</title>
+<title>Java堆分代 | daisybby</title>
   
 
 
@@ -68,7 +72,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">daisybby</h1>
+      <p class="site-title">daisybby</p>
       <i class="logo-line"></i>
     </a>
       <p class="site-subtitle" itemprop="description">Every step of some daisy.</p>
@@ -122,7 +126,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -135,6 +139,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E4%BB%A5%E5%8F%8A%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%88%86%E4%BB%A3"><span class="nav-text">一、基本概念以及为什么要分代</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%88%86%E4%BB%A3%E6%99%8B%E5%8D%87"><span class="nav-text">二、对象的分代晋升</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AF%E6%B0%B8%E4%B9%85%E4%BB%A3%EF%BC%9F"><span class="nav-text">三、什么是永久代？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E4%B8%8D%E5%90%8C%E5%88%86%E4%BB%A3%E7%9A%84GC%E6%96%B9%E5%BC%8F"><span class="nav-text">四、不同分代的GC方式</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -179,233 +184,154 @@
 
     </div>
 
-    <div class="main-inner archive posts-collapse">
+    <div class="main-inner post posts-expand">
 
 
   
+
+
+<div class="post-block">
   
   
-  <div class="post-block">
-    <div class="post-content">
-      <div class="collection-title">
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/08/04/Java%E5%A0%86%E5%88%86%E4%BB%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="Daisybby">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="daisybby">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Java堆分代 | daisybby">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java堆分代
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-08-04 15:52:04 / 修改时间：16:49:35" itemprop="dateCreated datePublished" datetime="2024-08-04T15:52:04+08:00">2024-08-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/JVM/" itemprop="url" rel="index"><span itemprop="name">JVM</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>840</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="一、基本概念以及为什么要分代"><a href="#一、基本概念以及为什么要分代" class="headerlink" title="一、基本概念以及为什么要分代"></a>一、基本概念以及为什么要分代</h1><span id="more"></span>
+<p>Java内存分代是指将不同时期的对象存储在不同的内存区域中，这里不同的内存区域被称为“代”。这种做法有利于提升GC的效率，针对不同的“代”可以设置不同的回收策略。</p>
+<p>Java的堆内存包括两个部分：<strong>新生代</strong>和<strong>老年代</strong>。<br>其中新生代又被划分为一个Eden区和两个Survivor区。默认情况下，Eden区和Survivor的空间大小比例为8：2.</p>
+<p>对象在堆中分代转移的过程：<br>新建的对象被放到Eden区，当Eden区空间用完的时候，GC发起，还存活的对象会被转移到Survivor区。<br>如果Survivor区的空间用完，还存活的对象会被转移到老年区。</p>
+<p>老年区中的对象基本都是经历了好几轮GC还存活下来的，大部分对象都存活了很久，所以老年代的GC效率是比较低的。</p>
+<h1 id="二、对象的分代晋升"><a href="#二、对象的分代晋升" class="headerlink" title="二、对象的分代晋升"></a>二、对象的分代晋升</h1><p>一般情况下，新创建的对象被放在Eden区，当Eden区满了之后，触发GC(Young GC、Minor GC)，将Eden区中还存活的对象转移到Survivor区。</p>
+<p>同样的，对象也有可能会晋升到老年代，触发条件主要由对象的年龄和大小有关。对象进入老年代的条件有三个，满足任意一个就能进入老年代：</p>
+<ol>
+<li>对象年龄超过15：也就是说对象经过了15次GC还存活着，那么就可以认为这个对象是经常使用的，可以晋升到老年代中。</li>
+<li>Survivor中，年龄小于某个阈值的对象占据空间达到了Survivor空间的一半，那剩下的年龄大的可以晋升到老年代。</li>
+<li>大对象直接进入到老年代：如果对象太大，超过某个阈值，那么直接进入老年代。</li>
+</ol>
+<h1 id="三、什么是永久代？"><a href="#三、什么是永久代？" class="headerlink" title="三、什么是永久代？"></a>三、什么是永久代？</h1><p>永久代是HotSpot虚拟机在以前版本使用的永久内存区域，用来实现方法区，存储Class类信息、常量池以及静态变量等。<br>永久代也是有可能发生GC的，而且永久代在空间不够的时候，也会发生内存溢出。</p>
+<h1 id="四、不同分代的GC方式"><a href="#四、不同分代的GC方式" class="headerlink" title="四、不同分代的GC方式"></a>四、不同分代的GC方式</h1><p>Minor GC(Young GC)：主要用于对新生代进行GC。<br>Full GC：不止新生代，老年代甚至永久代也要进行的回收，Full GC的回收频率比Minor GC更低，耗时也更长。</p>
+
+    </div>
+
+    
+    
+    
+    <div>
+    
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+          
+
+    
+    </div>
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Daisybby
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://daisybby.github.io/2024/08/04/Java%E5%A0%86%E5%88%86%E4%BB%A3/" title="Java堆分代">https://daisybby.github.io/2024/08/04/Java堆分代/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
         
-        <span class="collection-header">很好! 目前共计 90 篇日志。 继续努力。</span>
-      </div>
 
-      
-    <div class="collection-year">
-      <span class="collection-header">2024<span class="collection-year-count">90</span></span>
-    </div>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-30T13:09:31+08:00"
-              content="2024-07-30">
-          07-30
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/30/%E4%BB%80%E4%B9%88%E6%98%AFThreadLocal/" itemprop="url">
-            <span itemprop="name">什么是ThreadLocal？如何实现的？</span>
-          </a>
-      </div>
-
-      
-    </header>
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/08/04/Java%E5%AF%B9%E8%B1%A1%E4%B8%80%E5%AE%9A%E4%BC%9A%E5%9C%A8%E5%A0%86%E4%B8%8A%E5%88%86%E9%85%8D%E5%86%85%E5%AD%98%E5%90%97/" rel="prev" title="Java对象一定会在堆上分配内存吗">
+                  <i class="fa fa-angle-left"></i> Java对象一定会在堆上分配内存吗
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
   </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-29T22:37:47+08:00"
-              content="2024-07-29">
-          07-29
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/29/%E7%BA%BF%E7%A8%8B%E6%95%B0%E8%AE%BE%E7%BD%AE/" itemprop="url">
-            <span itemprop="name">线程数怎么设定？</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-29T21:07:02+08:00"
-              content="2024-07-29">
-          07-29
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/29/%E4%BB%80%E4%B9%88%E6%98%AF%E7%BA%BF%E7%A8%8B%E6%B1%A0/" itemprop="url">
-            <span itemprop="name">什么是线程池？如何实现的？</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-29T19:19:57+08:00"
-              content="2024-07-29">
-          07-29
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/29/run-start%E5%92%8Cwait-sleep%E5%92%8Cnotify-notifyAll/" itemprop="url">
-            <span itemprop="name">run/start、wait/sleep、notify/notifyAll</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-29T17:56:05+08:00"
-              content="2024-07-29">
-          07-29
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/29/%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B%E7%9A%84%E6%96%B9%E5%BC%8F/" itemprop="url">
-            <span itemprop="name">创建线程的方式</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-29T17:25:36+08:00"
-              content="2024-07-29">
-          07-29
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/29/JDK21%E4%B8%AD%E7%9A%84%E8%99%9A%E6%8B%9F%E7%BA%BF%E7%A8%8B/" itemprop="url">
-            <span itemprop="name">JDK21中的虚拟线程</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-29T16:53:03+08:00"
-              content="2024-07-29">
-          07-29
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/29/%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81/" itemprop="url">
-            <span itemprop="name">线程状态</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-29T15:10:45+08:00"
-              content="2024-07-29">
-          07-29
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/29/%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%9A%84%E7%90%86%E8%A7%A3/" itemprop="url">
-            <span itemprop="name">线程安全的理解</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-29T14:47:33+08:00"
-              content="2024-07-29">
-          07-29
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/29/multi-thread-change/" itemprop="url">
-            <span itemprop="name">什么是多线程中的上下文切换？</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-28T21:49:03+08:00"
-              content="2024-07-28">
-          07-28
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/28/JDK1-8-ConcurrentHashMap/" itemprop="url">
-            <span itemprop="name">JDK1.8 ConcurrentHashMap</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
+</div>
 
 
-    </div>
-  </div>
-  
-  
-  
-  <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/archives/2024/07/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/archives/2024/07/">1</a><span class="page-number current">2</span><a class="page-number" href="/archives/2024/07/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/archives/2024/07/page/7/">7</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/archives/2024/07/page/3/"><i class="fa fa-angle-right"></i></a>
-  </nav>
+
+
+
 
 </div>
   </main>
