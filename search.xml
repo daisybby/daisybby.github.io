@@ -2904,7 +2904,7 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
 <span id="more"></span>
 <h1 id="新生代GC"><a href="#新生代GC" class="headerlink" title="新生代GC"></a>新生代GC</h1><p>因为对象创建后都是保存在新生代，所以新生代的GC频率是比老年代高很多的，需要选择效率更高的GC算法，且最好不要有内存碎片，避免后续无法分配内存空间来保存新对象。<br>因此新生代选择了<strong>标记-复制</strong>算法来进行垃圾回收。因为标记-复制算法存在浪费一半内存空间的问题，新生代做了进一步划分，一个Eden区和两个Survivor区。同时工作的只有一个Eden区和一个Survivor区，另外一个区域只有在GC的时候作为对象的复制目标地址就行。动态调整Eden区的内存空间为新生代的80%，每个Survivor各占10%，这样就能缓解内存空间浪费的问题。</p>
 <blockquote>
-<p>这里还有个坑，为什么是两个Survivor区，而不是一个就行，毕竟标记-复制算法也是说的两个工作区域，怎么新生代还多了一个呢？<a href="">新生代只有一个Eden+一个Survivor行吗</a></p>
+<p>这里还有个坑，为什么是两个Survivor区，而不是一个就行，毕竟标记-复制算法也是说的两个工作区域，怎么新生代还多了一个呢？<a href="https://daisybby.github.io/2024/08/04/%E6%96%B0%E7%94%9F%E4%BB%A3%E5%A6%82%E6%9E%9C%E5%8F%AA%E6%9C%89%E4%B8%80%E4%B8%AAEden%E5%92%8C%E4%B8%80%E4%B8%AASurvivor%E5%8F%AF%E4%BB%A5%E5%90%97/">新生代只有一个Eden+一个Survivor行吗</a></p>
 </blockquote>
 <p>对于老年代来说，通常会采用<strong>标记-整理</strong>算法，虽然效率低了一些，但是可以减少内存空间的浪费，而且也不会有内存碎片。</p>
 ]]></content>
@@ -2915,6 +2915,34 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
   <entry>
     <title>新生代如果只有一个Eden和一个Survivor可以吗</title>
     <url>/2024/08/04/%E6%96%B0%E7%94%9F%E4%BB%A3%E5%A6%82%E6%9E%9C%E5%8F%AA%E6%9C%89%E4%B8%80%E4%B8%AAEden%E5%92%8C%E4%B8%80%E4%B8%AASurvivor%E5%8F%AF%E4%BB%A5%E5%90%97/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<p>先说结论，不行，虽然也能工作，但是会大大浪费内存空间。</p>
+<span id="more"></span>
+<p>按照默认的配置，Eden区占据新生代80%空间，每个Survivor区各占10%。<br>刚开始的时候，两个Survivor都是空的，新创建的对象放到Eden区，第一次Minor GC，Eden区存活的对象放到一个Survivor区中。之后再发生GC的时候，Eden区和非空闲的Survivor区中存活的对象被复制到空的Survivor中。</p>
+<p>也就是说，通常的时候，新生代中只有Eden区和一个Survivor区是工作的，另一个Survivor区是空的，内存使用率大约为90%。</p>
+<p>如果只有一个Eden区和一个Survivor区，第一次GC是不影响的，还是和正常情况一样，但是之后的GC，Eden区和Survivor区都是要扫描的，但是标记-复制算法要求复制过去的地方是一块空闲的区域。</p>
+<p>从另外一个角度挑刺，如果说Eden区的对象复制到Survivor之后，后来的新对象放到Survivor中，等Survivor满了再将Survivor区的内容复制到Eden，这样循环往复？<br>这就是“能工作，但是会浪费内存空间”的原因。虽然可以实现复制算法，但是Eden区和Survivor都承担新对象的分配工作，那么这两个区域的内存都得足够大，分配成1:1，那么新生代每一轮只有一半的空间被使用。</p>
+<h1 id="Survivor空间不够的问题"><a href="#Survivor空间不够的问题" class="headerlink" title="Survivor空间不够的问题"></a>Survivor空间不够的问题</h1><p>上面提到了，Eden区就占据了新生代的80%，每个Survivor只有10%。所以如果Eden区复制来的对象太大了，Survivor空间不够怎么办？<strong>这个时候直接将大对象复制到老年代</strong>。</p>
+<h2 id="空间担保机制"><a href="#空间担保机制" class="headerlink" title="空间担保机制"></a>空间担保机制</h2><p>如果Survivor空间不够，就要把对象分配给老年代，但是老年代空间也有可能不够啊，所以在分配给老年代之前，要做一次<strong>空间分配担保（CMS）</strong>：<br>在每一次执行Young GC之前，虚拟机会检查老年代最大可用的连续空间是否大于新生代所有对象的总空间。<br>如果<strong>大于</strong>，说明本次GC是<strong>安全</strong>的。<br>如果<strong>小于</strong>，那么虚拟机会查看handlePromotionFailure，这个值表达了是否允许担保失败。</p>
+<ul>
+<li>true：表示允许担保失败。检查老年代最大可用连续空间是不是大于历次晋升到老年代的对象的平均大小。<ul>
+<li>大于：那么尝试一次Young GC，但是这次Young GC是有风险的。</li>
+<li>小于：触发一次Full GC。</li>
+</ul>
+</li>
+<li>False:不允许担保失败，直接触发一次Full GC。</li>
+</ul>
+<blockquote>
+<p>handlePromotionFailure这个参数在JDK7就不再支持了。</p>
+</blockquote>
+<p>Young GC的复制阶段执行之后，会发生以下三种情况：</p>
+<ul>
+<li>剩余的存活对象大小：小于Survivor，安全进入Survivor；</li>
+<li>剩余存活对象大小：大于Survivor，小于老年代可用内存，直接到老年代；</li>
+<li>剩余存活对象大小：大于Survivor，大于老年代可用内存，触发Full GC。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>JVM</category>
+      </categories>
   </entry>
 </search>
