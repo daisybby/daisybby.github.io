@@ -19,23 +19,29 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"daisybby.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta property="og:type" content="website">
-<meta property="og:title" content="daisybby">
-<meta property="og:url" content="https://daisybby.github.io/archives/page/5/index.html">
+    <meta name="description" content="Java虚拟机内存主要包含以下几个区域：Java虚拟机栈、本地方法栈、程序计数器、运行时常量池、字符串常量池、堆。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JVM的运行时内存">
+<meta property="og:url" content="https://daisybby.github.io/2024/08/04/JVM%E7%9A%84%E8%BF%90%E8%A1%8C%E6%97%B6%E5%86%85%E5%AD%98/index.html">
 <meta property="og:site_name" content="daisybby">
+<meta property="og:description" content="Java虚拟机内存主要包含以下几个区域：Java虚拟机栈、本地方法栈、程序计数器、运行时常量池、字符串常量池、堆。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://daisybby.github.io/2024/08/04/JVM%E7%9A%84%E8%BF%90%E8%A1%8C%E6%97%B6%E5%86%85%E5%AD%98/img1.png">
+<meta property="article:published_time" content="2024-08-04T02:31:11.000Z">
+<meta property="article:modified_time" content="2024-08-04T04:32:09.968Z">
 <meta property="article:author" content="Daisybby">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://daisybby.github.io/2024/08/04/JVM%E7%9A%84%E8%BF%90%E8%A1%8C%E6%97%B6%E5%86%85%E5%AD%98/img1.png">
 
 
-<link rel="canonical" href="https://daisybby.github.io/archives/page/5/">
+<link rel="canonical" href="https://daisybby.github.io/2024/08/04/JVM%E7%9A%84%E8%BF%90%E8%A1%8C%E6%97%B6%E5%86%85%E5%AD%98/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"archives/page/5/index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/08/04/JVM%E7%9A%84%E8%BF%90%E8%A1%8C%E6%97%B6%E5%86%85%E5%AD%98/","path":"2024/08/04/JVM的运行时内存/","title":"JVM的运行时内存"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>归档 | daisybby</title>
+<title>JVM的运行时内存 | daisybby</title>
   
 
 
@@ -68,7 +74,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">daisybby</h1>
+      <p class="site-title">daisybby</p>
       <i class="logo-line"></i>
     </a>
       <p class="site-subtitle" itemprop="description">Every step of some daisy.</p>
@@ -179,233 +185,154 @@
 
     </div>
 
-    <div class="main-inner archive posts-collapse">
+    <div class="main-inner post posts-expand">
 
 
   
+
+
+<div class="post-block">
   
   
-  <div class="post-block">
-    <div class="post-content">
-      <div class="collection-title">
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/08/04/JVM%E7%9A%84%E8%BF%90%E8%A1%8C%E6%97%B6%E5%86%85%E5%AD%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="Daisybby">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="daisybby">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="JVM的运行时内存 | daisybby">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JVM的运行时内存
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-08-04 10:31:11 / 修改时间：12:32:09" itemprop="dateCreated datePublished" datetime="2024-08-04T10:31:11+08:00">2024-08-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/JVM/" itemprop="url" rel="index"><span itemprop="name">JVM</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>685</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>Java虚拟机内存主要包含以下几个区域：Java虚拟机栈、本地方法栈、程序计数器、运行时常量池、字符串常量池、堆。</p>
+<span id="more"></span>
+<p>以上6个区域，是虚拟机规范中定义的，但是不同的虚拟机，甚至是同一个虚拟机的不同版本，其实现方式也是不一样的。</p>
+<img src="/2024/08/04/JVM%E7%9A%84%E8%BF%90%E8%A1%8C%E6%97%B6%E5%86%85%E5%AD%98/img1.png" class="" title="img1">
+
+<p><strong>程序计数器：</strong>每个线程维护自己的程序计数器，记录当前Java虚拟机正在执行的字节码指令的地址。<br><strong>Java虚拟机栈：</strong>一个线程私有的存储器，用于存储Java中的局部变量。根据Java虚拟机规范，每次方法调用都会创建一个栈帧，栈帧中用于存储局部变量、操作数栈、动态链接、方法出口等信息。方法执行完毕后，这个栈帧被弹出。<br><strong>本地方法栈：</strong>Java虚拟机栈是服务于Java程序执行的，而本地方法栈是支持本地方法执行的，一般这些本地方法是用C等本地语言实现的。<br><strong>堆：</strong>堆是JVM内存最大的一块，创建的对象基本都保存在这里，由Java虚拟机管理，用于存放对象实例，GC垃圾回收就是在堆上工作的。<br><strong>方法区：</strong>用于存储被加载的类信息、常量、静态变量等数据的内存区域，每加载一个类，方法区就会分配一定的内存空间，用于存储该类的信息。<br><strong>运行时常量池：</strong>是方法区的一个部分，用于存储编译阶段生成的信息，主要有字面量和符号引用常量，符号引用常量包括了类的全限定名称、字段的名称和描述符、方法的名称和描述符。</p>
+<p><strong>堆和栈的区别：</strong></p>
+<ol>
+<li>存储内容不同：堆中存储的是实例对象，栈中存储的是本地变量；</li>
+<li>堆是线程共享的，栈是线程私有的。</li>
+<li>堆是垃圾回收的主要区域，当一个对象不再被引用的时候，就会被垃圾回收机制回收掉；</li>
+<li>栈的存储速度比堆块。</li>
+<li>栈空间不够会发生StackOfOverflow，堆内存不够会发生OutOfMemory。</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+    <div>
+    
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+          
+
+    
+    </div>
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Daisybby
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://daisybby.github.io/2024/08/04/JVM%E7%9A%84%E8%BF%90%E8%A1%8C%E6%97%B6%E5%86%85%E5%AD%98/" title="JVM的运行时内存">https://daisybby.github.io/2024/08/04/JVM的运行时内存/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
         
-        <span class="collection-header">很好! 目前共计 87 篇日志。 继续努力。</span>
-      </div>
 
-      
-    <div class="collection-year">
-      <span class="collection-header">2024<span class="collection-year-count">87</span></span>
-    </div>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-19T19:00:03+08:00"
-              content="2024-07-19">
-          07-19
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/19/subList-of-ArrayList/" itemprop="url">
-            <span itemprop="name">ArrayList的subList方法</span>
-          </a>
-      </div>
-
-      
-    </header>
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/08/02/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%99%9A%E6%8B%9F%E7%BA%BF%E7%A8%8B%E4%B8%8D%E8%83%BD%E7%94%A8synchronized/" rel="prev" title="为什么虚拟线程不能用synchronized">
+                  <i class="fa fa-angle-left"></i> 为什么虚拟线程不能用synchronized
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
   </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-19T18:41:19+08:00"
-              content="2024-07-19">
-          07-19
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/19/ArrayList-and-LinkedList/" itemprop="url">
-            <span itemprop="name">ArrayList和LinkedList</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-19T17:28:03+08:00"
-              content="2024-07-19">
-          07-19
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/19/Java-set-unrepeat/" itemprop="url">
-            <span itemprop="name">Set是如何保证元素不重复的？</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-19T17:00:13+08:00"
-              content="2024-07-19">
-          07-19
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/19/change-List-during-loop/" itemprop="url">
-            <span itemprop="name">怎么在遍历的同时修改List?</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-19T15:53:35+08:00"
-              content="2024-07-19">
-          07-19
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/19/fail-fast-and-fail-safe/" itemprop="url">
-            <span itemprop="name">什么是fail-fast？什么是fail-safe</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-19T14:37:50+08:00"
-              content="2024-07-19">
-          07-19
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/19/Java-collection/" itemprop="url">
-            <span itemprop="name">Java集合类和排序方式</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-18T19:19:55+08:00"
-              content="2024-07-18">
-          07-18
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/18/change-a-private-String/" itemprop="url">
-            <span itemprop="name">怎么修改一个private的String参数值</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-18T18:56:09+08:00"
-              content="2024-07-18">
-          07-18
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/18/Long-and-BigDecimal/" itemprop="url">
-            <span itemprop="name">Long和BigDecimal表示金额哪个更合适？</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-18T17:48:11+08:00"
-              content="2024-07-18">
-          07-18
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/18/Java-static/" itemprop="url">
-            <span itemprop="name">Java中static的作用</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-07-18T17:00:56+08:00"
-              content="2024-07-18">
-          07-18
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/07/18/main-method/" itemprop="url">
-            <span itemprop="name">解析Java的main方法</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
+</div>
 
 
-    </div>
-  </div>
-  
-  
-  
-  <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/archives/page/4/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/archives/">1</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/archives/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/9/">9</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/archives/page/6/"><i class="fa fa-angle-right"></i></a>
-  </nav>
+
+
+
 
 </div>
   </main>

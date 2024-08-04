@@ -2761,4 +2761,26 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java并发</category>
       </categories>
   </entry>
+  <entry>
+    <title>JVM的运行时内存</title>
+    <url>/2024/08/04/JVM%E7%9A%84%E8%BF%90%E8%A1%8C%E6%97%B6%E5%86%85%E5%AD%98/</url>
+    <content><![CDATA[<p>Java虚拟机内存主要包含以下几个区域：Java虚拟机栈、本地方法栈、程序计数器、运行时常量池、字符串常量池、堆。</p>
+<span id="more"></span>
+<p>以上6个区域，是虚拟机规范中定义的，但是不同的虚拟机，甚至是同一个虚拟机的不同版本，其实现方式也是不一样的。</p>
+<img src="/2024/08/04/JVM%E7%9A%84%E8%BF%90%E8%A1%8C%E6%97%B6%E5%86%85%E5%AD%98/img1.png" class="" title="img1">
+
+<p><strong>程序计数器：</strong>每个线程维护自己的程序计数器，记录当前Java虚拟机正在执行的字节码指令的地址。<br><strong>Java虚拟机栈：</strong>一个线程私有的存储器，用于存储Java中的局部变量。根据Java虚拟机规范，每次方法调用都会创建一个栈帧，栈帧中用于存储局部变量、操作数栈、动态链接、方法出口等信息。方法执行完毕后，这个栈帧被弹出。<br><strong>本地方法栈：</strong>Java虚拟机栈是服务于Java程序执行的，而本地方法栈是支持本地方法执行的，一般这些本地方法是用C等本地语言实现的。<br><strong>堆：</strong>堆是JVM内存最大的一块，创建的对象基本都保存在这里，由Java虚拟机管理，用于存放对象实例，GC垃圾回收就是在堆上工作的。<br><strong>方法区：</strong>用于存储被加载的类信息、常量、静态变量等数据的内存区域，每加载一个类，方法区就会分配一定的内存空间，用于存储该类的信息。<br><strong>运行时常量池：</strong>是方法区的一个部分，用于存储编译阶段生成的信息，主要有字面量和符号引用常量，符号引用常量包括了类的全限定名称、字段的名称和描述符、方法的名称和描述符。</p>
+<p><strong>堆和栈的区别：</strong></p>
+<ol>
+<li>存储内容不同：堆中存储的是实例对象，栈中存储的是本地变量；</li>
+<li>堆是线程共享的，栈是线程私有的。</li>
+<li>堆是垃圾回收的主要区域，当一个对象不再被引用的时候，就会被垃圾回收机制回收掉；</li>
+<li>栈的存储速度比堆块。</li>
+<li>栈空间不够会发生StackOfOverflow，堆内存不够会发生OutOfMemory。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>JVM</category>
+      </categories>
+  </entry>
 </search>
