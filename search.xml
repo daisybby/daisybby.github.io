@@ -2813,4 +2813,21 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>Java并发</category>
       </categories>
   </entry>
+  <entry>
+    <title>Java对象一定会在堆上分配内存吗</title>
+    <url>/2024/08/04/Java%E5%AF%B9%E8%B1%A1%E4%B8%80%E5%AE%9A%E4%BC%9A%E5%9C%A8%E5%A0%86%E4%B8%8A%E5%88%86%E9%85%8D%E5%86%85%E5%AD%98%E5%90%97/</url>
+    <content><![CDATA[<p>先说结论，不一定。和JIT优化机制有关，当逃逸分析发现某个对象不会逃逸到线程和方法外部的话，这个对象可能不会在堆上分配内存，可能在栈上分配内存。</p>
+<span id="more"></span>
+<p><strong>标量替换：</strong><br>标量是指一个无法再分解成更小的数据的数据，比如基本类型数据就是标量。那些还可以分解的数据叫做聚合量，Java中的对象就是聚合量，可以分解成其他的聚合量和标量。<br>在JIT阶段，如果经过逃逸分析，发现一个对象不会被外界访问的话，那么经过JIT优化，就会把这个对象拆解成一个或若干个其成员变量来代替，这个过程就是标量替换。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">point</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> x;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> y;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上point类的实例对象，如果是无逃逸，最终就会被x和y这两个int型变量替代，而不用创建一个对象。</p>
+<p><strong>栈上分配：</strong><br>一般来说，对象和数组元素的内存分配都是分配堆内存，但是随着JIT技术的发展，这也不再是绝对的。JIT在编译阶段进行逃逸分析，不会逃逸的对象是可以将其内存分配转移到栈上。</p>
+<blockquote>
+<p>说起来，栈上分配和标量替换并不是两个独立的，栈上分配就是通过标量替换来实现的。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>JVM</category>
+      </categories>
+  </entry>
 </search>
