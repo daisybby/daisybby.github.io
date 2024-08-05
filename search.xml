@@ -3054,4 +3054,25 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>JVM</category>
       </categories>
   </entry>
+  <entry>
+    <title>Java的四种引用有什么区别</title>
+    <url>/2024/08/05/Java%E7%9A%84%E5%9B%9B%E7%A7%8D%E5%BC%95%E7%94%A8%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB/</url>
+    <content><![CDATA[<p>JDK1.2之后，Java对引用的概念进行了扩充，将引用分为强引用、软引用、弱引用和虚引用四种（引用强度逐渐减弱）。</p>
+<span id="more"></span>
+<p><strong>强引用：</strong>默认的引用方式，不需要我们显式定义。如果一个对象具有强引用，那么垃圾回收器一定不会回收这个对象。当内存空间不足的时候，JVM宁愿抛出OutOfMemoryError，终止应用程序，也不愿意回收掉具有强引用的对象。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">String[] bean=<span class="keyword">new</span> <span class="title class_">String</span>[]&#123;<span class="string">&quot;a&quot;</span>,<span class="string">&quot;b&quot;</span>,<span class="string">&quot;c&quot;</span>&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><strong>软引用：</strong>软引用不能保证对象一定不会被回收，但是能够最大可能地保证。在内存空间充足的时候，只具有软引用的对象不会被回收；但是内存空间不足的时候，只具有软引用的对象是会被回收掉的。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">SoftReference&lt;String[]&gt; softBean=<span class="keyword">new</span> <span class="title class_">SofeReference</span>&lt;String[]&gt;(<span class="keyword">new</span> <span class="title class_">String</span>[]&#123;<span class="string">&quot;a&quot;</span>,<span class="string">&quot;b&quot;</span>,<span class="string">&quot;c&quot;</span>&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><strong>弱引用：</strong>如果一个对象只具有弱引用，无论内存充足与否，只有弱引用的对象都会被回收掉。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">WeakReference&lt;String[]&gt; weakBean=<span class="keyword">new</span> <span class="title class_">WeakReference</span>&lt;String[]&gt;(<span class="keyword">new</span> <span class="title class_">String</span>[]&#123;<span class="string">&quot;a&quot;</span>,<span class="string">&quot;b&quot;</span>,<span class="string">&quot;c&quot;</span>&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><strong>虚引用：</strong>几乎没啥特殊的，如果一个对象仅有虚引用，那么就跟没有任何引用一样，在任何时候都可能被GC。虚引用主要是用在跟踪对象被垃圾回收的活动，比如写个日志啦之类。</p>
+<p>弱引用的例子：之前提到的，ThreadLocal造成内存泄漏问题的解决方案，Entry中key对ThreadLocal对象的引用就是用弱引用，使得当ThreadLocal只有Entry这一个弱引用，而没有栈内存中的强引用之后，被GC就行了。</p>
+]]></content>
+      <categories>
+        <category>JVM</category>
+      </categories>
+  </entry>
 </search>
