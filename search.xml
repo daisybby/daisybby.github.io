@@ -3105,9 +3105,9 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
 <h1 id="为什么初始标记和重新标记阶段需要STW，而并发标记阶段不需要？"><a href="#为什么初始标记和重新标记阶段需要STW，而并发标记阶段不需要？" class="headerlink" title="为什么初始标记和重新标记阶段需要STW，而并发标记阶段不需要？"></a>为什么初始标记和重新标记阶段需要STW，而并发标记阶段不需要？</h1><p>首先，基本思想就是能不STW就不STW。<br>初始标记阶段，是标记GCRoot能直接可达的对象，毕竟GCRoot是这次GC过程的基础，所以不能让GC Root对象发生变化，而且有些GCRoot并不是对象，其是否修改是无法获知的，所以初始标记阶段要STW。<br>重新标记阶段是开始GC之前的最后一次标记，目的就是修正并发标记阶段因为应用程序继续执行而产生的变化，这个阶段需要准确的检测变化，所以需要STW。</p>
 <p>并发标记阶段是标记GC Root能间接到达的对象，这个过程可以并发执行，后面以重新标记阶段兜底，所以不需要STW。</p>
 ]]></content>
-      <tags>
-        <tag>JVM</tag>
-      </tags>
+      <categories>
+        <category>JVM</category>
+      </categories>
   </entry>
   <entry>
     <title>新生代和老年代的垃圾回收器有何区别</title>
@@ -3142,9 +3142,9 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
 </blockquote>
 <p>关于G1和ZGC垃圾回收器可见：<br><a href="https://daisybby.github.io/2024/08/12/%E4%B8%BA%E4%BB%80%E4%B9%88JDK-9%E4%B9%8B%E5%90%8EG1%E6%88%90%E4%B8%BA%E9%BB%98%E8%AE%A4%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/">简单介绍一下G1垃圾回收器</a></p>
 ]]></content>
-      <tags>
-        <tag>JVM</tag>
-      </tags>
+      <categories>
+        <category>JVM</category>
+      </categories>
   </entry>
   <entry>
     <title>为什么JDK 9之后G1成为默认的垃圾回收器</title>
@@ -3213,8 +3213,35 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
 </ul>
 <p>在G1中，标记和清理是并行的，复制是并发的。</p>
 ]]></content>
-      <tags>
-        <tag>JVM</tag>
-      </tags>
+      <categories>
+        <category>JVM</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>关系型数据库和非关系型数据库</title>
+    <url>/2024/08/12/%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E9%9D%9E%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93/</url>
+    <content><![CDATA[<h1 id="什么是关系型数据库？什么是非关系型数据库？"><a href="#什么是关系型数据库？什么是非关系型数据库？" class="headerlink" title="什么是关系型数据库？什么是非关系型数据库？"></a>什么是关系型数据库？什么是非关系型数据库？</h1><span id="more"></span>
+<h2 id="关系型数据库"><a href="#关系型数据库" class="headerlink" title="关系型数据库"></a>关系型数据库</h2><p>关系型数据库是通过关系模型来组织数据的数据库，简单点理解就是数据是二维表格，以行列的形式存储数据，方便用户管理。<br>一张表包含行和列，多个表组成一个关系型数据库。</p>
+<p>关系型数据库的特点：</p>
+<ol>
+<li>由行和列组成</li>
+<li>关系型数据库使用结构化语言（SQL）对数据库进行增删改查</li>
+<li>关系型数据库强调数据的ACID特性：A-原子性，C-一致性，I-隔离性，D-持久性</li>
+<li>关系型数据库非常强调数据的一致性，并为此降低读写性能付出了巨大的代价</li>
+<li>关系型数据库通常保存在硬盘，所以数据的读写是很耗时间的</li>
+</ol>
+<h2 id="非关系型数据库"><a href="#非关系型数据库" class="headerlink" title="非关系型数据库"></a>非关系型数据库</h2><p>非关系型数据库不需要提前设计表结构，数据可以灵活地保存在数据库中，适用于数据变化多、系统比较复杂、高并发的场景下。</p>
+<p>非关系型就是NOSQL，通常是K-V键值对的方式来存储的，对于存储值的类型也有不同的支持，通常使用的NOSQL有Redis和MongoDB等。</p>
+<h1 id="两者之间的区别"><a href="#两者之间的区别" class="headerlink" title="两者之间的区别"></a>两者之间的区别</h1><ol>
+<li><strong>数据组织方式不同：</strong>关系型数据库是以行列表的形式组织数据，非关系型数据库就是一个Key，剩下的数据都在value中；</li>
+<li><strong>事务相关：</strong>关系型数据库需要保证事物的ACID性，而非关系型数据库中的事务一般不支持回滚。</li>
+<li><strong>查询数据：</strong>关系型数据库可以对一张表中的任意字段进行查询，NOSQL只能查询Key。</li>
+<li><strong>存储位置：</strong>通常关系型数据库是保存在硬盘的，读写速度比较慢，而NOSQL通常基于内存存储，比如Redis，所以可以用于做缓存。</li>
+<li><strong>范围查询：</strong>关系型数据库支持范围查询、公式查询等，但是非关系型数据库不一定支持。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>MySQL</category>
+      </categories>
   </entry>
 </search>
