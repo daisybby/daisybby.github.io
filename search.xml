@@ -3075,4 +3075,75 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>JVM</category>
       </categories>
   </entry>
+  <entry>
+    <title>介绍一下CMS的垃圾回收过程</title>
+    <url>/2024/08/12/%E4%BB%8B%E7%BB%8D%E4%B8%80%E4%B8%8BCMS%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E8%BF%87%E7%A8%8B/</url>
+    <content><![CDATA[<p>CMS是并发的，是用于老年代的垃圾回收器。相比于并行，CMS更关注应用程序的停顿时间（STW），通过Concurrent Mark Sweep这个名字就能够知道CMS使用的是标记-清除算法（对！就是有内存碎片的那个！）</p>
+<span id="more"></span>
+
+<h1 id="CMS的基本原理"><a href="#CMS的基本原理" class="headerlink" title="CMS的基本原理"></a>CMS的基本原理</h1><p>CMS垃圾回收器的工作过程如下：</p>
+<ol>
+<li><strong>初始标记：</strong>标记GCRoot直接可达的对象，这一步<strong>需要STW</strong>，即暂停所有应用线程，但是这一步只标记GCRoot直接可达的对象，所以这个阶段很快。</li>
+<li><strong>并发标记：</strong>从初始标记阶段标记的对象开始，遍历整个对象图，标记所有可达的对象。（这一步和三色标记算法很像，就是不断取出灰色对象，然后标记）这个阶段与应用程序并发执行，不需要STW。</li>
+<li><strong>预清理：</strong>这一阶段也是并发执行的，目的就是在实际清理之前，处理并发标记之后、重新标记之前这段时间内发生的变化，目的就是减少重新标记阶段的工作量（不是很懂到底在做什么，但是个人理解的就是做一些准备，记录这段时间内发生的一些变化，作为重新标记阶段的一些依据和支撑）。</li>
+<li><strong>重新标记：</strong>修正并发标记期间因为应用程序继续执行而发生的修改，这是另一个<strong>需要STW</strong>的阶段。</li>
+<li><strong>并发清理：</strong>在这个阶段，GC线程清理不可达的对象，这个过程与应用线程并发执行，并不需要STW。</li>
+</ol>
+<p>CMS执行的过程其实也就是CMS三色标记的过程。</p>
+<p><strong>CMS只有初始标记和重新标记阶段需要STW，所以相比于其他的垃圾回收器，CMS的STW时间更短，导致的应用程序停顿更短。</strong></p>
+<p>优点：</p>
+<ol>
+<li>并发</li>
+<li>低停顿</li>
+</ol>
+<p>缺点：</p>
+<ol>
+<li><strong>对CPU资源比较敏感：</strong>虽然并发执行不会导致应用程序停顿，但是这个过程中一部分CPU资源还是分配给了GC线程的，应用程序执行会变慢；</li>
+<li><strong>无法处理浮动垃圾：</strong>在最后一步并发清理的过程中，应用程序也在并发执行，可能会产生新的垃圾没有办法回收，这就是浮动垃圾，只能等下次GC的时候清除掉。但是浮动垃圾这个问题并不是很大，下次GC能清除即可。</li>
+<li><strong>内存碎片：</strong>标记-清除算法的老问题，会产生内存碎片，当需要放到老年代的对象很大时，命名空闲的空间很多，但是就是没有连续的空间来保存这个对象，不得不提前触发一次Full GC。为了解决这个问题，CMS提供了一个开关参数，用于在CMS中要进行Full GC时，开启内存碎片的合并整理过程，但是这个过程是无法并发的，虽然能消除空间碎片，但是STW时间变长了，感觉有些背离CMS的初衷。</li>
+</ol>
+<h1 id="为什么初始标记和重新标记阶段需要STW，而并发标记阶段不需要？"><a href="#为什么初始标记和重新标记阶段需要STW，而并发标记阶段不需要？" class="headerlink" title="为什么初始标记和重新标记阶段需要STW，而并发标记阶段不需要？"></a>为什么初始标记和重新标记阶段需要STW，而并发标记阶段不需要？</h1><p>首先，基本思想就是能不STW就不STW。<br>初始标记阶段，是标记GCRoot能直接可达的对象，毕竟GCRoot是这次GC过程的基础，所以不能让GC Root对象发生变化，而且有些GCRoot并不是对象，其是否修改是无法获知的，所以初始标记阶段要STW。<br>重新标记阶段是开始GC之前的最后一次标记，目的就是修正并发标记阶段因为应用程序继续执行而产生的变化，这个阶段需要准确的检测变化，所以需要STW。</p>
+<p>并发标记阶段是标记GC Root能间接到达的对象，这个过程可以并发执行，后面以重新标记阶段兜底，所以不需要STW。</p>
+]]></content>
+      <tags>
+        <tag>JVM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>新生代和老年代的垃圾回收器有何区别</title>
+    <url>/2024/08/06/%E6%96%B0%E7%94%9F%E4%BB%A3%E5%92%8C%E8%80%81%E5%B9%B4%E4%BB%A3%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E6%9C%89%E4%BD%95%E5%8C%BA%E5%88%AB/</url>
+    <content><![CDATA[<p>常见的垃圾回收器类型：</p>
+<span id="more"></span>
+<ol>
+<li>串行垃圾回收器：Serial GC，Serial Old</li>
+<li>并行垃圾回收器：Parallel Scavenge，Parallel Old，ParNew</li>
+<li>并发标记扫描垃圾回收器：CMS</li>
+<li>G1垃圾回收器</li>
+<li>ZGC垃圾回收器</li>
+</ol>
+<p>新生代的垃圾回收器：Serial GC、Parallel Scavenge、ParNew<br>老年代垃圾回收器：Serial Old、Parallel Old和CMS<br>整堆垃圾回收器：G1和ZGC</p>
+<h1 id="串行垃圾回收器"><a href="#串行垃圾回收器" class="headerlink" title="串行垃圾回收器"></a>串行垃圾回收器</h1><h2 id="Serial-GC"><a href="#Serial-GC" class="headerlink" title="Serial GC"></a>Serial GC</h2><p><strong>Serial GC是单线程的串行垃圾回收器，主要采用标记-复制算法。</strong></p>
+<p>单线程的垃圾回收器避免了线程上下文切换，减少系统开销。但是这种方式的缺点也很明显，在GC的时候，其他线程的工作都要停止，等待GC完成。如果GC不频繁，Serial GC可能是一个比较好的选择，否则可能会影响线程的执行性能。</p>
+<h2 id="Serial-Old"><a href="#Serial-Old" class="headerlink" title="Serial Old"></a>Serial Old</h2><p><strong>Serial Old是用于老年代GC的单线程垃圾回收器，主要用的是标记-整理算法</strong>。</p>
+<p>和Serial GC相比，老年代采用的是标记-整理算法，而新生代采用的是标记-复制算法，可能是因为老年代对象的复制比较消耗时间和内存空间。两种串行垃圾回收器的优缺点相同。</p>
+<h1 id="并行垃圾回收器"><a href="#并行垃圾回收器" class="headerlink" title="并行垃圾回收器"></a>并行垃圾回收器</h1><h2 id="ParNew"><a href="#ParNew" class="headerlink" title="ParNew"></a>ParNew</h2><p><strong>ParNew就是Serial GC的多线程版本，是新生代的垃圾回收器，主要用的是标记-复制算法。</strong></p>
+<p>和Serial相同，ParNew在GC的时候也是STW的，但是因为多线程同时进行GC，所以执行时间通常比Serial GC短。</p>
+<h2 id="Parallel-Scavenge"><a href="#Parallel-Scavenge" class="headerlink" title="Parallel Scavenge"></a>Parallel Scavenge</h2><p><strong>Parallel Scavenge也是新生代的垃圾回收器，和ParNew一样是多线程并行的，采用的也是标记-复制算法</strong>。和ParNew不同的是，Parallel Scavenge注重的是垃圾回收的吞吐量，以吞吐量优先。</p>
+<p>因为Parallel Scavenge注重的是吞吐量，所以会尽可能以最高效率利用CPU时间，尽快完成线程的运算任务，所以比较适合在后台运算，比如一些定时任务的执行。</p>
+<h2 id="Parallel-Old"><a href="#Parallel-Old" class="headerlink" title="Parallel Old"></a>Parallel Old</h2><p><strong>Parallel Old是Parallel Scavenge用在老年代的版本，采用的是标记-整理算法。同样是注重吞吐量的。</strong></p>
+<h1 id="CMS"><a href="#CMS" class="headerlink" title="CMS"></a>CMS</h1><p>CMS的全名：Concurrent Mark Sweep，同样是老年代的垃圾回收器，是<strong>并发执行</strong>的，与<strong>并行</strong>的Parallel系列相比，CMS更注重垃圾回收的停顿时间。CMS采用的是时间更短的标记-清除算法。</p>
+<p>详细内容可见：<a href="">介绍下CMS的垃圾回收过程</a></p>
+<h1 id="并发回收与并行回收"><a href="#并发回收与并行回收" class="headerlink" title="并发回收与并行回收"></a>并发回收与并行回收</h1><h2 id="并行"><a href="#并行" class="headerlink" title="并行"></a>并行</h2><p>Parallel系列就是并行的。并行垃圾回收器关注的是吞吐量（吞吐量&#x3D;程序运行时间&#x2F;(程序运行时间+GC时间)），希望应用程序的吞吐量尽可能高，所以并行的垃圾回收器会想尽办法最高效率地利用CPU时间来完成GC（个人理解就是短时间内把CPU资源尽可能占用，快点完成垃圾回收），所以在GC期间是STW的。</p>
+<p>并行垃圾回收器在多核处理器上，可以快速提升垃圾回收的速度，尤其是堆内存较大，且CPU资源充足的场景下效果最好。</p>
+<h2 id="并发"><a href="#并发" class="headerlink" title="并发"></a>并发</h2><p>CMS就是典型的并发垃圾回收器，它更关注STW的时长，毕竟STW期间应用程序是无法响应的，有些场景还是需要应用程序无法响应的时间比较短。并发垃圾回收器允许应用程序执行同时执行部分垃圾回收工作，减少STW的时间。并发回收期间，只有特定的回收阶段才会发生短暂的STW。</p>
+<p>所以，并发垃圾回收器减少了应用程序的停顿时间，适用于需要较低延迟的应用场景，比如在线交易处理系统、游戏服务器等。并行垃圾回收器则是适用于需要最大化吞吐量同时对STW时间要求不是很高的应用。</p>
+<blockquote>
+<p>在前面介绍的Parallel系列和CMS时，提到了吞吐量和垃圾回收的停顿时间。我感觉说的比较抽象，个人理解就是：所谓吞吐量&#x3D;程序运行时间&#x2F;(程序运行时间+GC时间)，程序运行时间我们决定不了，但是我们可以缩短GC时间来提高吞吐量，那就很短的时间内全力GC就行了。CMS关注的垃圾回收的停顿时间，个人理解的就是如果应用程序比较介意有停顿时间，响应不了，那我们就用并发垃圾回收器，在应用程序执行的同时进行GC，也就只有特定的垃圾回收才不得不STW。</p>
+</blockquote>
+<p>关于G1和ZGC垃圾回收器可见：<br><a href="">简单介绍一下G1垃圾回收器</a><br><a href="">JDK 11新出的ZGC有什么特点</a></p>
+]]></content>
+      <tags>
+        <tag>JVM</tag>
+      </tags>
+  </entry>
 </search>
