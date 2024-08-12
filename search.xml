@@ -3244,4 +3244,40 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>MySQL</category>
       </categories>
   </entry>
+  <entry>
+    <title>MySQL存储引擎</title>
+    <url>/2024/08/12/MySQL%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E/</url>
+    <content><![CDATA[<h1 id="什么是数据库存储引擎？"><a href="#什么是数据库存储引擎？" class="headerlink" title="什么是数据库存储引擎？"></a>什么是数据库存储引擎？</h1><span id="more"></span>
+<p>数据库存储引擎是提供数据存储、处理和保护的核心服务，利用数据库存储引擎能够控制数据访问权限，快速处理事务，满足企业大多数需要处理大量数据的需求。</p>
+<p><strong>MySQL的存储引擎是基于表的，而不是基于数据库的，所以可以指定某个表使用什么引擎。</strong></p>
+<h1 id="MySQL中怎么指定引擎？"><a href="#MySQL中怎么指定引擎？" class="headerlink" title="MySQL中怎么指定引擎？"></a>MySQL中怎么指定引擎？</h1><ol>
+<li><p>创建表时：<br>create table table1(id int(11) primary key auto_increment) engine&#x3D;MyISAM;</p>
+</li>
+<li><p>修改表时：<br>alter table table1 engine&#x3D;InnoDB;</p>
+</li>
+</ol>
+<h1 id="MySQL支持哪几种执行引擎，有什么区别？"><a href="#MySQL支持哪几种执行引擎，有什么区别？" class="headerlink" title="MySQL支持哪几种执行引擎，有什么区别？"></a>MySQL支持哪几种执行引擎，有什么区别？</h1><p>MySQL是开源的，我们可以编写我们自己的存储引擎，有以下几种存储引擎：<br>MyISAM，InnoDB，MEMORY等。</p>
+<h1 id="MyISAM和InnoDB有什么区别？"><a href="#MyISAM和InnoDB有什么区别？" class="headerlink" title="MyISAM和InnoDB有什么区别？"></a>MyISAM和InnoDB有什么区别？</h1><p>MySQL在5.5之前默认的存储引擎是MyISAM,之后默认的引擎是InnoDB。MyISAM适用于查询和插入为主的应用，InnoDB适用于修改和数据安全性要求较高的应用。</p>
+<blockquote>
+<ul>
+<li>如果应用主要是读写操作，或者是需要搞笑的全文搜索功能，那么MyISAM比较适合；</li>
+<li>如果应用需要高度的数据完整性和事务支持，频繁的数据修改和数据安全性保证，还是InnoDB比较合适。</li>
+</ul>
+</blockquote>
+<p>两者之间主要的区别：</p>
+<ol>
+<li>InnoDB支持事务，MyISAM不支持；</li>
+<li>InnoDB的索引是聚集索引，索引和数据是一起的；MyISAM是非聚集索引，索引和数据是分开的。</li>
+<li>InnoDB支持外键，MyISAM不支持。</li>
+<li>InnoDB锁粒度最小是行锁，MyISAM最小的锁粒度是表锁。</li>
+<li>InnoDB在5.6之前不支持全文索引。</li>
+<li>InnoDB中不保存表的行数，但是MyISAM有保存行数。</li>
+<li>对于自增长的字段，InnoDB必须包含只有该字段的索引，但是MyISAM中可以和其他字段一起建立联合索引。</li>
+<li>清空整个表的时候，InnoDB是一行一行删除的，效率比较低，MyISAM是重建表。</li>
+</ol>
+<img src="/2024/08/12/MySQL%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E/img1.png" class="" title="img1">]]></content>
+      <categories>
+        <category>MySQL</category>
+      </categories>
+  </entry>
 </search>
