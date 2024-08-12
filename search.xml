@@ -3140,7 +3140,7 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
 <blockquote>
 <p>在前面介绍的Parallel系列和CMS时，提到了吞吐量和垃圾回收的停顿时间。我感觉说的比较抽象，个人理解就是：所谓吞吐量&#x3D;程序运行时间&#x2F;(程序运行时间+GC时间)，程序运行时间我们决定不了，但是我们可以缩短GC时间来提高吞吐量，那就很短的时间内全力GC就行了。CMS关注的垃圾回收的停顿时间，个人理解的就是如果应用程序比较介意有停顿时间，响应不了，那我们就用并发垃圾回收器，在应用程序执行的同时进行GC，也就只有特定的垃圾回收才不得不STW。</p>
 </blockquote>
-<p>关于G1和ZGC垃圾回收器可见：<br><a href="">简单介绍一下G1垃圾回收器</a><br><a href="">JDK 11新出的ZGC有什么特点</a></p>
+<p>关于G1和ZGC垃圾回收器可见：<br><a href="https://daisybby.github.io/2024/08/12/%E4%B8%BA%E4%BB%80%E4%B9%88JDK-9%E4%B9%8B%E5%90%8EG1%E6%88%90%E4%B8%BA%E9%BB%98%E8%AE%A4%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/">简单介绍一下G1垃圾回收器</a></p>
 ]]></content>
       <tags>
         <tag>JVM</tag>
