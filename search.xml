@@ -3280,4 +3280,68 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>MySQL</category>
       </categories>
   </entry>
+  <entry>
+    <title>什么是聚簇索引和非聚簇索引</title>
+    <url>/2024/08/12/%E4%BB%80%E4%B9%88%E6%98%AF%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95%E5%92%8C%E9%9D%9E%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95/</url>
+    <content><![CDATA[<h1 id="聚簇索引"><a href="#聚簇索引" class="headerlink" title="聚簇索引"></a>聚簇索引</h1><span id="more"></span>
+<p>说简单点，聚簇索引就是索引和数据存储在一起，找到了索引也就找到了数据。因为数据库中是用B+树存储的，所以聚簇索引的非叶子节点保存的是索引，叶子节点中保存的是这条记录的整行数据。</p>
+<p>在InnoDB中，聚簇索引就是根据每张表的主键构建的索引方式，是将表数据按照主键的顺序保存到磁盘的一种方式。这种方式保证了数据是按照索引的逻辑顺序来进行物理存储的，因此查找聚簇索引的速度会很快。</p>
+<p>那有一个问题，如果我们没有创建主键怎么办？还怎么创建聚簇索引？数据怎么存储？<br>因为InnoDB是针对每个表的主键构造一个B+树，如果我们没有给这个表创建主键，数据库会选择一个不为空的唯一索引来作为聚簇索引，但是如果没有合适的唯一索引，那么就会使用数据库自动添加的隐藏主键来作为聚簇索引。</p>
+<h1 id="非聚簇索引"><a href="#非聚簇索引" class="headerlink" title="非聚簇索引"></a>非聚簇索引</h1><p>非聚簇索引就是索引和数据是分开存放的，B+树的叶子节点保存的是索引字段值以及指向数据页数据行的逻辑指针。</p>
+<p>在InnoDB中，非聚簇索引是指那些根据非主键字段创建的索引，即二级索引。二级索引并不影响数据的无论存储，而是单独创建一张索引表，用于存储索引和数据的逻辑指针。</p>
+<p>在InnoDB中，主键索引就是聚簇索引，非主键索引就是非聚簇索引：</p>
+<ul>
+<li>聚簇索引的非叶子节点保存索引值，叶子节点保存整行数据；</li>
+<li>非聚簇索引的非叶子节点保存索引，叶子节点保存主键的值+索引。所以通过非聚簇索引的查询，需要进行一次回表，先查到主键ID，然后再根据主键ID查询数据。</li>
+</ul>
+<h1 id="什么是回表？怎么减少回表的次数？"><a href="#什么是回表？怎么减少回表的次数？" class="headerlink" title="什么是回表？怎么减少回表的次数？"></a>什么是回表？怎么减少回表的次数？</h1><p>在InnoDB中，非聚簇索引的B+树，叶子节点保存的是索引值和主键值，之后还要利用这个主键值去查主键索引（聚簇索引），这个用主键进行二次查询的过程就是回表。</p>
+<p>在InnoDB中，主键查询效率是最高的，这个过程不需要回表。依赖于<strong>覆盖索引、索引下推</strong>等计数，可以优化索引结构以及SQL语句，减少回表的次数。</p>
+<h2 id="覆盖索引"><a href="#覆盖索引" class="headerlink" title="覆盖索引"></a>覆盖索引</h2><p>在非聚簇索引中，B+树的叶子节点是数据的逻辑指针，需要回表访问实际的数据行。如果我们直接把数据信息放到索引里，那么从索引就能得到目标数据，不需要再回表了。<br>简单点理解就是把要查询的字段直接包含在索引当中，这样就避免了回表操作。</p>
+<p>举个例子：<br>用户表包括：user_id,name,age，address。<br>我们想要查询用户的name和age，通过覆盖索引来提高查询效率，那么就可以建立一个包含name和age的覆盖索引（联合索引）：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> INDEX idx_user_name_age <span class="keyword">ON</span> users (name,age);</span><br></pre></td></tr></table></figure>
+<p>数据库可以直接从索引中获取name和age字段，不需要再去聚簇索引中 查询实际行了，从而提高查询性能。</p>
+<p><strong>优缺点：</strong><br>优点：</p>
+<ul>
+<li><strong>避免二次查找：</strong>覆盖索引避免了查到索引之后再去回表，从而提升查询效率；</li>
+<li><strong>减少I&#x2F;O次数：</strong></li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li><strong>对索引的要求较高：</strong>使用覆盖索引必须把需要查询的字段包含在联合索引中，联合索引的使用场景和效率都有一定的限制，滥用联合索引可能会增加索引扫描的代价。</li>
+<li><strong>占用更多空间：</strong>索引需要包含目标字段，这就导致索引需要的空间更大，而且更新数据库表的时候还要更新索引，带来额外的开销。</li>
+</ul>
+<h2 id="索引下推"><a href="#索引下推" class="headerlink" title="索引下推"></a>索引下推</h2><p>所谓的索引下推就是在扫描索引的同时进行条件过滤，过滤掉那些不符合where条件的索引，从而减少回表的次数。</p>
+<p>从概念理解比较抽象，而且我觉得分不开索引覆盖和索引下推。</p>
+<p>举个具体的例子：<br>有一个employees表，包含以下列：id,name,deparment_id,salary。如果我们经常对department_id和salary查询，那么可以建立联合索引idx_department_salary。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> INDEX idx_department_salary <span class="keyword">ON</span> employees (department_id,salary);</span><br></pre></td></tr></table></figure>
+<p>现在想要查询department_id&#x3D;5 AND salary&gt;5000的员工：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> employees <span class="keyword">where</span> department_id<span class="operator">=</span><span class="number">5</span> <span class="keyword">AND</span> salary<span class="operator">&gt;</span><span class="number">5000</span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>没有索引下推：</strong></p>
+<ol>
+<li>先扫描整个employee表，然后过滤出所有department_id&#x3D;5的记录；</li>
+<li>检查第一步筛选出的记录是否满足条件salary&gt;5000；<blockquote>
+<p>个人理解这种情况就是没有联合索引可用的。<br><strong>有索引下推：</strong></p>
+</blockquote>
+</li>
+<li>数据库使用联合索引idx_department_salary来快速定位department_id&#x3D;5的记录；</li>
+<li>在索引内部，数据库进一步筛选出salary&gt;5000的记录；</li>
+<li>根据筛选出来的逻辑指针，回表查询目的数据。</li>
+</ol>
+<p>索引下推的使用条件：</p>
+<ol>
+<li>只能用于range、ref、eq_ref、ref_or_null方法</li>
+<li>只能用于InnoDB和MyISAM存储引擎及其分区表；</li>
+<li>对于InnoDB而言，索引下推只能用于二级索引。</li>
+<li>引用了子查询的条件不能下推；</li>
+<li>引用了存储函数的条件不能下推，因为存储引擎不能调用存储函数。</li>
+</ol>
+<blockquote>
+<p>下面说点个人理解：不管是覆盖索引将目标列直接放进索引也好，还是索引下推直接在扫描索引的过程中就筛选也好，都是依赖于联合索引来实现的；而且通常两者是结合起来使用的，索引覆盖会利用索引下推机制，毕竟数据就在索引中，所以可以一边扫描一边筛选。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>MySQL</category>
+      </categories>
+  </entry>
 </search>
