@@ -3462,4 +3462,76 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>MySQL</category>
       </categories>
   </entry>
+  <entry>
+    <title>为什么不建议使用多表join</title>
+    <url>/2024/08/13/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%BB%BA%E8%AE%AE%E4%BD%BF%E7%94%A8%E5%A4%9A%E8%A1%A8join/</url>
+    <content><![CDATA[<p>不建议使用join是因为join的效率很低。</p>
+<span id="more"></span>
+<h1 id="什么是join"><a href="#什么是join" class="headerlink" title="什么是join"></a>什么是join</h1><p>在MySQL中，是通过嵌套循环来实现join关联查询的。简单点说就是两个循环，外循环遍历第一个表，内循环遍历第二个表，如果有两张表join，那么查询的时间复杂度就是O(n^2)，三张表就是O(n^3)。</p>
+]]></content>
+      <categories>
+        <category>MySQL</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>类的生命周期</title>
+    <url>/2024/08/14/%E7%B1%BB%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/</url>
+    <content><![CDATA[<p>一个类从诞生到卸载，分为以下几步：</p>
+<span id="more"></span>
+<p>总体理解可以分为：类加载-&gt;类使用-&gt;类卸载。<br>类加载又包括：加载-&gt;链接-&gt;初始化。<br>那链接又包括：验证-&gt;准备-&gt;解析。</p>
+<h1 id="类的加载阶段"><a href="#类的加载阶段" class="headerlink" title="类的加载阶段"></a>类的加载阶段</h1><p>类加载包括：加载、链接（验证、准备、解析）、初始化三个阶段。</p>
+<h2 id="加载阶段"><a href="#加载阶段" class="headerlink" title="加载阶段"></a>加载阶段</h2><p>加载阶段就是将.class文件加载到JVM中，以类的全限定名获取该类的二进制字节流（class文件），并将以二进制字节流形式表示的静态存储结构转换为方法区的运行时数据结构。</p>
+<p>在类加载过程中会创建java.lang.Class类的一个对象来代表这个类，这个Class类作为程序中类的数据访问入口。</p>
+<h2 id="链接阶段"><a href="#链接阶段" class="headerlink" title="链接阶段"></a>链接阶段</h2><ol>
+<li>验证：在对类进行解析之前，校验类的结构是否正确，是否符合JVM规范。</li>
+<li>准备：为变量分配内存空间，并设置初始值。这里初始化的是类变量，分配的空间都在方法区。</li>
+<li>解析：将类的符号引用转换成直接引用（类或接口、字段、类方法、接口方法、方法类型、方法句柄和访问控制修饰符等7类符号引用）</li>
+</ol>
+<h2 id="初始化阶段"><a href="#初始化阶段" class="headerlink" title="初始化阶段"></a>初始化阶段</h2><p>初始化阶段是执行类构造器的阶段。</p>
+<blockquote>
+<p>类加载采用的是懒加载的策略，只有这个类或接口被Java程序首次主动使用的时候，才会被加载。</p>
+</blockquote>
+<p>类的静态代码块在类初始化的时候执行，类触发初始化的场景如下：</p>
+<ol>
+<li>当遇到new、getstatic、putstatic或invoke static这4条字节码指令时，比如new一个类，读取一个静态字段、或调用一个类的静态方法会进行该类的初始化。</li>
+<li>使用java.lang.reflect对类进行反射时，如果类没有被初始化，需要触发类的初始化。</li>
+<li>初始化一个类的时候，如果父类还没有初始化，那么触发类的初始化。</li>
+<li>虚拟机启动的时候，会优先触发主类的初始化。</li>
+</ol>
+<h2 id="什么是符号引用和直接引用"><a href="#什么是符号引用和直接引用" class="headerlink" title="什么是符号引用和直接引用"></a>什么是符号引用和直接引用</h2><p><strong>符号引用：</strong>说简单点，就是一些名称，比如类名、方法名、字段名等，符号引用和变量的物理存储地址无关，只是一个标识符。符号引用是在编译阶段产生的，会保存到class文件中。<br><strong>直接引用：</strong>直接引用就是指向实际的内存地址了，比如类的实例等，直接引用和具体的内存地址有关，是在运行期产生的。</p>
+<p>在类加载的、链接的解析阶段，会把符号引用解析成直接引用。</p>
+<h1 id="类卸载过程"><a href="#类卸载过程" class="headerlink" title="类卸载过程"></a>类卸载过程</h1><p>如果类满足了如下两个条件：</p>
+<ol>
+<li>该类所有的实例都已经被回收；</li>
+<li>加载该类的classLoader已经被回收。</li>
+</ol>
+<p>那么这个类就会在Full GC阶段被移出方法区。</p>
+]]></content>
+      <categories>
+        <category>JVM</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Java中的类什么时候被加载</title>
+    <url>/2024/08/15/Java%E4%B8%AD%E7%9A%84%E7%B1%BB%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E8%A2%AB%E5%8A%A0%E8%BD%BD/</url>
+    <content><![CDATA[<h1 id="什么时候触发类的加载"><a href="#什么时候触发类的加载" class="headerlink" title="什么时候触发类的加载"></a>什么时候触发类的加载</h1><span id="more"></span>
+<p>在以下几种情况下，会触发类的加载：</p>
+<ol>
+<li>当创建类的实例对象时，发现类还没有被加载，这个时候就会触发类的加载；</li>
+<li>当调用类的静态方法、静态变量、或者静态代码块的时候，发现类还没加载，就会触发加载；</li>
+<li>通过反射机制访问类的时候，类没有被加载，也会触发类的加载机制；</li>
+<li>程序启动的时候，会主动加载一些基础类，或者是主体类。</li>
+</ol>
+<h1 id="什么时候触发类的卸载"><a href="#什么时候触发类的卸载" class="headerlink" title="什么时候触发类的卸载"></a>什么时候触发类的卸载</h1><p>满足以下两个条件时，类会被卸载：</p>
+<ol>
+<li>类的所有实例对象都已经被回收</li>
+<li>用于加载类的ClassLoader已经被回收</li>
+</ol>
+<p>需要注意的是，尽管类已经可以被卸载了，JVM可能也不会立马就执行卸载，而是在JVM释放内存空间的时候才对不使用的类进行卸载。因为类卸载是一个比较耗时的操作，会影响程序的性能。</p>
+<p>另外，在Java SE 9中，引入了模块的概念，通过模块化可以对类进行更加精细的控制，当模块中的类不再被引用的时候，这个模块就可以被卸载。</p>
+]]></content>
+      <categories>
+        <category>JVM</category>
+      </categories>
+  </entry>
 </search>
