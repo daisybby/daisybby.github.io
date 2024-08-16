@@ -3580,4 +3580,25 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>JVM</category>
       </categories>
   </entry>
+  <entry>
+    <title>JVM如何创建一个对象</title>
+    <url>/2024/08/16/JVM%E5%A6%82%E4%BD%95%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%AF%B9%E8%B1%A1/</url>
+    <content><![CDATA[<h1 id="创建类的过程"><a href="#创建类的过程" class="headerlink" title="创建类的过程"></a>创建类的过程</h1><span id="more"></span>
+<ol>
+<li>先通过创建对象的指令去常量池中定位这个类对应的符号引用，并检查这个类有没有被加载过，如果还没加载，那么触发<strong>类加载过</strong>程。</li>
+<li><strong>分配内存</strong>。在堆中为对象分配内存空间，在HotSpot虚拟机中，分配内存空间的方式有两种：<strong>指针碰撞法</strong>和<strong>空闲列表法</strong>。<ul>
+<li>指针碰撞法：堆中的空闲空间是连续的，那么使用一个指针来标记当前可用内存空间的地址，分配内存就是将这个指针向后移动一定的距离，代表这部分内存已经不再是空闲的了。</li>
+<li>空闲列表法：这种是用于空闲空间是离散的，使用一个空闲列表来记录可用的空闲空间地址和可用大小。在为对象分配内存的时候，遍历空闲列表，找到具有足够大小的空闲空间分配。</li>
+</ul>
+</li>
+<li><strong>初始化零值。</strong> 将分配到的内存空间初始化为0值，使得对象的每个字段在创建时都有默认的初始值，比如int类型的数据被初始化为0.</li>
+<li><strong>设置对象头。</strong> 对象头要记录这个对象所属的类、怎么才能找到这个类的元数据信息、对象的hashcode、对象的GC分代年龄等。</li>
+<li><strong>调用构造方法，初始化对象。</strong> 在构造方法里面，可能会定义了开发者希望初始化的字段值。</li>
+<li><strong>返回对象的引用。</strong> 创建好对象之后，把这个对象的引用返回，之后程序可以通过这个引用来操作新创建的对象。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>JVM</category>
+      </categories>
+  </entry>
 </search>
