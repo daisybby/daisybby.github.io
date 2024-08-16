@@ -19,27 +19,29 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"daisybby.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="一、基础概念">
+    <meta name="description" content="类加载器之间的层级关系，称为类的双亲委派模型：">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java中组合和继承">
-<meta property="og:url" content="https://daisybby.github.io/2024/07/18/composition-and-inheritance/index.html">
+<meta property="og:title" content="什么是双亲委派模型">
+<meta property="og:url" content="https://daisybby.github.io/2024/08/15/%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B/index.html">
 <meta property="og:site_name" content="daisybby">
-<meta property="og:description" content="一、基础概念">
+<meta property="og:description" content="类加载器之间的层级关系，称为类的双亲委派模型：">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-07-18T07:10:57.000Z">
-<meta property="article:modified_time" content="2024-07-18T07:59:33.678Z">
+<meta property="og:image" content="https://daisybby.github.io/2024/08/15/%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B/img1.png">
+<meta property="article:published_time" content="2024-08-15T12:59:42.000Z">
+<meta property="article:modified_time" content="2024-08-16T08:04:10.595Z">
 <meta property="article:author" content="Daisybby">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://daisybby.github.io/2024/08/15/%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B/img1.png">
 
 
-<link rel="canonical" href="https://daisybby.github.io/2024/07/18/composition-and-inheritance/">
+<link rel="canonical" href="https://daisybby.github.io/2024/08/15/%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/07/18/composition-and-inheritance/","path":"2024/07/18/composition-and-inheritance/","title":"Java中组合和继承"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/08/15/%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B/","path":"2024/08/15/什么是双亲委派模型/","title":"什么是双亲委派模型"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Java中组合和继承 | daisybby</title>
+<title>什么是双亲委派模型 | daisybby</title>
   
 
 
@@ -139,7 +141,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5"><span class="nav-text">一、基础概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E7%BB%A7%E6%89%BF%E4%B8%8E%E7%BB%84%E5%90%88%E7%9A%84%E5%8C%BA%E5%88%AB%E4%B8%8E%E8%81%94%E7%B3%BB"><span class="nav-text">二、继承与组合的区别与联系</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-%E7%BB%A7%E6%89%BF"><span class="nav-text">2.1.继承</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%E7%BB%84%E5%90%88"><span class="nav-text">2.2.组合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-%E4%B8%A4%E8%80%85%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="nav-text">2.3.两者的优缺点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%80%8E%E4%B9%88%E9%80%89%E6%8B%A9%E7%BB%A7%E6%89%BF%E8%BF%98%E6%98%AF%E7%BB%84%E5%90%88%EF%BC%9F"><span class="nav-text">三、怎么选择继承还是组合？</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B%EF%BC%9F"><span class="nav-text">为什么需要双亲委派模型？</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -195,7 +197,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/07/18/composition-and-inheritance/">
+    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/08/15/%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/header.jpg">
@@ -208,12 +210,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Java中组合和继承 | daisybby">
+      <meta itemprop="name" content="什么是双亲委派模型 | daisybby">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Java中组合和继承
+          什么是双亲委派模型
         </h1>
 
         <div class="post-meta-container">
@@ -223,9 +225,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2024-07-18 15:10:57 / 修改时间：15:59:33" itemprop="dateCreated datePublished" datetime="2024-07-18T15:10:57+08:00">2024-07-18</time>
+      <time title="创建时间：2024-08-15 20:59:42" itemprop="dateCreated datePublished" datetime="2024-08-15T20:59:42+08:00">2024-08-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-08-16 16:04:10" itemprop="dateModified" datetime="2024-08-16T16:04:10+08:00">2024-08-16</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -233,7 +241,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
+          <a href="/categories/JVM/" itemprop="url" rel="index"><span itemprop="name">JVM</span></a>
         </span>
     </span>
 
@@ -244,7 +252,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>996</span>
+      <span>1k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -261,34 +269,33 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="一、基础概念"><a href="#一、基础概念" class="headerlink" title="一、基础概念"></a>一、基础概念</h1><span id="more"></span>
-<p><strong>继承：</strong><br>子类继承父类的功能，并且可以添加自己的新功能，当然，子类也可以重写从父类继承过来的方法。继承是类与类之间，也是类与接口之间最常见的关系，是一种<code>is-a</code>关系。例如Dog继承自Animal，且Dog is a Animal。<br><strong>组合：</strong><br>组合体现的是整体与部分的关系，拥有的关系，即<code>has-a</code>关系。例如Dog类包含Trail类，Dog has a Trail。</p>
-<h1 id="二、继承与组合的区别与联系"><a href="#二、继承与组合的区别与联系" class="headerlink" title="二、继承与组合的区别与联系"></a>二、继承与组合的区别与联系</h1><h2 id="2-1-继承"><a href="#2-1-继承" class="headerlink" title="2.1.继承"></a>2.1.继承</h2><p>父类的内部细节对于子类来说是可见的，所以通过继承方式实现的代码复用是<strong>白盒式代码复用</strong>。如果父类发生了改变，那么子类也会发生改变，这会导致子类行为具有一定的不可预知性。<br>我们在定义类的时候，就要写清楚这个类有没有继承哪个类，所以继承关系在<strong>编译阶段</strong>就已经确定。因此在运行期是不能修改的，降低了应用的灵活性。</p>
-<h2 id="2-2-组合"><a href="#2-2-组合" class="headerlink" title="2.2.组合"></a>2.2.组合</h2><p>组合是通过对现有的对象进行组合拼装，来构成新的功能。组合内部的各个对象之间，内部细节是不可见的，所以通过组合实现代码复用是<strong>黑盒式代码复用</strong>，只能在组合内部定义新的方法，来调用组合拥有对象的接口。需要不同的功能，可以调用不同成员对象的接口，更加灵活。<br>组合使得我们可以采用面向接口编程，所以组合关系是在<strong>运行期</strong>确定的。</p>
-<h2 id="2-3-两者的优缺点"><a href="#2-3-两者的优缺点" class="headerlink" title="2.3.两者的优缺点"></a>2.3.两者的优缺点</h2><p><strong>继承：</strong><br>缺点：</p>
+    <div class="post-body" itemprop="articleBody"><p>类加载器之间的层级关系，称为类的双亲委派模型：</p>
+<span id="more"></span>
+<p>双亲委派模型要求除了顶层的启动类加载器之外，其他的类加载器都要有自己的父类加载器。父类加载器和类加载器之间的关系不是通过继承来实现的，而是通过<strong>组合</strong>的方式来实现的。</p>
+<img src="/2024/08/15/%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B/img1.png" class="" title="img1">
+
+<p>双亲委派模型的工作流程：当前类加载器收到了加载类的请求，把这个请求提交给父类加载器，父类加载器如果也有上一级父类加载器，那么会继续向上转发，那么最终由启动类加载器加载；如果类加载器没有办法加载这个类（在它的搜索范围内没有找到目标类），那么会向下返回，由当前类加载器自己加载。</p>
+<p>实现上述流程的代码逻辑：实现双亲委派模型的代码都写在java.lang.ClassLoader的loadClass方法中，</p>
 <ul>
-<li>继承是会破坏封装的，父类的内部细节对子类是可见的。</li>
-<li>子类无法动态继承，继承关系在编译期就确定，运行期子类无法动态选择继承哪个类。</li>
-<li>子类依赖于父类，如果父类的实现发生了改变，子类也会被改变。</li>
+<li>先检查当前类有没有被加载，如果没有被加载，则调用父类加载器的loadClass方法；</li>
+<li>如果没有父类加载器，那么就调用启动类加载器作为父类加载器；</li>
+<li>如果父类加载器不能加载这个类，抛出了ClassNotFoundException异常，那么就调用自己的findClass方法进行加载。</li>
 </ul>
-<p>优点：</p>
-<ul>
-<li>子类可以自动继承父类的接口，也能够重写父类的方法，或者是新增自己的方法，实现扩展。</li>
-<li>创建对象的时候，创建子类的对象就行了，不需要创建父类的对象就能调用父类的方法。</li>
-</ul>
-<p><strong>组合：</strong><br>缺点：</p>
-<ul>
-<li>组合不能自动获得内部局部类的接口，需要自己写各种功能的接口。</li>
-<li>创建组合对象时，会创建所有内部类的对象。</li>
-</ul>
-<p>优点：</p>
-<ul>
-<li>组合并不会破坏封装，局部类的内部细节是不可见的，只能调用局部类提供的接口。</li>
-<li>组合能够实现类与类之间的解耦，程序安全性更好。</li>
-<li>组合关系是在运行期确定的，在运行时整体对象可以选择不同类型的局部对象；</li>
-<li>组合的整体类可以对局部类进行包装，封装局部类的接口，提供新的接口。</li>
-</ul>
-<h1 id="三、怎么选择继承还是组合？"><a href="#三、怎么选择继承还是组合？" class="headerlink" title="三、怎么选择继承还是组合？"></a>三、怎么选择继承还是组合？</h1><p>通常来说，组合由于继承，多用组合，少用继承。组合更加灵活，也更有助于代码维护。<br>但是，有些特殊场景下，继承是更合适的。比如：<br>类之间是十分明显的<code>is-a</code>关系，且需要从子类向上转型，这个时候继承是必要的。</p>
+<blockquote>
+<p>从上面可以看出来，双亲委派模型主要是在ClassLoader.loadClass方法中实现的，所以我们可以重写这个方法，不调用父类加载器，那么就可以破坏双亲委派模型。</p>
+</blockquote>
+<h1 id="为什么需要双亲委派模型？"><a href="#为什么需要双亲委派模型？" class="headerlink" title="为什么需要双亲委派模型？"></a>为什么需要双亲委派模型？</h1><ol>
+<li>安全性<br>使用双亲委派模型能够保证核心类不会被用户覆盖或者篡改。举个例子，我们自己写了一个java.lang.Object类，但是最终应用类加载器逐步将类加载请求转发到了启动类加载器，启动类加载器加载的是系统提供的java.lang.Object，而不是我们自己瞎写的这个类。避免安全风险。</li>
+<li>避免类重复加载<br>类被加载之后，类加载器会记录下这个类的字节码信息，在下次遇到这个类的加载请求时，可以清晰地获知这个类已经被加载过了，从而避免重复地加载同一个类，节省系统资源，提升系统性能。</li>
+<li>逻辑清晰<br>双亲委派模型使得系统工作的逻辑更加清晰，核心类的加载都交给启动类加载器和扩展类加载器来完成，自定义的应用类由应用类加载器来完成。</li>
+</ol>
+<p><strong>loadClass和findClass：</strong><br>简单粗暴一点理解就是先执行loadClass，在这里面会做的事：</p>
+<ol>
+<li>调用父类加载器的loadClass</li>
+<li>如果父类加载器说加载不了这个类，那么就调用自己的findClass方法。</li>
+</ol>
+<p>findClass方法中是类加载器自己完成类加载的逻辑。</p>
+<p>如果想要破坏双亲委派模型，那么需要重写外层的loadClass方法。<br>如果不想破坏双亲委派模型，那么重写自己的findClass方法就行。</p>
 
     </div>
 
@@ -318,7 +325,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://daisybby.github.io/2024/07/18/composition-and-inheritance/" title="Java中组合和继承">https://daisybby.github.io/2024/07/18/composition-and-inheritance/</a>
+      <a href="https://daisybby.github.io/2024/08/15/%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B/" title="什么是双亲委派模型">https://daisybby.github.io/2024/08/15/什么是双亲委派模型/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -331,14 +338,11 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2024/07/18/Java-Timer/" rel="prev" title="Java Timer实现定时调度">
-                  <i class="fa fa-angle-left"></i> Java Timer实现定时调度
+                <a href="/2024/08/15/Java%E4%B8%AD%E7%9A%84%E7%B1%BB%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E8%A2%AB%E5%8A%A0%E8%BD%BD/" rel="prev" title="Java中的类什么时候被加载">
+                  <i class="fa fa-angle-left"></i> Java中的类什么时候被加载
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2024/07/18/Java-no-attribute-constructor/" rel="next" title="为什么建议自定义一个无参构造器？">
-                  为什么建议自定义一个无参构造器？ <i class="fa fa-angle-right"></i>
-                </a>
             </div>
           </div>
     </footer>

@@ -3534,4 +3534,39 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>JVM</category>
       </categories>
   </entry>
+  <entry>
+    <title>什么是双亲委派模型</title>
+    <url>/2024/08/15/%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B/</url>
+    <content><![CDATA[<p>类加载器之间的层级关系，称为类的双亲委派模型：</p>
+<span id="more"></span>
+<p>双亲委派模型要求除了顶层的启动类加载器之外，其他的类加载器都要有自己的父类加载器。父类加载器和类加载器之间的关系不是通过继承来实现的，而是通过<strong>组合</strong>的方式来实现的。</p>
+<img src="/2024/08/15/%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B/img1.png" class="" title="img1">
+
+<p>双亲委派模型的工作流程：当前类加载器收到了加载类的请求，把这个请求提交给父类加载器，父类加载器如果也有上一级父类加载器，那么会继续向上转发，那么最终由启动类加载器加载；如果类加载器没有办法加载这个类（在它的搜索范围内没有找到目标类），那么会向下返回，由当前类加载器自己加载。</p>
+<p>实现上述流程的代码逻辑：实现双亲委派模型的代码都写在java.lang.ClassLoader的loadClass方法中，</p>
+<ul>
+<li>先检查当前类有没有被加载，如果没有被加载，则调用父类加载器的loadClass方法；</li>
+<li>如果没有父类加载器，那么就调用启动类加载器作为父类加载器；</li>
+<li>如果父类加载器不能加载这个类，抛出了ClassNotFoundException异常，那么就调用自己的findClass方法进行加载。</li>
+</ul>
+<blockquote>
+<p>从上面可以看出来，双亲委派模型主要是在ClassLoader.loadClass方法中实现的，所以我们可以重写这个方法，不调用父类加载器，那么就可以破坏双亲委派模型。</p>
+</blockquote>
+<h1 id="为什么需要双亲委派模型？"><a href="#为什么需要双亲委派模型？" class="headerlink" title="为什么需要双亲委派模型？"></a>为什么需要双亲委派模型？</h1><ol>
+<li>安全性<br>使用双亲委派模型能够保证核心类不会被用户覆盖或者篡改。举个例子，我们自己写了一个java.lang.Object类，但是最终应用类加载器逐步将类加载请求转发到了启动类加载器，启动类加载器加载的是系统提供的java.lang.Object，而不是我们自己瞎写的这个类。避免安全风险。</li>
+<li>避免类重复加载<br>类被加载之后，类加载器会记录下这个类的字节码信息，在下次遇到这个类的加载请求时，可以清晰地获知这个类已经被加载过了，从而避免重复地加载同一个类，节省系统资源，提升系统性能。</li>
+<li>逻辑清晰<br>双亲委派模型使得系统工作的逻辑更加清晰，核心类的加载都交给启动类加载器和扩展类加载器来完成，自定义的应用类由应用类加载器来完成。</li>
+</ol>
+<p><strong>loadClass和findClass：</strong><br>简单粗暴一点理解就是先执行loadClass，在这里面会做的事：</p>
+<ol>
+<li>调用父类加载器的loadClass</li>
+<li>如果父类加载器说加载不了这个类，那么就调用自己的findClass方法。</li>
+</ol>
+<p>findClass方法中是类加载器自己完成类加载的逻辑。</p>
+<p>如果想要破坏双亲委派模型，那么需要重写外层的loadClass方法。<br>如果不想破坏双亲委派模型，那么重写自己的findClass方法就行。</p>
+]]></content>
+      <categories>
+        <category>JVM</category>
+      </categories>
+  </entry>
 </search>
