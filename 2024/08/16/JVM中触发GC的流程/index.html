@@ -19,27 +19,27 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"daisybby.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="1.使用new关键字">
+    <meta name="description" content="从新创建一个对象开始。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java中创建对象有哪些方式？">
-<meta property="og:url" content="https://daisybby.github.io/2024/07/15/all-appoaches-to-create-object/index.html">
+<meta property="og:title" content="JVM中触发GC的流程">
+<meta property="og:url" content="https://daisybby.github.io/2024/08/16/JVM%E4%B8%AD%E8%A7%A6%E5%8F%91GC%E7%9A%84%E6%B5%81%E7%A8%8B/index.html">
 <meta property="og:site_name" content="daisybby">
-<meta property="og:description" content="1.使用new关键字">
+<meta property="og:description" content="从新创建一个对象开始。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-07-15T07:23:34.000Z">
-<meta property="article:modified_time" content="2024-07-15T08:33:01.358Z">
+<meta property="article:published_time" content="2024-08-16T11:32:14.000Z">
+<meta property="article:modified_time" content="2024-08-16T13:40:28.868Z">
 <meta property="article:author" content="Daisybby">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://daisybby.github.io/2024/07/15/all-appoaches-to-create-object/">
+<link rel="canonical" href="https://daisybby.github.io/2024/08/16/JVM%E4%B8%AD%E8%A7%A6%E5%8F%91GC%E7%9A%84%E6%B5%81%E7%A8%8B/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/07/15/all-appoaches-to-create-object/","path":"2024/07/15/all-appoaches-to-create-object/","title":"Java中创建对象有哪些方式？"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/08/16/JVM%E4%B8%AD%E8%A7%A6%E5%8F%91GC%E7%9A%84%E6%B5%81%E7%A8%8B/","path":"2024/08/16/JVM中触发GC的流程/","title":"JVM中触发GC的流程"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Java中创建对象有哪些方式？ | daisybby</title>
+<title>JVM中触发GC的流程 | daisybby</title>
   
 
 
@@ -126,7 +126,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+    <div class="sidebar-inner sidebar-overview-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -139,7 +139,6 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E4%BD%BF%E7%94%A8new%E5%85%B3%E9%94%AE%E5%AD%97"><span class="nav-text">1.使用new关键字</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E4%BD%BF%E7%94%A8%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6"><span class="nav-text">2.使用反射机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-%E4%BD%BF%E7%94%A8Java-lang-Class%E5%9C%B0newInstance-%E6%96%B9%E6%B3%95"><span class="nav-text">2.1.使用Java.lang.Class地newInstance()方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%E4%BD%BF%E7%94%A8Java-lang-reflect-Constructor%E7%B1%BB%E7%9A%84newInstance-%E6%96%B9%E6%B3%95"><span class="nav-text">2.2.使用Java.lang.reflect.Constructor类的newInstance()方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%97%B6%EF%BC%8CJVM%E5%88%9B%E5%BB%BA%E5%AF%B9%E8%B1%A1"><span class="nav-text">3.反序列化时，JVM创建对象</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E4%BD%BF%E7%94%A8clone%E6%96%B9%E6%B3%95"><span class="nav-text">4.使用clone方法</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -195,7 +194,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/07/15/all-appoaches-to-create-object/">
+    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/08/16/JVM%E4%B8%AD%E8%A7%A6%E5%8F%91GC%E7%9A%84%E6%B5%81%E7%A8%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/header.jpg">
@@ -208,12 +207,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Java中创建对象有哪些方式？ | daisybby">
+      <meta itemprop="name" content="JVM中触发GC的流程 | daisybby">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Java中创建对象有哪些方式？
+          JVM中触发GC的流程
         </h1>
 
         <div class="post-meta-container">
@@ -225,7 +224,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2024-07-15 15:23:34 / 修改时间：16:33:01" itemprop="dateCreated datePublished" datetime="2024-07-15T15:23:34+08:00">2024-07-15</time>
+      <time title="创建时间：2024-08-16 19:32:14 / 修改时间：21:40:28" itemprop="dateCreated datePublished" datetime="2024-08-16T19:32:14+08:00">2024-08-16</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -233,7 +232,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
+          <a href="/categories/JVM/" itemprop="url" rel="index"><span itemprop="name">JVM</span></a>
         </span>
     </span>
 
@@ -244,7 +243,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.3k</span>
+      <span>579</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -261,19 +260,17 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="1-使用new关键字"><a href="#1-使用new关键字" class="headerlink" title="1.使用new关键字"></a>1.使用new关键字</h1><span id="more"></span>
-<p>这是我们最常见的、最简单的创建对象方法，通过调用构造函数来创建对象。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">User user=<span class="keyword">new</span> <span class="title class_">User</span>();</span><br></pre></td></tr></table></figure>
-<h1 id="2-使用反射机制"><a href="#2-使用反射机制" class="headerlink" title="2.使用反射机制"></a>2.使用反射机制</h1><h2 id="2-1-使用Java-lang-Class地newInstance-方法"><a href="#2-1-使用Java-lang-Class地newInstance-方法" class="headerlink" title="2.1.使用Java.lang.Class地newInstance()方法"></a>2.1.使用Java.lang.Class地newInstance()方法</h2><p>Java中每个类都有唯一的Class对象，通过Class对象调用newInstance()创建一个对象。通过这种方法我们可以调用<strong>无参</strong>的构造函数。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//通过类的路径来获取Class对象</span></span><br><span class="line">User user=(User)Class.forName(<span class="string">&quot;xx.xx.User&quot;</span>).newInstance();</span><br><span class="line"><span class="comment">//或者是通过类直接获取Class对象</span></span><br><span class="line">User user=User.Class.newInstance();</span><br></pre></td></tr></table></figure>
-<h2 id="2-2-使用Java-lang-reflect-Constructor类的newInstance-方法"><a href="#2-2-使用Java-lang-reflect-Constructor类的newInstance-方法" class="headerlink" title="2.2.使用Java.lang.reflect.Constructor类的newInstance()方法"></a>2.2.使用Java.lang.reflect.Constructor类的newInstance()方法</h2><p>通过这种方法，我们可以调用<strong>有参或者无参</strong>的构造函数。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获取类的构造器</span></span><br><span class="line">Constructor constructor=User.class.getConstructor();</span><br><span class="line">User user=constructor.newInstance();</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>需要注意的是，以上两种方法只能调用被public修饰的构造方法，Class类是不能访问的，会抛出IllegalAccessException异常；Contructor虽然可以获取到private或者Protected的构造函数，但是调用时也会抛出IllegalAccessException异常，需要constructor.setAccessible(true)来修改访问权限。<br>例如:</p>
-</blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyClass</span>()&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">MyClass</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> Class Main&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            Constructor&lt;MyClass&gt; constructor=MyClass.class.getDeclaredContructor();</span><br><span class="line">            constructor.setAccessible(<span class="literal">true</span>);</span><br><span class="line">            MyClass instance=constructor.newInstance();</span><br><span class="line">        &#125;<span class="keyword">catch</span>(Exception e)&#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="3-反序列化时，JVM创建对象"><a href="#3-反序列化时，JVM创建对象" class="headerlink" title="3.反序列化时，JVM创建对象"></a>3.反序列化时，JVM创建对象</h1><p>这里不再用代码演示，例如从文件中读取序列化后的对象，并反序列化还原的时候会创建新的对象。</p>
-<h1 id="4-使用clone方法"><a href="#4-使用clone方法" class="headerlink" title="4.使用clone方法"></a>4.使用clone方法</h1><p>无论何时调用一个对象的clone方法，JVM都会将当前对象的所有内容复制到新对象中。使用clone方法创建对象并<strong>不会调用</strong>任何构造函数。<br>要使用clone方法，类需要实现Cloneable接口，并实现clone方法。如果没有重写clone方法，会调用Object类的clone方法，这是一个native方法。</p>
+    <div class="post-body" itemprop="articleBody"><p>从新创建一个对象开始。</p>
+<span id="more"></span>
+<p>当一个对象创建的时候，根据对象的大小，决定对象是保存到新生代还是直接进入老年代，大对象是直接进入老年代的。</p>
+<ol>
+<li>创建的新对象如果不是大对象，那么就要保存到Eden区。Eden空间足够则直接保存，Eden空间不够则触发一次Young GC，但是Young GC在触发之前是会进行空间分配担保的，因为Young GC也可能会连锁反应触发Full GC，需要确保Young GC的安全性。</li>
+<li>如果触发了Young GC，那么就把Eden区和From这个Survivor区的存活对象转移到To区，非存活对象进行清理，然后给新创建的对象分配空间，存入Eden区。</li>
+<li>如果在Young GC时，发现To区存不下了，需要用到老年代的空间了，（容易不理解的地方就是，尽管是Young GC，老年代还是可能会参与的)，这个时候就触发空间分配担保，如果担保成功，说明老年代空间是足够的，存活对象被转移到老年代中；如果担保失败，说明老年代空间可能也不够了，那老年代也要被清理，也就触发Full GC。</li>
+<li>在Young GC时，如果Survivor空间是足够的，不需要空间担保，但还是会对对象的GC年龄进行判断，如果年龄到了一定阈值，是会被放到老年代中。</li>
+<li>3和4是在Young GC过程中发生的，如果老年代空间不够了，会触发老年代的GC。</li>
+<li>如果老年代在Full GC之后，空间还是不够，那么就会触发OOM。</li>
+</ol>
 
     </div>
 
@@ -303,7 +300,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://daisybby.github.io/2024/07/15/all-appoaches-to-create-object/" title="Java中创建对象有哪些方式？">https://daisybby.github.io/2024/07/15/all-appoaches-to-create-object/</a>
+      <a href="https://daisybby.github.io/2024/08/16/JVM%E4%B8%AD%E8%A7%A6%E5%8F%91GC%E7%9A%84%E6%B5%81%E7%A8%8B/" title="JVM中触发GC的流程">https://daisybby.github.io/2024/08/16/JVM中触发GC的流程/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -316,14 +313,11 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2024/07/13/Java-Reflection/" rel="prev" title="Java反射机制">
-                  <i class="fa fa-angle-left"></i> Java反射机制
+                <a href="/2024/08/16/%E4%BB%80%E4%B9%88%E6%98%AF%E6%96%B9%E6%B3%95%E5%8C%BA%EF%BC%8C%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84/" rel="prev" title="什么是方法区，是怎么实现的">
+                  <i class="fa fa-angle-left"></i> 什么是方法区，是怎么实现的
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2024/07/15/Java-Dynamic-proxy/" rel="next" title="Java代理模式">
-                  Java代理模式 <i class="fa fa-angle-right"></i>
-                </a>
             </div>
           </div>
     </footer>
