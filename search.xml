@@ -3656,4 +3656,24 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>JVM</category>
       </categories>
   </entry>
+  <entry>
+    <title>什么是运行时常量池，什么是字符串常量池</title>
+    <url>/2024/08/17/%E4%BB%80%E4%B9%88%E6%98%AF%E8%BF%90%E8%A1%8C%E6%97%B6%E5%B8%B8%E9%87%8F%E6%B1%A0%EF%BC%8C%E4%BB%80%E4%B9%88%E6%98%AF%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%B8%B8%E9%87%8F%E6%B1%A0/</url>
+    <content><![CDATA[<p>运行时常量池是Java虚拟机规范中定义的一块逻辑区域，是方法区的一个部分，通常用来保存类或接口的常量信息。</p>
+<span id="more"></span>
+<p>以下是运行时常量池中会保存的数据：</p>
+<ol>
+<li>字面量：包括文本字符串、被final修饰的常量值等。</li>
+<li>类和接口的全限定名。‘</li>
+<li>字段名和访问控制修饰符。</li>
+<li>方法名和方法描述符：包括方法名、返回类型和参数类型列表</li>
+<li>符号引用。</li>
+<li>注解<br>等信息。</li>
+</ol>
+<p>字符串的字面量保存在字符串常量池中，字面量是唯一的。</p>
+]]></content>
+      <categories>
+        <category>JVM</category>
+      </categories>
+  </entry>
 </search>
