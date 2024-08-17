@@ -3639,4 +3639,21 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>JVM</category>
       </categories>
   </entry>
+  <entry>
+    <title>JVM为什么要把堆栈区分开</title>
+    <url>/2024/08/17/JVM%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%8A%8A%E5%A0%86%E6%A0%88%E5%8C%BA%E5%88%86%E5%BC%80/</url>
+    <content><![CDATA[<p>堆是线程间共享的，栈是线程私有的。</p>
+<span id="more"></span>
+<p>两者用途不同，堆是用来存储对象、字符串常量等共享信息的地方，而栈是用于方法调用、存储局部变量的。</p>
+<p>把堆和栈区分开，使得：</p>
+<ol>
+<li>可以<strong>分开管理</strong>。两者功能不同，堆内存通过垃圾回收器进行管理，栈内存则由JVM和编译器来维护。<br>2.** 互不影响**。如果堆发生了OOM，不会影响到线程私有的栈，栈发生了StackOverflow也不会影响到堆。</li>
+<li>更好地做到<strong>数据隔离</strong>。一些方法调用、局部变量等数据是线程私有的，保存到栈这种线程私有的空间里，可以更好地做到数据隔离。而共享的数据放到堆上面就行。</li>
+<li><strong>提升性能</strong>。栈上的分配效率更高，那些寿命不是很长，但是又需要尽快分配空间的数据，保存在栈上比较合适，数据使用很搞笑。而堆的内存分配机制相对复杂一些。针对不同的需求，堆和栈分别做适合自己的优化就行了。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>JVM</category>
+      </categories>
+  </entry>
 </search>
