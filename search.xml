@@ -3676,4 +3676,27 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>JVM</category>
       </categories>
   </entry>
+  <entry>
+    <title>什么是跨代引用，有什么问题</title>
+    <url>/2024/08/17/%E4%BB%80%E4%B9%88%E6%98%AF%E8%B7%A8%E4%BB%A3%E5%BC%95%E7%94%A8%EF%BC%8C%E6%9C%89%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<p>什么是跨代引用？就是老年代的对象引用了新生代的对象，或者新生代对象引用老年代对象。</p>
+<span id="more"></span>
+<p>跨代引用会有什么问题？</p>
+<img src="/2024/08/17/%E4%BB%80%E4%B9%88%E6%98%AF%E8%B7%A8%E4%BB%A3%E5%BC%95%E7%94%A8%EF%BC%8C%E6%9C%89%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98/img1.png" class="" title="img1">
+
+<p>加入JVM正在进行一次Young GC（Minor  GC)，从GC Roots出发进行可达性分析，因为是Young GC，所以如果可达性分析的某路径进入到了老年代，那么就停止往下分析，也就是说C到D的引用是不会被感知到的。<br>此时JVM认为新生代中只有A和B是可达的，那么就会把E回收掉，那D引用的对象被回收掉了显然是不行的。</p>
+<p>为了解决跨代引用的问题，有两种简单的做法：</p>
+<ol>
+<li>在Young GC的时候，即使是老年代对象也继续扫描和标记，这样所有在年轻代的、被引用的对象都会被标记上。</li>
+<li>在Young GC的实时，将老年代对象作为GC Root进行可达性分析，这样可以扫描到引用的新生代对象，避免被回收。</li>
+</ol>
+<p>以上两种方法的效率是比较低的，第一种方法几乎是全堆进行扫描和标记了，成本很高。</p>
+<p>那单独记录哪些老年代对象引用了哪些新生代对象就行了，因为并不是所有的老年代对象都有跨代引用，我们只记录跨代引用。Remembered Set就是这样一个全新的数据结构，去跟踪老年代对象和新生代对象之间的引用关系。</p>
+ <img src="/2024/08/17/%E4%BB%80%E4%B9%88%E6%98%AF%E8%B7%A8%E4%BB%A3%E5%BC%95%E7%94%A8%EF%BC%8C%E6%9C%89%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98/img2.png" class="" title="img2">
+<p> 有了Remembered Set专门记录老年代对新生代的引用之后，就不用再管老年代了，遍历Remembered Set来对新生代对象进行可达性分析的补充，就能避免回收掉有被引用的新生代对象。降低了垃圾回收的扫描成本，提升系统的效率。</p>
+]]></content>
+      <categories>
+        <category>JVM</category>
+      </categories>
+  </entry>
 </search>
