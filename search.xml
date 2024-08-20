@@ -3781,4 +3781,26 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>JVM</category>
       </categories>
   </entry>
+  <entry>
+    <title>MySQL中一条SQL语句执行的过程</title>
+    <url>/2024/08/20/MySQL%E4%B8%AD%E4%B8%80%E6%9D%A1SQL%E8%AF%AD%E5%8F%A5%E6%89%A7%E8%A1%8C%E7%9A%84%E8%BF%87%E7%A8%8B/</url>
+    <content><![CDATA[<p>一句简单的查询语句：</p>
+<span id="more"></span>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> users <span class="keyword">WHERE</span> age<span class="operator">=</span><span class="string">&#x27;18&#x27;</span> <span class="keyword">and</span> name<span class="operator">=</span><span class="string">&#x27;Daisybby&#x27;</span>;</span><br></pre></td></tr></table></figure>
+<p>复杂的执行过程如下图所示：</p>
+<img src="/2024/08/20/MySQL%E4%B8%AD%E4%B8%80%E6%9D%A1SQL%E8%AF%AD%E5%8F%A5%E6%89%A7%E8%A1%8C%E7%9A%84%E8%BF%87%E7%A8%8B/img1.png" class="" title="img1">
+
+<p>看起来比较复杂，其实概括起来关键词就五个：<strong>连接器、查询缓存、解析器、查询优化器、执行器</strong>。</p>
+<ol>
+<li>SQL语句写好了，使用<strong>连接器</strong>，通过客户端和服务器的通信协议，连接上MySQL。还需要检查有没有权限使用。</li>
+<li>在MySQL8.0之前，需要检查<strong>query cache</strong>，看看查询缓存里面有没有一模一样的SQL语句记录，如果命中，那直接返回查询结果。</li>
+<li>SQL语句被送到<strong>解析器</strong>进行语法解析，构建解析树。比如查询是select，表名是users，条件是age&#x3D;’18’ and name&#x3D;’Daisybby’。预处理器会根据MySQL规则进一步检查SQL语句是否合法，生成新的解析树。</li>
+<li><strong>优化器</strong>会生成执行计划，而且这个优化说的是会根据索引看看能不能进行优化。</li>
+<li><strong>执行器</strong>会执行SQL语句，会调用存储引擎来执行，得到查询的结果。如果开启了query cache，会将查询结果和SQL语句进行缓存，否则直接返回就行。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>MySQL</category>
+      </categories>
+  </entry>
 </search>
