@@ -19,27 +19,27 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"daisybby.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="不建议使用join是因为join的效率很低。">
+    <meta name="description" content="类加载器的分类">
 <meta property="og:type" content="article">
-<meta property="og:title" content="为什么不建议使用多表join">
-<meta property="og:url" content="https://daisybby.github.io/2024/08/13/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%BB%BA%E8%AE%AE%E4%BD%BF%E7%94%A8%E5%A4%9A%E8%A1%A8join/index.html">
+<meta property="og:title" content="JDK 1.8和JDK 1.9中的类加载器有哪些不同">
+<meta property="og:url" content="https://daisybby.github.io/2024/08/20/JDK-1-8%E5%92%8CJDK-1-9%E4%B8%AD%E7%9A%84%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%E6%9C%89%E5%93%AA%E4%BA%9B%E4%B8%8D%E5%90%8C/index.html">
 <meta property="og:site_name" content="daisybby">
-<meta property="og:description" content="不建议使用join是因为join的效率很低。">
+<meta property="og:description" content="类加载器的分类">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-08-13T14:40:30.000Z">
-<meta property="article:modified_time" content="2024-08-13T14:51:09.330Z">
+<meta property="article:published_time" content="2024-08-20T08:46:09.000Z">
+<meta property="article:modified_time" content="2024-08-20T09:06:25.906Z">
 <meta property="article:author" content="Daisybby">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://daisybby.github.io/2024/08/13/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%BB%BA%E8%AE%AE%E4%BD%BF%E7%94%A8%E5%A4%9A%E8%A1%A8join/">
+<link rel="canonical" href="https://daisybby.github.io/2024/08/20/JDK-1-8%E5%92%8CJDK-1-9%E4%B8%AD%E7%9A%84%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%E6%9C%89%E5%93%AA%E4%BA%9B%E4%B8%8D%E5%90%8C/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/08/13/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%BB%BA%E8%AE%AE%E4%BD%BF%E7%94%A8%E5%A4%9A%E8%A1%A8join/","path":"2024/08/13/为什么不建议使用多表join/","title":"为什么不建议使用多表join"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/08/20/JDK-1-8%E5%92%8CJDK-1-9%E4%B8%AD%E7%9A%84%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%E6%9C%89%E5%93%AA%E4%BA%9B%E4%B8%8D%E5%90%8C/","path":"2024/08/20/JDK-1-8和JDK-1-9中的类加载器有哪些不同/","title":"JDK 1.8和JDK 1.9中的类加载器有哪些不同"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>为什么不建议使用多表join | daisybby</title>
+<title>JDK 1.8和JDK 1.9中的类加载器有哪些不同 | daisybby</title>
   
 
 
@@ -139,7 +139,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFjoin"><span class="nav-text">什么是join</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%E7%9A%84%E5%88%86%E7%B1%BB"><span class="nav-text">类加载器的分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JDK-1-8%E5%8F%8A%E4%BB%A5%E5%89%8D%E7%9A%84%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8"><span class="nav-text">JDK 1.8及以前的类加载器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JDK-1-9-%E4%B9%8B%E5%90%8E%E7%9A%84%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8"><span class="nav-text">JDK 1.9 之后的类加载器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB%E3%80%82"><span class="nav-text">类加载器之间的关系。</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -195,7 +195,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/08/13/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%BB%BA%E8%AE%AE%E4%BD%BF%E7%94%A8%E5%A4%9A%E8%A1%A8join/">
+    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/08/20/JDK-1-8%E5%92%8CJDK-1-9%E4%B8%AD%E7%9A%84%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%E6%9C%89%E5%93%AA%E4%BA%9B%E4%B8%8D%E5%90%8C/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/header.jpg">
@@ -208,12 +208,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="为什么不建议使用多表join | daisybby">
+      <meta itemprop="name" content="JDK 1.8和JDK 1.9中的类加载器有哪些不同 | daisybby">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          为什么不建议使用多表join
+          JDK 1.8和JDK 1.9中的类加载器有哪些不同
         </h1>
 
         <div class="post-meta-container">
@@ -225,7 +225,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2024-08-13 22:40:30 / 修改时间：22:51:09" itemprop="dateCreated datePublished" datetime="2024-08-13T22:40:30+08:00">2024-08-13</time>
+      <time title="创建时间：2024-08-20 16:46:09 / 修改时间：17:06:25" itemprop="dateCreated datePublished" datetime="2024-08-20T16:46:09+08:00">2024-08-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -233,7 +233,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/MySQL/" itemprop="url" rel="index"><span itemprop="name">MySQL</span></a>
+          <a href="/categories/JVM/" itemprop="url" rel="index"><span itemprop="name">JVM</span></a>
         </span>
     </span>
 
@@ -244,7 +244,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>130</span>
+      <span>1.5k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -261,10 +261,21 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><p>不建议使用join是因为join的效率很低。</p>
-<span id="more"></span>
-<h1 id="什么是join"><a href="#什么是join" class="headerlink" title="什么是join"></a>什么是join</h1><p>在MySQL中，是通过嵌套循环来实现join关联查询的。简单点说就是两个循环，外循环遍历第一个表，内循环遍历第二个表，如果有两张表join，那么查询的时间复杂度就是O(n^2)，三张表就是O(n^3)。</p>
-
+    <div class="post-body" itemprop="articleBody"><h1 id="类加载器的分类"><a href="#类加载器的分类" class="headerlink" title="类加载器的分类"></a>类加载器的分类</h1><span id="more"></span>
+<p>从JVM的角度来看，类加载器只有两种类型：<strong>启动类加载器</strong>和<strong>其他类加载器</strong>。<br>启动类加载器可以理解成是JVM的一部分，通过C++语言来实现。<br>其他类加载器是用Java语言来实现的，独立于JVM的，并且全部都继承自java.lang.ClassLoader。</p>
+<p>从程序员的角度来看，其他类加载器还是可以继续划分的，不过这个划分方式在不同的JDK版本是不同的。</p>
+<p>在JDK 1.8及以前的版本，其他类加载器包括：扩展类加载器和应用程序类加载器，以及一些开发者自定义的类加载器。<br>在JDK 1.9，原来的扩展类加载器被命名为<strong>平台类加载器</strong>，它主要用来加载那些属于Java平台模块系统的非核心模块。</p>
+<h1 id="JDK-1-8及以前的类加载器"><a href="#JDK-1-8及以前的类加载器" class="headerlink" title="JDK 1.8及以前的类加载器"></a>JDK 1.8及以前的类加载器</h1><ol>
+<li><strong>启动类加载器：</strong>启动类加载器负责加载存放在JAVA_HOME\lib目录中的，或者是被-Xbootclasspath参数所指定的路径中的、并且是虚拟机能顾识别的类加载到JVM内存中。启动类加载器不能被应用程序直接引用，如果开发者自定义了类加载器，而且想要将加载累的请求委派给启动类加载器，那直接用Null来代替即可。</li>
+<li><strong>扩展类加载器：</strong>负责加载JAVA_HOME\lib\ext目录中的，或者是被java.ext.dirs系统变量所指定的路径中的所有类库，开发者可以直接使用扩展类加载器。</li>
+<li><strong>应用程序类加载器：</strong>是ClassLoader.getSystemClassLoader()方法的返回值，所以一般也称为系统类加载器。负责加载用户类路径(ClassPath)指定的类库，开发者可以直接使用应用程序类加载器，而且如果应用程序没有自定义自己的类加载器，那么这就是默认的类加载器。</li>
+</ol>
+<h1 id="JDK-1-9-之后的类加载器"><a href="#JDK-1-9-之后的类加载器" class="headerlink" title="JDK 1.9 之后的类加载器"></a>JDK 1.9 之后的类加载器</h1><p>JDK 1.9将扩展类加载器修改成了平台类加载器PlatformClassLoader。</p>
+<p>平台类加载器负责加载JDK平台本身的类库，这些类库位于JDK的lib目录，但是不能加载那些核心的java.*类库（这是由启动类加载器加载的）。主要加载的是JDK平台模块系统的非核心模块。</p>
+<h1 id="类加载器之间的关系。"><a href="#类加载器之间的关系。" class="headerlink" title="类加载器之间的关系。"></a>类加载器之间的关系。</h1><p>双亲委派模型。<br>但是双亲委派模型中的层级关系不是继承关系，而是组合关系。<br>在ClassLoader类中，定义了一个ClassLoader类型的成员变量，这就是上一层的类加载器。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">ClassLoader</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ClassLoader parent;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这就是组合的have-a关系，当我们想要将类加载请求转发给上一层类加载器的时候，直接在loadClass方法中调用parent.loadClass即可。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> Class&lt;?&gt; loadClass(String name,<span class="type">boolean</span> resolve) <span class="keyword">throws</span> ClassNotFoundException&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (getClassLoadingLock(name))&#123;</span><br><span class="line">        Class&lt;?&gt; c=findLoadedClass(name);<span class="comment">//检查类是不是已经被加载了</span></span><br><span class="line">        <span class="keyword">if</span>(c==<span class="literal">null</span>)&#123;</span><br><span class="line">            <span class="type">long</span> t0=System.nanoTime();</span><br><span class="line">            <span class="keyword">try</span>&#123;</span><br><span class="line">                <span class="keyword">if</span>(parent!=<span class="literal">null</span>)&#123;</span><br><span class="line">                    c=parent.loadClass(name,<span class="literal">false</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span>&#123;</span><br><span class="line">                    c=findBootstrapClassOrNull(name);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;<span class="keyword">catch</span> (ClassNotFoundException e)&#123;</span><br><span class="line">                </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -293,7 +304,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://daisybby.github.io/2024/08/13/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%BB%BA%E8%AE%AE%E4%BD%BF%E7%94%A8%E5%A4%9A%E8%A1%A8join/" title="为什么不建议使用多表join">https://daisybby.github.io/2024/08/13/为什么不建议使用多表join/</a>
+      <a href="https://daisybby.github.io/2024/08/20/JDK-1-8%E5%92%8CJDK-1-9%E4%B8%AD%E7%9A%84%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%E6%9C%89%E5%93%AA%E4%BA%9B%E4%B8%8D%E5%90%8C/" title="JDK 1.8和JDK 1.9中的类加载器有哪些不同">https://daisybby.github.io/2024/08/20/JDK-1-8和JDK-1-9中的类加载器有哪些不同/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -306,14 +317,11 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2024/08/13/%E4%BB%80%E4%B9%88%E6%98%AF%E6%95%B0%E6%8D%AE%E5%BA%93%E8%8C%83%E5%BC%8F%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%8F%8D%E8%8C%83%E5%BC%8F/" rel="prev" title="什么是数据库范式，为什么要反范式">
-                  <i class="fa fa-angle-left"></i> 什么是数据库范式，为什么要反范式
+                <a href="/2024/08/17/%E4%BB%80%E4%B9%88%E6%98%AF%E8%B7%A8%E4%BB%A3%E5%BC%95%E7%94%A8%EF%BC%8C%E6%9C%89%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98/" rel="prev" title="什么是跨代引用，有什么问题">
+                  <i class="fa fa-angle-left"></i> 什么是跨代引用，有什么问题
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2024/08/14/%E7%B1%BB%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" rel="next" title="类的生命周期">
-                  类的生命周期 <i class="fa fa-angle-right"></i>
-                </a>
             </div>
           </div>
     </footer>

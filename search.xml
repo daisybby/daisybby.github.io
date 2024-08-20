@@ -3699,4 +3699,26 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>JVM</category>
       </categories>
   </entry>
+  <entry>
+    <title>JDK 1.8和JDK 1.9中的类加载器有哪些不同</title>
+    <url>/2024/08/20/JDK-1-8%E5%92%8CJDK-1-9%E4%B8%AD%E7%9A%84%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%E6%9C%89%E5%93%AA%E4%BA%9B%E4%B8%8D%E5%90%8C/</url>
+    <content><![CDATA[<h1 id="类加载器的分类"><a href="#类加载器的分类" class="headerlink" title="类加载器的分类"></a>类加载器的分类</h1><span id="more"></span>
+<p>从JVM的角度来看，类加载器只有两种类型：<strong>启动类加载器</strong>和<strong>其他类加载器</strong>。<br>启动类加载器可以理解成是JVM的一部分，通过C++语言来实现。<br>其他类加载器是用Java语言来实现的，独立于JVM的，并且全部都继承自java.lang.ClassLoader。</p>
+<p>从程序员的角度来看，其他类加载器还是可以继续划分的，不过这个划分方式在不同的JDK版本是不同的。</p>
+<p>在JDK 1.8及以前的版本，其他类加载器包括：扩展类加载器和应用程序类加载器，以及一些开发者自定义的类加载器。<br>在JDK 1.9，原来的扩展类加载器被命名为<strong>平台类加载器</strong>，它主要用来加载那些属于Java平台模块系统的非核心模块。</p>
+<h1 id="JDK-1-8及以前的类加载器"><a href="#JDK-1-8及以前的类加载器" class="headerlink" title="JDK 1.8及以前的类加载器"></a>JDK 1.8及以前的类加载器</h1><ol>
+<li><strong>启动类加载器：</strong>启动类加载器负责加载存放在JAVA_HOME\lib目录中的，或者是被-Xbootclasspath参数所指定的路径中的、并且是虚拟机能顾识别的类加载到JVM内存中。启动类加载器不能被应用程序直接引用，如果开发者自定义了类加载器，而且想要将加载累的请求委派给启动类加载器，那直接用Null来代替即可。</li>
+<li><strong>扩展类加载器：</strong>负责加载JAVA_HOME\lib\ext目录中的，或者是被java.ext.dirs系统变量所指定的路径中的所有类库，开发者可以直接使用扩展类加载器。</li>
+<li><strong>应用程序类加载器：</strong>是ClassLoader.getSystemClassLoader()方法的返回值，所以一般也称为系统类加载器。负责加载用户类路径(ClassPath)指定的类库，开发者可以直接使用应用程序类加载器，而且如果应用程序没有自定义自己的类加载器，那么这就是默认的类加载器。</li>
+</ol>
+<h1 id="JDK-1-9-之后的类加载器"><a href="#JDK-1-9-之后的类加载器" class="headerlink" title="JDK 1.9 之后的类加载器"></a>JDK 1.9 之后的类加载器</h1><p>JDK 1.9将扩展类加载器修改成了平台类加载器PlatformClassLoader。</p>
+<p>平台类加载器负责加载JDK平台本身的类库，这些类库位于JDK的lib目录，但是不能加载那些核心的java.*类库（这是由启动类加载器加载的）。主要加载的是JDK平台模块系统的非核心模块。</p>
+<h1 id="类加载器之间的关系。"><a href="#类加载器之间的关系。" class="headerlink" title="类加载器之间的关系。"></a>类加载器之间的关系。</h1><p>双亲委派模型。<br>但是双亲委派模型中的层级关系不是继承关系，而是组合关系。<br>在ClassLoader类中，定义了一个ClassLoader类型的成员变量，这就是上一层的类加载器。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">ClassLoader</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ClassLoader parent;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这就是组合的have-a关系，当我们想要将类加载请求转发给上一层类加载器的时候，直接在loadClass方法中调用parent.loadClass即可。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">protected</span> Class&lt;?&gt; loadClass(String name,<span class="type">boolean</span> resolve) <span class="keyword">throws</span> ClassNotFoundException&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (getClassLoadingLock(name))&#123;</span><br><span class="line">        Class&lt;?&gt; c=findLoadedClass(name);<span class="comment">//检查类是不是已经被加载了</span></span><br><span class="line">        <span class="keyword">if</span>(c==<span class="literal">null</span>)&#123;</span><br><span class="line">            <span class="type">long</span> t0=System.nanoTime();</span><br><span class="line">            <span class="keyword">try</span>&#123;</span><br><span class="line">                <span class="keyword">if</span>(parent!=<span class="literal">null</span>)&#123;</span><br><span class="line">                    c=parent.loadClass(name,<span class="literal">false</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span>&#123;</span><br><span class="line">                    c=findBootstrapClassOrNull(name);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;<span class="keyword">catch</span> (ClassNotFoundException e)&#123;</span><br><span class="line">                </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>JVM</category>
+      </categories>
+  </entry>
 </search>
