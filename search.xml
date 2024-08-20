@@ -3468,6 +3468,41 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
     <content><![CDATA[<p>不建议使用join是因为join的效率很低。</p>
 <span id="more"></span>
 <h1 id="什么是join"><a href="#什么是join" class="headerlink" title="什么是join"></a>什么是join</h1><p>在MySQL中，是通过嵌套循环来实现join关联查询的。简单点说就是两个循环，外循环遍历第一个表，内循环遍历第二个表，如果有两张表join，那么查询的时间复杂度就是O(n^2)，三张表就是O(n^3)。</p>
+<p>有三种联合查询：inner join、left join和right join。</p>
+<h2 id="内连接-inner-join"><a href="#内连接-inner-join" class="headerlink" title="内连接(inner join)"></a>内连接(inner join)</h2><p>内连接联合查询的时候，只有表中字段是匹配的，才能够获取到记录。</p>
+<h2 id="左连接-left-join"><a href="#左连接-left-join" class="headerlink" title="左连接(left join)"></a>左连接(left join)</h2><p>也是有匹配关系，但是如果左边的表（驱动表）有记录，但是右边的表中没有匹配的记录，那也返回左表中的这部分数据。</p>
+<h2 id="右连接-right-join"><a href="#右连接-right-join" class="headerlink" title="右连接(right join)"></a>右连接(right join)</h2><p>和左连接是类似的，但右表是驱动表，要保留的是右表的全部数据。</p>
+<blockquote>
+<p>个人理解：left join和right join并不是为了筛选数据，而是为了合并数据，我想要查询的是left或者right表的全部数据，但是有些额外信息并不在这个表中，我也需要这些额外的数据，所以就可以用join来连接起来。<br>举个例子：<br>orders表中有如下数据：</p>
+</blockquote>
+<figure class="highlight gherkin"><table><tr><td class="code"><pre><span class="line">|<span class="string"> order_id </span>|<span class="string"> customer_id </span>|</span><br><span class="line">|<span class="string"> -------- </span>|<span class="string"> ----------- </span>|</span><br><span class="line">|<span class="string"> 1        </span>|<span class="string"> 10          </span>|</span><br><span class="line">|<span class="string"> 2        </span>|<span class="string"> 20          </span>|</span><br><span class="line">|<span class="string"> 3        </span>|<span class="string"> 30          </span>|</span><br></pre></td></tr></table></figure>
+<p>customers表中有如下数据：</p>
+<figure class="highlight gherkin"><table><tr><td class="code"><pre><span class="line">|<span class="string"> customer_id </span>|<span class="string"> customer_name </span>|</span><br><span class="line">|<span class="string"> ----------- </span>|<span class="string"> ------------- </span>|</span><br><span class="line">|<span class="string"> 10          </span>|<span class="string"> Alice         </span>|</span><br><span class="line">|<span class="string"> 20          </span>|<span class="string"> Bob           </span>|</span><br></pre></td></tr></table></figure>
+<p><strong>内连接</strong>的代码如下:</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> orders.order_id, customers.customer_name</span><br><span class="line"><span class="keyword">FROM</span> orders</span><br><span class="line"><span class="keyword">INNER</span> <span class="keyword">JOIN</span> customers <span class="keyword">ON</span> orders.customer_id <span class="operator">=</span> customers.customer_id;</span><br></pre></td></tr></table></figure>
+<p>结果：</p>
+<figure class="highlight gherkin"><table><tr><td class="code"><pre><span class="line">|<span class="string"> order_id </span>|<span class="string"> customer_id </span>|<span class="string"> customer_name </span>|</span><br><span class="line">|<span class="string"> -------- </span>|<span class="string"> ----------- </span>|<span class="string"> ------------- </span>|</span><br><span class="line">|<span class="string"> 1        </span>|<span class="string"> 10          </span>|<span class="string"> Alice         </span>|</span><br><span class="line">|<span class="string"> 2        </span>|<span class="string"> 20          </span>|<span class="string"> Bob           </span>|</span><br></pre></td></tr></table></figure>
+
+<p><strong>左连接</strong>的代码如下：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> orders.order_id,customers.customer_name</span><br><span class="line"><span class="keyword">FROM</span> orders</span><br><span class="line"><span class="keyword">LEFT</span> <span class="keyword">JOIN</span> customers <span class="keyword">ON</span> orders.order_id<span class="operator">=</span>customers.customer_id;</span><br></pre></td></tr></table></figure>
+<p>结果如下：</p>
+<figure class="highlight gherkin"><table><tr><td class="code"><pre><span class="line">|<span class="string"> order_id </span>|<span class="string"> customer_id </span>|<span class="string"> customer_name </span>|</span><br><span class="line">|<span class="string"> -------- </span>|<span class="string"> ----------- </span>|<span class="string"> ------------- </span>|</span><br><span class="line">|<span class="string"> 1        </span>|<span class="string"> 10          </span>|<span class="string"> Alice         </span>|</span><br><span class="line">|<span class="string"> 2        </span>|<span class="string"> 20          </span>|<span class="string"> Bob           </span>|</span><br><span class="line">|<span class="string"> 3        </span>|<span class="string"> 30          </span>|<span class="string"> NULL          </span>|</span><br></pre></td></tr></table></figure>
+<p>即使customers中没有customer_id&#x3D;30的数据，但是orders表中有这个信息，所以还是会保留的，但是customer_name这个信息是缺失的，所以返回的是NULL。</p>
+<p><strong>右连接的代码如下：</strong></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> orders.order_id,customers.customer_id</span><br><span class="line"><span class="keyword">FROM</span> orders</span><br><span class="line"><span class="keyword">RIGHT</span> <span class="keyword">JOIN</span> customers <span class="keyword">ON</span> orders.order_id<span class="operator">=</span>customers.customer_id;</span><br></pre></td></tr></table></figure>
+<p>即使orders中数据多了一些，但是right join还是以customers为主的，多余的数据和customers表无关就不会被连接进来。</p>
+<h1 id="嵌套循环算法"><a href="#嵌套循环算法" class="headerlink" title="嵌套循环算法"></a>嵌套循环算法</h1><p>MySQL是通过嵌套循环算法来实现join联合查询的。嵌套循环算法主要有simple nested loop join，block nested loop join和index nested loop join。</p>
+<ul>
+<li><strong>simple nested loop join:</strong> 做法简单粗暴，就是全量扫描两个表，可以理解成就是最简单的两层循环，时间复杂度为N*M。N为驱动表数据量，M为被驱动表的数据量。</li>
+<li><strong>block nested loop join:</strong> 引入了一个buffer，提前把驱动表的一部分数据放到buffer中，然后和被驱动表对比。对比次数和simple还是一样的，只是join buffer是基于内存的，读取效率高很多。</li>
+<li><strong>index nested loop join:</strong> 如果内层循环的表用到的字段有索引，那么可以通过索引来进行查询对比。所以时间效率可以看作N*logM。</li>
+</ul>
+<p>尽管MySQL对嵌套循环算法做了优化，但是这几种算法的复杂度还是比较高的。而且在数据量越来越大的情况下，join的效率会呈指数下降。</p>
+<h1 id="不用join查询，那该怎么达到查询多表、联合数据的需求呢？"><a href="#不用join查询，那该怎么达到查询多表、联合数据的需求呢？" class="headerlink" title="不用join查询，那该怎么达到查询多表、联合数据的需求呢？"></a>不用join查询，那该怎么达到查询多表、联合数据的需求呢？</h1><p>主要有两种做法：</p>
+<ol>
+<li>用应用程序把两个表的数据先都查出来，然后在代码里面进行对比。</li>
+<li>数据冗余：在存储数据的时候，就把这些可能会需要一起使用的数据放到一起，避免联合查询。</li>
+</ol>
 ]]></content>
       <categories>
         <category>MySQL</category>
