@@ -3721,4 +3721,29 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>JVM</category>
       </categories>
   </entry>
+  <entry>
+    <title>一个Java进程占用的内存都有哪些部分</title>
+    <url>/2024/08/20/%E4%B8%80%E4%B8%AAJava%E8%BF%9B%E7%A8%8B%E5%8D%A0%E7%94%A8%E7%9A%84%E5%86%85%E5%AD%98%E9%83%BD%E6%9C%89%E5%93%AA%E4%BA%9B%E9%83%A8%E5%88%86/</url>
+    <content><![CDATA[<p>一个Java进程占用的区域，主要有以下部分：</p>
+<span id="more"></span>
+<img src="/2024/08/20/%E4%B8%80%E4%B8%AAJava%E8%BF%9B%E7%A8%8B%E5%8D%A0%E7%94%A8%E7%9A%84%E5%86%85%E5%AD%98%E9%83%BD%E6%9C%89%E5%93%AA%E4%BA%9B%E9%83%A8%E5%88%86/img1.png" class="" title="img1">
+
+<h1 id="JVM内存"><a href="#JVM内存" class="headerlink" title="JVM内存"></a>JVM内存</h1><p><strong>堆</strong><br>堆是存放对象实例的运行时内存区域，是虚拟机运行时的内存总体的最大一块，也一直占据着虚拟机内存的一大部分。Java堆由Java虚拟机管理，可以进行垃圾回收，那些没有被引用的对象会被回收掉，以释放内存空间。</p>
+<p>GC垃圾回收器将堆内存划分成了新生代和老年代。</p>
+<p><strong>栈</strong><br>栈包括本地方法栈和虚拟机栈。<br><strong>虚拟机栈：</strong>虚拟机栈是线程私有的存储器，用于存储Java中的局部变量。当线程进行方法调用的时候，就会创建一个栈帧，栈帧中保存着局部变量、操作数栈、方法出口、动态链接等信息。当方法调用结束的时候，局部变量的作用域就结束了，这些数据不再具有使用意义，栈帧从虚拟机栈中弹出。<br><strong>本地方法栈：</strong>和虚拟机栈服务于Java程序执行不同，本地方法栈是支持本地方法运行的，可以存储本地方法的参数和局部变量。本地方法一般是通过C等本地语言来实现的。</p>
+<p><strong>堆外内存：</strong><br>堆外内存通常是由操作系统来管理的，独立于堆进行持久化的一块内存空间。对于大规模数据存储和快速访问来说，堆外内存可以提供很好的性能和控制。<br>堆外内存主要包括四个部分：元空间、压缩类空间、代码缓冲区、直接缓冲区。</p>
+<ul>
+<li><strong>元空间：</strong>在JDK 1.8开始，方法区的实现方式从永久代修改成了元空间，可以根据应用程序的需要动态调整空间大小。元空间是用来存储类的元数据信息的。</li>
+<li><strong>压缩类空间：</strong>压缩类空间是元空间的一部分，专门用来存储类的元数据信息，在使用64位JVM的时候，压缩类空间使用较小的指针来引用类的元数据，以便后续直接执行，提高程序运行效率。</li>
+<li><strong>代码缓冲区：</strong>JIT编译器可能会将一些热点代码编译成本地代码，这些代码就保存在代码缓冲区中，之后这部分代码可以直接执行，提高程序的执行效率。</li>
+<li><strong>直接缓冲区：</strong>是Java NIO中的一个概念，用于Java程序和操作系统之间高效地传递数据，使得数据IO速度更快。</li>
+</ul>
+<h1 id="非JVM内存"><a href="#非JVM内存" class="headerlink" title="非JVM内存"></a>非JVM内存</h1><p>非JVM内存包括：本地运行库和JNI本地代码。</p>
+<h2 id="JNI本地代码"><a href="#JNI本地代码" class="headerlink" title="JNI本地代码"></a>JNI本地代码</h2><p>先讲这个，JNI是一个编程框架，Java程序有一部分任务是难以直接实现，或者是根本实现不了的，比如直接访问系统资源、调用操作系统API、使用特定的硬件设备等。但是这些任务本地代码（C或C++写的代码）是可以完成的，那JNI就给Java程序提供了一套标准的调用本地方法的接口。</p>
+<h2 id="本地运行库"><a href="#本地运行库" class="headerlink" title="本地运行库"></a>本地运行库</h2><p>这就是上面说到的本地编程语言编写的库，这些库直接运行在操作系统上，而不是在JVM内部运行的。</p>
+]]></content>
+      <categories>
+        <category>JVM</category>
+      </categories>
+  </entry>
 </search>
