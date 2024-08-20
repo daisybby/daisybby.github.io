@@ -3803,4 +3803,28 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>MySQL</category>
       </categories>
   </entry>
+  <entry>
+    <title>什么是数据库事务</title>
+    <url>/2024/08/20/%E4%BB%80%E4%B9%88%E6%98%AF%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BA%8B%E5%8A%A1/</url>
+    <content><![CDATA[<h1 id="什么是数据库事务"><a href="#什么是数据库事务" class="headerlink" title="什么是数据库事务"></a>什么是数据库事务</h1><span id="more"></span>
+<p>简单点理解，事务就是一个数据库操作序列，这些操作要么全部执行，要不全都不执行，是一个不可分割的执行单位。事务由事务开始到事务结束之间的一系列数据库操作构成。</p>
+<p>并不是任意的数据库操作都属于事务。事务具有四个特性：<strong>原子性、一致性、隔离性和持久性</strong>。这四个属性也就是我们经常说的ACID特性。</p>
+<ol>
+<li><p><strong>原子性：</strong> 事务是不可分割的一个执行单位，事务中的数据库操作要么全都被执行，要么都不执行。</p>
+</li>
+<li><p><strong>一致性：</strong>一致性就是说，在事务开始前和事务执行之后，数据库的完整性约束是一致的。</p>
+<blockquote>
+<p>什么是完整性约束？<br>说概念比较抽象，常用的完整性约束有：主键约束（主键是唯一的、非空的）、外键约束、唯一约束、非空约束等等。</p>
+</blockquote>
+</li>
+<li><p><strong>隔离性：</strong>事务之间的执行是隔离开的，也就是说多个事务并发执行的时候，事务之间是互不影响的。</p>
+</li>
+<li><p><strong>持久性：</strong>事务对数据库的修改是永久的，对于事务之后的其他事务而言，这个修改是可见的。</p>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>MySQL</category>
+      </categories>
+  </entry>
 </search>
