@@ -3827,4 +3827,47 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>MySQL</category>
       </categories>
   </entry>
+  <entry>
+    <title>微服务基本概念和原理</title>
+    <url>/2024/08/22/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%8E%9F%E7%90%86/</url>
+    <content><![CDATA[<p>之前经常写的项目是单体项目，微服务就是将一个单体项目拆分成不同的部分，每个部分提供一类服务，也就是一个微服务。</p>
+<span id="more"></span>
+<p>使用微服务可以将项目进行解耦，使得项目更加易于管理。反映在idea中，就是一个个的module。<br>不同的微服务之间，数据是隔离的，如果想要调用其他服务的方法，或者是获取其他服务的数据，就需要<strong>远程调用</strong>。<br>我们可以仿照浏览器发送请求的方式，来进行远程调用。但是，可能一个微服务可以通过多个地址来访问，某个地址可能暂时不可用了，但是其他的地址可用。所以我们是不能在代码里面把这个地址写死的。那么就出现了<strong>注册中心</strong>。</p>
+<img src="/2024/08/22/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%8E%9F%E7%90%86/img1.png" class="" title="img1">
+
+<h1 id="微服务的网关是怎么路由到具体哪个微服务的呢？"><a href="#微服务的网关是怎么路由到具体哪个微服务的呢？" class="headerlink" title="微服务的网关是怎么路由到具体哪个微服务的呢？"></a>微服务的网关是怎么路由到具体哪个微服务的呢？</h1><p><strong>nacos和openFeign的关系：</strong></p>
+<ul>
+<li>个人粗俗一点理解，nacos是和众多微服务有关的，相当于是一个注册中心，微服务都来这里注册服务，而且nacos也是微服务的配置中心，在这里可以保存各种微服务相关的配置。</li>
+<li>而openFeign相当于是方便了微服务之间互相远程调用的工具。</li>
+</ul>
+<h2 id="怎么理解项目中的微服务、bootstrap-yml以及nacos中的配置呢？"><a href="#怎么理解项目中的微服务、bootstrap-yml以及nacos中的配置呢？" class="headerlink" title="怎么理解项目中的微服务、bootstrap.yml以及nacos中的配置呢？"></a>怎么理解项目中的微服务、bootstrap.yml以及nacos中的配置呢？</h2><p><strong>1. bootstrap.yml</strong></p>
+<p>每个微服务在项目中都有自己的bootstrap.yml，这里面只包含了基本信息：<br>    - spring.application.name定义了微服务的名称，这个名称应该是唯一的；<br>    - spring.cloud.nacos中定义了nacos服务器相关的信息。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">51801</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">leadnews-user</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">nacos:</span></span><br><span class="line">      <span class="attr">discovery:</span></span><br><span class="line">        <span class="attr">server-addr:</span> <span class="number">192.168</span><span class="number">.200</span><span class="number">.130</span><span class="string">:8848</span></span><br><span class="line">      <span class="attr">config:</span></span><br><span class="line">        <span class="attr">server-addr:</span> <span class="number">192.168</span><span class="number">.200</span><span class="number">.130</span><span class="string">:8848</span></span><br><span class="line">        <span class="attr">file-extension:</span> <span class="string">yml</span></span><br></pre></td></tr></table></figure>
+<p>以上是一个微服务的bootstrap.yml的内容：</p>
+<ul>
+<li>server.port定义了这个微服务的端口号。</li>
+<li>spring.application.name定义了为服务的名称。</li>
+<li>spring.cloud.nacos就是定义了nacos服务器相关的信息，其中discovery.server-addr指定的nacos服务器地址和端口号，用于<strong>服务注册与发现</strong>。</li>
+<li>config指定的nacos服务器地址和端口号是指定的<strong>配置中心</strong>服务器地址和端口号，如果分别用两台nacos服务器，一个用来做微服务的服务注册与发现，一个用来做配置中心，那么这两个地址会不一样。</li>
+</ul>
+<p><strong>2.nacos配置中心的配置实例</strong><br>在nacos配置中心，有很多配置实例，下面是其中一个：</p>
+<img src="/2024/08/22/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%8E%9F%E7%90%86/img1.png" class="" title="img1">
+<p>这里面的Data ID与bootstrap.yml中的spring.application.name不一定要完全一样，但是它们之间必须有明确的对应关系，因为这是匹配微服务和nacos配置的关键。</p>
+<p>在nacos配置中心中，除了可以redis、mysql、mybatisPlus的基本配置之外，还可以做网关的路由规则配置。不过项目中通常将网关作为单独的一个微服务进行管理，所以网关这个微服务有自己的nacos配置实例，在这个配置实例里面，定义各个微服务的路由规则。</p>
+<blockquote>
+<p>简单粗暴地理解，nacos作为配置中心，就是将原来庞大的本地配置，转移到了nacos中统一管理。这就引出了新的问题，为什么要用配置中心呢？原来那种单体项目的配置方法有什么缺陷吗？</p>
+</blockquote>
+<p><strong>为什么需要配置中心呢？</strong><br>每一个微服务都有自己的各种配置，比如数据库连接配置、环境配置等等：</p>
+<ol>
+<li><strong>动态配置更新：</strong>如果我们想要修改微服务的配置，总不能停止服务，然后去修改吧，使用配置中心是支持配置的动态更新，不需要我们中断服务。</li>
+<li><strong>集中管理：</strong>Nacos提供了统一的界面来管理配置，方便程序的管理，提高效率。</li>
+<li><strong>配置共享：</strong>一个微服务可能有多个节点，所以使用配置中心可以实现多个节点共享一个配置，要修改配置的时候，不用一个一个去修改，而且还避免了改的不一致的问题。</li>
+<li><strong>配置的安全性：</strong>可以对敏感的配置信息进行加密和控制访问，避免配置信息泄露。</li>
+<li><strong>版本控制：</strong>配置中心可以提供版本控制的功能，追踪配置的版本历史，如果有需要，可以回滚到过往的版本。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>微服务</category>
+      </categories>
+  </entry>
 </search>
