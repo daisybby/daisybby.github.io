@@ -3870,4 +3870,40 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>微服务</category>
       </categories>
   </entry>
+  <entry>
+    <title>SpringCloud项目笔记一：基于网关的登录校验</title>
+    <url>/2024/08/23/SpringCloud%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%E4%B8%80%EF%BC%9A%E5%9F%BA%E4%BA%8E%E7%BD%91%E5%85%B3%E7%9A%84%E7%99%BB%E5%BD%95%E6%A0%A1%E9%AA%8C/</url>
+    <content><![CDATA[<p><strong>需求：</strong></p>
+<span id="more"></span>
+<ol>
+<li>用户发起请求</li>
+<li>网关验证请求携带的token是否有效</li>
+<li>token为空或者token过期则返回401，token未过期则进行验证，验证token有效则可以进行后续的服务。</li>
+</ol>
+<p><strong>实现逻辑：</strong></p>
+<ol>
+<li>除了登录请求之外，所有的请求都会携带token，哪怕是游客访问，也会携带一个由0生成的token。</li>
+<li>token可能是过期的，或者是无效的，无效的token是不能继续请求的，要返回错误码401；</li>
+<li>如果token是有效的，那就可以放行，路由到后续的微服务中。</li>
+<li>需要注意的是，对于登录请求，本身是不会携带token的，但是这个请求需要路由到用户微服务中进行登录，所以需要验证请求路径是不是login，如果是要直接放行。</li>
+</ol>
+<img src="/2024/08/23/SpringCloud%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%E4%B8%80%EF%BC%9A%E5%9F%BA%E4%BA%8E%E7%BD%91%E5%85%B3%E7%9A%84%E7%99%BB%E5%BD%95%E6%A0%A1%E9%AA%8C/img1.png" class="" title="img1">
+<p><strong>代码实现：</strong><br>只记录过程和逻辑得了。</p>
+<ol>
+<li>登录验证是用网关实现的，网关这个模块做了三个微服务，admin、app和wemedia，别的不多说，登录验证是在app中实现的。</li>
+<li>网关做登录验证是要用过滤器的，定义一个AuthorizeFilter，继承GlobalFilter和Ordered。</li>
+<li>filter方法有两个参数：exchange和chain，ServerWebExchange是请求的交换上下文，GateWayFilterChain是过滤器链。</li>
+<li>那么到了filter方法里面，首先是要获取到request和response对象的，毕竟这是和用户交互的关键对象。</li>
+<li>检查request.getURI().getPath()，里面是不是有&#x2F;login，有就说明是登录请求，那就放行呗，调用chain.filter，把exchange送进去就行了。</li>
+<li>从request中获取请求头，从请求头中获取token。</li>
+<li>检查token是不是空的，空的就response里面设置返回的状态码，并且response.setComplete，返回就行了。、</li>
+<li>token不是空的，好家伙，要验证token是不是过期了，因为token的有效时间有限。token的有效时间过期了，那也跟没token一样，设置response状态码，返回。</li>
+<li>token不是空的，而且没过期，那就解析token中的信息，把解析到的用户id放到请求头里面，放行。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>SpringCloud</category>
+        <category>SpringCloud项目笔记</category>
+      </categories>
+  </entry>
 </search>
