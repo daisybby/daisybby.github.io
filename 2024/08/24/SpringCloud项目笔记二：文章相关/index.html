@@ -19,23 +19,27 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"daisybby.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta property="og:type" content="website">
-<meta property="og:title" content="daisybby">
-<meta property="og:url" content="https://daisybby.github.io/categories/JVM/index.html">
+    <meta name="description" content="1.首页文章加载">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringCloud项目笔记二：文章相关">
+<meta property="og:url" content="https://daisybby.github.io/2024/08/24/SpringCloud%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%9A%E6%96%87%E7%AB%A0%E7%9B%B8%E5%85%B3/index.html">
 <meta property="og:site_name" content="daisybby">
+<meta property="og:description" content="1.首页文章加载">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-08-24T07:20:30.000Z">
+<meta property="article:modified_time" content="2024-08-24T07:22:49.024Z">
 <meta property="article:author" content="Daisybby">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://daisybby.github.io/categories/JVM/">
+<link rel="canonical" href="https://daisybby.github.io/2024/08/24/SpringCloud%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%9A%E6%96%87%E7%AB%A0%E7%9B%B8%E5%85%B3/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"categories/JVM/index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://daisybby.github.io/2024/08/24/SpringCloud%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%9A%E6%96%87%E7%AB%A0%E7%9B%B8%E5%85%B3/","path":"2024/08/24/SpringCloud项目笔记二：文章相关/","title":"SpringCloud项目笔记二：文章相关"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>分类: JVM | daisybby</title>
+<title>SpringCloud项目笔记二：文章相关 | daisybby</title>
   
 
 
@@ -122,7 +126,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -135,6 +139,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E9%A6%96%E9%A1%B5%E6%96%87%E7%AB%A0%E5%8A%A0%E8%BD%BD"><span class="nav-text">1.首页文章加载</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E5%8A%A0%E8%BD%BD%E6%96%87%E7%AB%A0%E8%AF%A6%E6%83%85"><span class="nav-text">2.加载文章详情</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -179,233 +184,163 @@
 
     </div>
 
-    <div class="main-inner category posts-collapse">
+    <div class="main-inner post posts-expand">
 
 
   
+
+
+<div class="post-block">
   
   
-  <div class="post-block">
-    <div class="post-content">
-      <div class="collection-title">
-        <h1 class="collection-header">JVM
-          <small>分类</small>
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://daisybby.github.io/2024/08/24/SpringCloud%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%9A%E6%96%87%E7%AB%A0%E7%9B%B8%E5%85%B3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="Daisybby">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="daisybby">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="SpringCloud项目笔记二：文章相关 | daisybby">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SpringCloud项目笔记二：文章相关
         </h1>
-      </div>
 
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
       
-    <div class="collection-year">
-      <span class="collection-header">2024</span>
+
+      <time title="创建时间：2024-08-24 15:20:30 / 修改时间：15:22:49" itemprop="dateCreated datePublished" datetime="2024-08-24T15:20:30+08:00">2024-08-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SpringCloud/" itemprop="url" rel="index"><span itemprop="name">SpringCloud</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SpringCloud%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">SpringCloud项目笔记</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>690</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="1-首页文章加载"><a href="#1-首页文章加载" class="headerlink" title="1.首页文章加载"></a>1.首页文章加载</h1><span id="more"></span>
+<p><strong>需求：</strong></p>
+<ol>
+<li>不分类加载：和小红书类似，首页会加载一部分文章，在推荐这一栏，会加载各种类型的文章，其实就是按照发布时间，加载最新的10条。</li>
+<li>分类加载：首页可以切换文章类别，每个类别也是加载最新的一些文章。</li>
+<li>加载更多：加载更多是从首页开始往下划，加载的内容是比当前时间更晚的。</li>
+<li>加载最新：是从首页下拉，在当前文章上面加载更新的文章。</li>
+<li>分页：需要注意的是，无论是不分类加载还是分类加载，亦或者是加载更多、加载最新，都是要分页的。</li>
+</ol>
+<p><strong>实现逻辑：</strong><br>首页不分类加载：</p>
+<ol>
+<li>请求向后端发送一个DTO，这个DTO只包含基本的信息：最大时间（用于加载最新），最小时间（用于加载更多），页大小，分类ID。</li>
+<li>不分类加载：那么直接从数据库查询时间小于最大时间的pageSize条就行。</li>
+<li>分类加载：查询的时候要记录上分类ID，筛选这个分类下，小于最大时间的pageSize条文章来返回。</li>
+<li>加载最新：筛选大于最大时间的、满足pageSize分页要求的、符合指定频道ID的文章；</li>
+<li>加载更多：筛选小于最小时间的、满足pageSize分页要求的、符合指定频道ID的文章。</li>
+<li>将获取到的文章列表返回。</li>
+</ol>
+<h1 id="2-加载文章详情"><a href="#2-加载文章详情" class="headerlink" title="2.加载文章详情"></a>2.加载文章详情</h1><p>这部分内容没有太多的难点。<br>主要的思路就是：文章内容详情数据量是比较大的，如果每次加载详情都是要从数据库加载大量的数据，而且从数据库传出来的数据量也是比较大的。所以我们可以采用静态模板的形式，在发布文章或者更新文章的时候，将文章内容编辑成静态网页，然后上传到Minio，之后加载文章详情的时候，直接·从Minio中获取对应的html文件来进行显示就行了。数据库中文章的content可以保存文章内容文件在Minio中的地址。</p>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-08-20T17:09:10+08:00"
-              content="2024-08-20">
-          08-20
-        </time>
-      </div>
+    
+    
+    
+    <div>
+    
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/08/20/%E4%B8%80%E4%B8%AAJava%E8%BF%9B%E7%A8%8B%E5%8D%A0%E7%94%A8%E7%9A%84%E5%86%85%E5%AD%98%E9%83%BD%E6%9C%89%E5%93%AA%E4%BA%9B%E9%83%A8%E5%88%86/" itemprop="url">
-            <span itemprop="name">一个Java进程占用的内存都有哪些部分</span>
-          </a>
-      </div>
+          
 
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-08-20T16:46:09+08:00"
-              content="2024-08-20">
-          08-20
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/08/20/JDK-1-8%E5%92%8CJDK-1-9%E4%B8%AD%E7%9A%84%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%E6%9C%89%E5%93%AA%E4%BA%9B%E4%B8%8D%E5%90%8C/" itemprop="url">
-            <span itemprop="name">JDK 1.8和JDK 1.9中的类加载器有哪些不同</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-08-17T18:50:26+08:00"
-              content="2024-08-17">
-          08-17
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/08/17/%E4%BB%80%E4%B9%88%E6%98%AF%E8%B7%A8%E4%BB%A3%E5%BC%95%E7%94%A8%EF%BC%8C%E6%9C%89%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98/" itemprop="url">
-            <span itemprop="name">什么是跨代引用，有什么问题</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-08-17T14:57:12+08:00"
-              content="2024-08-17">
-          08-17
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/08/17/%E4%BB%80%E4%B9%88%E6%98%AF%E8%BF%90%E8%A1%8C%E6%97%B6%E5%B8%B8%E9%87%8F%E6%B1%A0%EF%BC%8C%E4%BB%80%E4%B9%88%E6%98%AF%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%B8%B8%E9%87%8F%E6%B1%A0/" itemprop="url">
-            <span itemprop="name">什么是运行时常量池，什么是字符串常量池</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-08-17T14:40:56+08:00"
-              content="2024-08-17">
-          08-17
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/08/17/JVM%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%8A%8A%E5%A0%86%E6%A0%88%E5%8C%BA%E5%88%86%E5%BC%80/" itemprop="url">
-            <span itemprop="name">JVM为什么要把堆栈区分开</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-08-16T19:32:14+08:00"
-              content="2024-08-16">
-          08-16
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/08/16/JVM%E4%B8%AD%E8%A7%A6%E5%8F%91GC%E7%9A%84%E6%B5%81%E7%A8%8B/" itemprop="url">
-            <span itemprop="name">JVM中触发GC的流程</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-08-16T18:10:44+08:00"
-              content="2024-08-16">
-          08-16
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/08/16/%E4%BB%80%E4%B9%88%E6%98%AF%E6%96%B9%E6%B3%95%E5%8C%BA%EF%BC%8C%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84/" itemprop="url">
-            <span itemprop="name">什么是方法区，是怎么实现的</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-08-16T17:31:05+08:00"
-              content="2024-08-16">
-          08-16
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/08/16/JVM%E5%A6%82%E4%BD%95%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%AF%B9%E8%B1%A1/" itemprop="url">
-            <span itemprop="name">JVM如何创建一个对象</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-08-16T16:10:13+08:00"
-              content="2024-08-16">
-          08-16
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/08/16/JVM%E4%B8%AD%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E6%98%AF%E5%90%A6%E4%B8%BA%E5%90%8C%E4%B8%80%E4%B8%AA%E7%B1%BB/" itemprop="url">
-            <span itemprop="name">JVM中如何判断是否为同一个类</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-08-15T20:59:42+08:00"
-              content="2024-08-15">
-          08-15
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/08/15/%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B/" itemprop="url">
-            <span itemprop="name">什么是双亲委派模型</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
+    
     </div>
-  </div>
-  
-  
-  
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/categories/JVM/page/2/">2</a><a class="page-number" href="/categories/JVM/page/3/">3</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/categories/JVM/page/2/"><i class="fa fa-angle-right"></i></a>
-  </nav>
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Daisybby
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://daisybby.github.io/2024/08/24/SpringCloud%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%9A%E6%96%87%E7%AB%A0%E7%9B%B8%E5%85%B3/" title="SpringCloud项目笔记二：文章相关">https://daisybby.github.io/2024/08/24/SpringCloud项目笔记二：文章相关/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/08/23/SpringCloud%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%E4%B8%80%EF%BC%9A%E5%9F%BA%E4%BA%8E%E7%BD%91%E5%85%B3%E7%9A%84%E7%99%BB%E5%BD%95%E6%A0%A1%E9%AA%8C/" rel="prev" title="SpringCloud项目笔记一：基于网关的登录校验">
+                  <i class="fa fa-angle-left"></i> SpringCloud项目笔记一：基于网关的登录校验
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
 
 </div>
   </main>

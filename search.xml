@@ -3906,4 +3906,32 @@ proxy.方法-&gt;转到InvocationHandler对象的invoke方法-&gt;执行增强�
         <category>SpringCloud项目笔记</category>
       </categories>
   </entry>
+  <entry>
+    <title>SpringCloud项目笔记二：文章相关</title>
+    <url>/2024/08/24/SpringCloud%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%E4%BA%8C%EF%BC%9A%E6%96%87%E7%AB%A0%E7%9B%B8%E5%85%B3/</url>
+    <content><![CDATA[<h1 id="1-首页文章加载"><a href="#1-首页文章加载" class="headerlink" title="1.首页文章加载"></a>1.首页文章加载</h1><span id="more"></span>
+<p><strong>需求：</strong></p>
+<ol>
+<li>不分类加载：和小红书类似，首页会加载一部分文章，在推荐这一栏，会加载各种类型的文章，其实就是按照发布时间，加载最新的10条。</li>
+<li>分类加载：首页可以切换文章类别，每个类别也是加载最新的一些文章。</li>
+<li>加载更多：加载更多是从首页开始往下划，加载的内容是比当前时间更晚的。</li>
+<li>加载最新：是从首页下拉，在当前文章上面加载更新的文章。</li>
+<li>分页：需要注意的是，无论是不分类加载还是分类加载，亦或者是加载更多、加载最新，都是要分页的。</li>
+</ol>
+<p><strong>实现逻辑：</strong><br>首页不分类加载：</p>
+<ol>
+<li>请求向后端发送一个DTO，这个DTO只包含基本的信息：最大时间（用于加载最新），最小时间（用于加载更多），页大小，分类ID。</li>
+<li>不分类加载：那么直接从数据库查询时间小于最大时间的pageSize条就行。</li>
+<li>分类加载：查询的时候要记录上分类ID，筛选这个分类下，小于最大时间的pageSize条文章来返回。</li>
+<li>加载最新：筛选大于最大时间的、满足pageSize分页要求的、符合指定频道ID的文章；</li>
+<li>加载更多：筛选小于最小时间的、满足pageSize分页要求的、符合指定频道ID的文章。</li>
+<li>将获取到的文章列表返回。</li>
+</ol>
+<h1 id="2-加载文章详情"><a href="#2-加载文章详情" class="headerlink" title="2.加载文章详情"></a>2.加载文章详情</h1><p>这部分内容没有太多的难点。<br>主要的思路就是：文章内容详情数据量是比较大的，如果每次加载详情都是要从数据库加载大量的数据，而且从数据库传出来的数据量也是比较大的。所以我们可以采用静态模板的形式，在发布文章或者更新文章的时候，将文章内容编辑成静态网页，然后上传到Minio，之后加载文章详情的时候，直接·从Minio中获取对应的html文件来进行显示就行了。数据库中文章的content可以保存文章内容文件在Minio中的地址。</p>
+]]></content>
+      <categories>
+        <category>SpringCloud</category>
+        <category>SpringCloud项目笔记</category>
+      </categories>
+  </entry>
 </search>
